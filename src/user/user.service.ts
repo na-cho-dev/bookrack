@@ -1,6 +1,11 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model, UpdateQuery } from 'mongoose';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { CreateUserDto } from './dto/creat-user.dto';
 import { compare, hash } from 'bcrypt';
@@ -25,16 +30,32 @@ export class UserService {
     return user.save();
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.userModel.findOne({ email: email.toLowerCase() });
-  }
-
-  async validateUser(email: string, password: string) {
-    const user = await this.findByEmail(email);
-    if (user && (await compare(password, user.password))) {
-      return user;
+  async getUser(query: FilterQuery<User>) {
+    const user = await this.userModel.findOne(query);
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
 
-    return null;
+    return user;
+  }
+
+  async getAllUsers() {
+    const users = await this.userModel.find();
+    if (!users || users.length === 0) {
+      throw new NotFoundException('No users found');
+    }
+
+    return users;
+  }
+
+  async updateUser(query: FilterQuery<User>, updateData: UpdateQuery<User>) {
+    const user = await this.userModel.findOneAndUpdate(query, updateData, {
+      new: true,
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return user;
   }
 }

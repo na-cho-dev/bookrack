@@ -1,60 +1,111 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
+import { response, Response } from 'express';
 import { User, UserDocument } from 'src/schemas/user.schema';
 import { CreateUserDto } from 'src/user/dto/creat-user.dto';
 import { UserService } from 'src/user/user.service';
 import { TokenPayload } from './interface/token-payload.interface';
 import { UserInterface } from './interface/user.interface';
+import { compare, hash } from 'bcrypt';
+import { EnvConfig } from 'src/common/config/env.config';
+import { JWTCookieService } from 'src/common/utils/jwt-cookie.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly configService: ConfigService,
+    private readonly envConfig: EnvConfig,
     private readonly userService: UserService,
-    private readonly jwtService: JwtService,
+    private readonly jwtCookieService: JWTCookieService,
   ) {}
 
-  async register(userDto: CreateUserDto): Promise<User> {
+  async validateUser(email: string, password: string) {
+    const user = await this.userService.getUser({ email });
+    if (user && (await compare(password, user.password))) {
+      return user;
+    }
+
+    return null;
+  }
+
+  async verifyUserRefreshToken(refreshToken: string, userId: string) {
+    try {
+      const user = await this.userService.getUser({ _id: userId });
+      const authenticated = await compare(refreshToken, user.refreshToken);
+      if (!authenticated) {
+        throw new NotFoundException('Refresh token not found');
+      }
+
+      return user;
+    } catch (error) {
+      console.log(error);
+      throw new UnauthorizedException('Refresh Token is not valid.');
+    }
+  }
+
+  async register(userDto: CreateUserDto): Promise<UserInterface> {
     return await this.userService.create(userDto);
   }
 
   async login(user: UserInterface, response: Response) {
     const payload: TokenPayload = { sub: String(user._id), email: user.email };
 
-    const token = this.jwtService.sign(payload, {
-      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
-      expiresIn: `${this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_MS')}ms`,
-    });
+    const accessToken = await this.jwtCookieService.signToken(
+      payload,
+      'access',
+    );
+    const refreshToken = await this.jwtCookieService.signToken(
+      payload,
+      'refresh',
+    );
 
-    const cookieOptions = {
-      httpOnly: true,
-      secure: this.configService.get('NODE_ENV') === 'production',
-      sameSite: 'strict' as const,
-      maxAge: 60 * 60 * 24 * 7, // 1 week
-    };
+    // Save refresh token in the database
+    await this.userService.updateUser(
+      { _id: user._id },
+      { refreshToken: await hash(refreshToken, 10) },
+    );
 
-    response.cookie('Authentication', token, cookieOptions);
+    // Set cookies in the response
+    this.jwtCookieService.setAuthCookie(response, accessToken, 'access');
+    this.jwtCookieService.setAuthCookie(response, refreshToken, 'refresh');
+
+    return user;
   }
 
-  async logout() {
-    // Logout logic can go here
-    return { message: 'User logged out successfully' };
+  async refreshToken(user: UserInterface, response: Response) {
+    const payload: TokenPayload = { sub: String(user._id), email: user.email };
+    const accessToken = await this.jwtCookieService.signToken(
+      payload,
+      'access',
+    );
+
+    // Set new access token in the response
+    this.jwtCookieService.setAuthCookie(response, accessToken, 'access');
+
+    return user;
   }
 
-  async refreshToken() {
-    // Refresh token logic can go here
-    return { message: 'Token refreshed successfully' };
+  async logout(user: UserInterface, response: Response) {
+    // Delete refresh token from the database
+    await this.userService.updateUser(
+      { _id: user._id },
+      { refreshToken: null },
+    );
+
+    return this.jwtCookieService.clearAuthCookie(response);
   }
 
-  async forgotPassword() {
-    // Forgot password logic can go here
-    return { message: 'Password reset link sent successfully' };
-  }
+  // async forgotPassword() {
+  //   // Forgot password logic can go here
+  //   return { message: 'Password reset link sent successfully' };
+  // }
 
-  async resetPassword() {
-    // Reset password logic can go here
-    return { message: 'Password reset successfully' };
-  }
+  // async resetPassword() {
+  //   // Reset password logic can go here
+  //   return { message: 'Password reset successfully' };
+  // }
 }
