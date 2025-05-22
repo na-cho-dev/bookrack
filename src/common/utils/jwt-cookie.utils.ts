@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
 
 @Injectable()
-export class JWTCookieService {
+export class JWTCookieUtil {
   constructor(
     private envConfig: EnvConfig,
     private jwtService: JwtService,

@@ -4,6 +4,7 @@ import {
   IsString,
   IsStrongPassword,
 } from 'class-validator';
+import { UserRole } from 'src/user/schemas/user.schema';
 
 export class CreateUserDto {
   @IsString()
@@ -24,4 +25,8 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   password: string;
+
+  @IsString()
+  @IsOptional()
+  role?: UserRole;
 }

@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { EnvConfig } from './common/config/env.config';
+import { BookModule } from './book/book.module';
+import { BorrowBookModule } from './borrow-book/borrow-book.module';
 
 @Module({
   imports: [
@@ -24,6 +26,8 @@ import { EnvConfig } from './common/config/env.config';
     }),
     AuthModule,
     UserModule,
+    BookModule,
+    BorrowBookModule,
   ],
   controllers: [AppController],
   providers: [AppService, EnvConfig],

@@ -3,30 +3,32 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { response, Response } from 'express';
-import { User, UserDocument } from 'src/schemas/user.schema';
+import { Response } from 'express';
 import { CreateUserDto } from 'src/user/dto/creat-user.dto';
 import { UserService } from 'src/user/user.service';
 import { TokenPayload } from './interface/token-payload.interface';
-import { UserInterface } from './interface/user.interface';
+import {
+  UserInterface,
+  UserResponseInterface,
+} from '../user/interface/user.interface';
 import { compare, hash } from 'bcrypt';
 import { EnvConfig } from 'src/common/config/env.config';
-import { JWTCookieService } from 'src/common/utils/jwt-cookie.service';
+import { JWTCookieUtil } from 'src/common/utils/jwt-cookie.utils';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly envConfig: EnvConfig,
     private readonly userService: UserService,
-    private readonly jwtCookieService: JWTCookieService,
+    private readonly jwtCookieService: JWTCookieUtil,
   ) {}
 
   async validateUser(email: string, password: string) {
-    const user = await this.userService.getUser({ email });
+    const user = await this.userService.getUser({ email }, true);
     if (user && (await compare(password, user.password))) {
-      return user;
+      // Remove password from user object before returning
+      const { password, ...secureUser } = user.toObject();
+      return secureUser;
     }
 
     return null;
@@ -47,7 +49,7 @@ export class AuthService {
     }
   }
 
-  async register(userDto: CreateUserDto): Promise<UserInterface> {
+  async register(userDto: CreateUserDto): Promise<UserResponseInterface> {
     return await this.userService.create(userDto);
   }
 

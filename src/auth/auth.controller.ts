@@ -7,17 +7,13 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/creat-user.dto';
-import { UserService } from 'src/user/user.service';
-import { User } from 'src/schemas/user.schema';
 import { LocalAuthGuard } from 'src/guards/local-auth.guard';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { JWTRefreshAuthGuard } from 'src/guards/jwt-refresh-auth.guard';
-import { UserInterface } from './interface/user.interface';
-import { get } from 'http';
+import { UserInterface } from '../user/interface/user.interface';
 import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('auth')
@@ -31,10 +27,7 @@ export class AuthController {
 
     response.json({
       message: 'Account Created Successfully',
-      user: {
-        id: user._id,
-        email: user.email,
-      },
+      user,
     });
   }
 
@@ -45,10 +38,7 @@ export class AuthController {
 
     response.json({
       message: 'Login successful',
-      user: {
-        id: user._id,
-        email: user.email,
-      },
+      user,
     });
   }
 
@@ -61,10 +51,7 @@ export class AuthController {
     const refreshedUser = await this.authService.refreshToken(user, response);
     response.json({
       message: 'Token Refreshed',
-      refreshedUser: {
-        id: refreshedUser._id,
-        email: refreshedUser.email,
-      },
+      refreshedUser,
     });
   }
 
