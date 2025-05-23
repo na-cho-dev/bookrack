@@ -46,17 +46,17 @@ BookRack is a robust, full-featured library management system built with [NestJS
 
 ---
 
-## Features
+## 🔑 Key Features (Backend)
 
-- **User Authentication & Authorization**: Secure JWT-based authentication, role-based access control (admin, user).
-- **Book Management**: Add, update, delete, and list books. Track available and total copies.
-- **Borrowing System**: Users can borrow and return books. The system tracks borrow records, due dates, and overdue books.
-- **Overdue Management**: Easily query overdue books globally or per user.
-- **RESTful API**: Clean, versioned, and well-documented endpoints.
-- **Validation & Error Handling**: Strong DTO validation and consistent error responses.
-- **Swagger Integration**: Interactive API documentation out-of-the-box.
-- **Testing**: Comprehensive unit and e2e test setup with Jest.
-- **Extensible**: Modular architecture for easy feature expansion.
+- **User Authentication**: Secure JWT tokens stored in HTTP-only cookies
+- **Role-Based Access Control**: Manage admin and standard user permissions
+- **Book Management**: Add, update, delete, and view books
+- **Borrow & Return System**: Tracks borrowing, return status, and due dates
+- **Availability Tracking**: Dynamically updates available copies of each book
+- **Overdue Book Detection**: Flags books not returned on time
+- **Swagger API Docs**: Interactive documentation (development mode)
+- **Clean Modular Structure**: DTOs, services, guards, decorators, and custom error handling
+- **CORS & Cookie Auth**: Ready for frontend integration
 
 ---
 
@@ -74,15 +74,33 @@ This separation of concerns ensures maintainability, scalability, and testabilit
 
 ---
 
-## Tech Stack
+## 🛠️ Tech Stack
 
-- **Backend Framework**: [NestJS](https://nestjs.com/) (TypeScript)
-- **Database**: [MongoDB](https://www.mongodb.com/) via [Mongoose](https://mongoosejs.com/)
-- **Authentication**: [Passport.js](http://www.passportjs.org/) (JWT & Local strategies)
-- **Validation**: [class-validator](https://github.com/typestack/class-validator), [class-transformer](https://github.com/typestack/class-transformer)
-- **API Docs**: [Swagger](https://swagger.io/) via [@nestjs/swagger](https://docs.nestjs.com/openapi/introduction)
-- **Testing**: [Jest](https://jestjs.io/), [Supertest](https://github.com/visionmedia/supertest)
-- **Linting/Formatting**: ESLint, Prettier
+**Backend:**
+- [NestJS](https://nestjs.com/) (TypeScript)
+- [MongoDB](https://www.mongodb.com/) + [Mongoose](https://mongoosejs.com/)
+- [Passport.js](http://www.passportjs.org/) (JWT & Local strategies)
+- [class-validator](https://github.com/typestack/class-validator)
+- [Swagger](https://swagger.io/) via [@nestjs/swagger](https://docs.nestjs.com/openapi/introduction)
+- [Jest](https://jestjs.io/) for testing
+
+**Frontend (Planned):**
+- [React.js](https://react.dev/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Axios](https://axios-http.com/)
+- [React Query](https://tanstack.com/query/latest) or [SWR](https://swr.vercel.app/)
+
+---
+
+## 🧑‍💻 Learning & Motivation
+
+This project is my playground for mastering authentication, security, API design, and modular architecture. As I transition into full-stack development, BookRack helps me bridge backend and frontend skills in a real-world context.
+
+---
+
+## 💬 Feedback & Collaboration
+
+I'm open to feedback, tips, or collaboration opportunities from fellow devs! Feel free to open issues, submit PRs, or connect with me.
 
 ---
 
@@ -90,9 +108,9 @@ This separation of concerns ensures maintainability, scalability, and testabilit
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (v18+ recommended)
-- [pnpm](https://pnpm.io/) (or npm/yarn)
-- [MongoDB](https://www.mongodb.com/) instance (local or cloud)
+- Node.js (v18+ recommended)
+- pnpm (or npm/yarn)
+- MongoDB instance (local or cloud)
 
 ### Installation
 
@@ -104,16 +122,8 @@ pnpm install
 
 ### Configuration
 
-1. **Environment Variables**:  
-   Copy `.env.example` to `.env` and fill in your MongoDB URI and other secrets.
-
-   ```
-   MONGODB_URI=mongodb://localhost:27017/bookrack
-   JWT_SECRET=your_jwt_secret
-   ```
-
-2. **(Optional) Customization**:  
-   Adjust configuration in `src/common/config/env.config.ts` as needed.
+1. Copy `.env.example` to `.env` and fill in your MongoDB URI and secrets.
+2. Adjust config in `src/common/config/env.config.ts` as needed.
 
 ### Running the Application
 
@@ -148,13 +158,7 @@ pnpm run test:e2e
 
 ## API Documentation
 
-Once the server is running, access the interactive Swagger UI at:
-
-```
-http://localhost:3000/api-docs
-```
-
-This provides detailed documentation and allows you to try out all endpoints.
+Swagger UI: [http://localhost:3000/api-docs](http://localhost:3000/api-docs) (development mode)
 
 ---
 
@@ -218,16 +222,16 @@ For major changes, open an issue first to discuss your ideas.
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+MIT
 
 ---
 
 ## Acknowledgements
 
-- [NestJS](https://nestjs.com/) for the powerful backend framework.
-- [MongoDB](https://www.mongodb.com/) for the flexible NoSQL database.
-- [Passport.js](http://www.passportjs.org/) for authentication.
-- [Jest](https://jestjs.io/) for testing.
+- [NestJS](https://nestjs.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Passport.js](http://www.passportjs.org/)
+- [Jest](https://jestjs.io/)
 - All contributors and the open-source community!
 
 ---
