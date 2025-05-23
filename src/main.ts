@@ -14,7 +14,7 @@ async function bootstrap() {
   // app.useGlobalFilters()
   app.use(cookieParser());
   app.enableCors({
-    origin: envConfig.getEnv('CLIENT_URL'),
+    origin: envConfig.getEnv('CLIENT_URL', 'http://localhost:4400'),
     credentials: true,
   });
 
