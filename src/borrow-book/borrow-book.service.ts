@@ -56,7 +56,6 @@ export class BorrowBookService {
 
     // Check and reduce available copies of the book
     await this.bookService.updateAvailableCopies(borrowBook.book, -1);
-
     const populatedRecord = await savedBorrowedRecord.populate('user book');
 
     return populatedRecord;
@@ -80,7 +79,6 @@ export class BorrowBookService {
     // Increase available copies of the book
     const book = borrowRecord.book as BookDocument;
     await this.bookService.updateAvailableCopies(book._id.toString(), 1);
-
     const populatedRecord = await savedBorrowRecord.populate('user book');
 
     return populatedRecord;
@@ -105,6 +103,7 @@ export class BorrowBookService {
     if (borrowRecords.length === 0) {
       throw new NotFoundException('No borrow records found for this user');
     }
+
     return borrowRecords;
   }
 
@@ -116,6 +115,7 @@ export class BorrowBookService {
     if (borrowRecords.length === 0) {
       throw new NotFoundException('No borrow records found for this book');
     }
+
     return borrowRecords;
   }
 

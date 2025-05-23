@@ -11,21 +11,28 @@ async function bootstrap() {
   const envConfig = app.get(EnvConfig);
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  // app.useGlobalFilters()
   app.use(cookieParser());
+  app.enableCors({
+    origin: envConfig.getEnv('CLIENT_URL'),
+    credentials: true,
+  });
 
   const logger = new Logger(AppModule.name);
   const PORT = envConfig.getEnv('PORT') || 3330;
 
-  // Swagger config
-  const config = new DocumentBuilder()
-    .setTitle('BookRack API')
-    .setDescription('API documentation for the BookRack system')
-    .setVersion('1.0')
-    .addCookieAuth('Authentication')
-    .build();
+  if (envConfig.getEnv('NODE_ENV') === 'development') {
+    // Swagger config
+    const config = new DocumentBuilder()
+      .setTitle('BookRack API')
+      .setDescription('API documentation for the BookRack system')
+      .setVersion('1.0')
+      .addCookieAuth('Authentication')
+      .build();
 
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api-docs', app, document);
+  }
 
   await app.listen(PORT);
 
