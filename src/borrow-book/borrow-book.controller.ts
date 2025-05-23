@@ -6,12 +6,19 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { BorrowBookService } from './borrow-book.service';
 import { CreateBorrowBookDto } from './dto/create-borrow-book.dto';
 import { UpdateBorrowBookDto } from './dto/update-borrow-book.dto';
+import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/guards/user-roles.guard';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Borrow Books')
+@ApiCookieAuth('Authentication')
 @Controller('borrow-books')
+@UseGuards(JWTAuthGuard, RolesGuard)
 export class BorrowBookController {
   constructor(private readonly borrowBookService: BorrowBookService) {}
 
@@ -35,6 +42,16 @@ export class BorrowBookController {
     };
   }
 
+  @Get('return/:id')
+  async returnBook(@Param('id') id: string) {
+    const returnedBook = await this.borrowBookService.returnBook(id);
+
+    return {
+      message: 'Book returned successfully',
+      returnedBook,
+    };
+  }
+
   @Get('user/:userId')
   async getBorrowRecordsByUserId(@Param('userId') userId: string) {
     const borrowRecords =
@@ -52,6 +69,25 @@ export class BorrowBookController {
     return {
       message: 'Borrow records retrieved successfully',
       borrowRecords,
+    };
+  }
+
+  @Get('user/:userId/overdue')
+  async getUserOverdueBooks(@Param('userId') userId: string) {
+    const overdueBooks =
+      await this.borrowBookService.getUserOverdueBooks(userId);
+    return {
+      message: 'User overdue books retrieved successfully',
+      overdueBooks,
+    };
+  }
+
+  @Get('overdue')
+  async getOverdueBooks() {
+    const overdueBooks = await this.borrowBookService.getOverdueBooks();
+    return {
+      message: 'Overdue books retrieved successfully',
+      overdueBooks,
     };
   }
 

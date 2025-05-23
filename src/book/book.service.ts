@@ -78,4 +78,23 @@ export class BookService {
 
     return deletedBook;
   }
+
+  async updateAvailableCopies(id: string, count: number): Promise<Book> {
+    validateObjectId(id);
+
+    const book = await this.bookModel.findById(id);
+    if (!book) {
+      throw new BadRequestException('Book not found');
+    }
+
+    const newAvailableCopies = book.availableCopies + count;
+    if (newAvailableCopies < 0) {
+      throw new BadRequestException('Not enough copies available');
+    }
+
+    book.availableCopies = newAvailableCopies;
+    await book.save();
+
+    return book;
+  }
 }

@@ -21,78 +21,215 @@
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# BookRack 📚
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+BookRack is a robust, full-featured library management system built with [NestJS](https://nestjs.com/) and [MongoDB](https://www.mongodb.com/). It provides a secure, scalable, and extensible backend for managing books, users, and borrowing operations, making it ideal for schools, universities, or community libraries.
 
-## Project setup
+---
+
+## Table of Contents
+
+- [Features](#features)
+- [Architecture Overview](#architecture-overview)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+  - [Running the Application](#running-the-application)
+  - [Testing](#testing)
+- [API Documentation](#api-documentation)
+- [Project Structure](#project-structure)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Features
+
+- **User Authentication & Authorization**: Secure JWT-based authentication, role-based access control (admin, user).
+- **Book Management**: Add, update, delete, and list books. Track available and total copies.
+- **Borrowing System**: Users can borrow and return books. The system tracks borrow records, due dates, and overdue books.
+- **Overdue Management**: Easily query overdue books globally or per user.
+- **RESTful API**: Clean, versioned, and well-documented endpoints.
+- **Validation & Error Handling**: Strong DTO validation and consistent error responses.
+- **Swagger Integration**: Interactive API documentation out-of-the-box.
+- **Testing**: Comprehensive unit and e2e test setup with Jest.
+- **Extensible**: Modular architecture for easy feature expansion.
+
+---
+
+## Architecture Overview
+
+BookRack follows a modular, layered architecture:
+
+- **Controllers**: Handle HTTP requests and responses.
+- **Services**: Encapsulate business logic.
+- **Schemas/Models**: Define MongoDB collections using Mongoose.
+- **Guards & Decorators**: Implement authentication and authorization.
+- **DTOs**: Validate and type-check incoming data.
+
+This separation of concerns ensures maintainability, scalability, and testability.
+
+---
+
+## Tech Stack
+
+- **Backend Framework**: [NestJS](https://nestjs.com/) (TypeScript)
+- **Database**: [MongoDB](https://www.mongodb.com/) via [Mongoose](https://mongoosejs.com/)
+- **Authentication**: [Passport.js](http://www.passportjs.org/) (JWT & Local strategies)
+- **Validation**: [class-validator](https://github.com/typestack/class-validator), [class-transformer](https://github.com/typestack/class-transformer)
+- **API Docs**: [Swagger](https://swagger.io/) via [@nestjs/swagger](https://docs.nestjs.com/openapi/introduction)
+- **Testing**: [Jest](https://jestjs.io/), [Supertest](https://github.com/visionmedia/supertest)
+- **Linting/Formatting**: ESLint, Prettier
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v18+ recommended)
+- [pnpm](https://pnpm.io/) (or npm/yarn)
+- [MongoDB](https://www.mongodb.com/) instance (local or cloud)
+
+### Installation
 
 ```bash
-$ pnpm install
+git clone https://github.com/yourusername/bookrack.git
+cd bookrack
+pnpm install
 ```
 
-## Compile and run the project
+### Configuration
+
+1. **Environment Variables**:  
+   Copy `.env.example` to `.env` and fill in your MongoDB URI and other secrets.
+
+   ```
+   MONGODB_URI=mongodb://localhost:27017/bookrack
+   JWT_SECRET=your_jwt_secret
+   ```
+
+2. **(Optional) Customization**:  
+   Adjust configuration in `src/common/config/env.config.ts` as needed.
+
+### Running the Application
 
 ```bash
-# development
-$ pnpm run start
+# Development
+pnpm run start:dev
 
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+# Production
+pnpm run build
+pnpm run start:prod
 ```
 
-## Run tests
+The server will start on the port specified in your `.env` (default: 3000).
+
+### Testing
 
 ```bash
-# unit tests
-$ pnpm run test
+# Run all unit tests
+pnpm run test
 
-# e2e tests
-$ pnpm run test:e2e
+# Watch mode
+pnpm run test:watch
 
-# test coverage
-$ pnpm run test:cov
+# Test coverage
+pnpm run test:cov
+
+# End-to-end tests
+pnpm run test:e2e
 ```
+
+---
+
+## API Documentation
+
+Once the server is running, access the interactive Swagger UI at:
+
+```
+http://localhost:3000/api-docs
+```
+
+This provides detailed documentation and allows you to try out all endpoints.
+
+---
+
+## Project Structure
+
+```
+bookrack/
+├── src/
+│   ├── app.module.ts
+│   ├── auth/                # Authentication & authorization logic
+│   ├── book/                # Book management (CRUD, schemas, DTOs)
+│   ├── borrow-book/         # Borrowing logic, records, overdue
+│   ├── common/              # Shared utilities, config, decorators, guards
+│   ├── user/                # User management
+│   └── ...                  # Other modules
+├── test/                    # e2e tests
+├── .env                     # Environment variables
+├── package.json
+├── pnpm-lock.yaml
+└── README.md
+```
+
+---
 
 ## Deployment
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+BookRack is production-ready and can be deployed to any Node.js hosting platform.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Steps
 
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
+1. **Build the project**:
+   ```bash
+   pnpm run build
+   ```
+2. **Set environment variables** (see [Configuration](#configuration)).
+3. **Start the server**:
+   ```bash
+   pnpm run start:prod
+   ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Cloud Deployment
 
-## Resources
+- **Docker**: Add a `Dockerfile` for containerized deployments.
+- **Cloud Providers**: Deploy to AWS, Heroku, DigitalOcean, etc.
+- **NestJS Mau**: For a seamless AWS deployment, check out [NestJS Mau](https://mau.nestjs.com).
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## Contributing
 
-## Support
+Contributions are welcome! Please:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+1. Fork the repository.
+2. Create a feature branch.
+3. Write clear, well-tested code.
+4. Submit a pull request with a detailed description.
 
-## Stay in touch
+For major changes, open an issue first to discuss your ideas.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+---
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## Acknowledgements
+
+- [NestJS](https://nestjs.com/) for the powerful backend framework.
+- [MongoDB](https://www.mongodb.com/) for the flexible NoSQL database.
+- [Passport.js](http://www.passportjs.org/) for authentication.
+- [Jest](https://jestjs.io/) for testing.
+- All contributors and the open-source community!
+
+---
+
+**Happy coding! 🚀**

@@ -10,12 +10,15 @@ import { CreateBorrowBookDto } from './dto/create-borrow-book.dto';
 import { validateObjectId } from 'src/common/utils/validate-objectid.utils';
 import { UpdateBookDto } from 'src/book/dto/update-book.dto';
 import { UpdateBorrowBookDto } from './dto/update-borrow-book.dto';
+import { BookService } from 'src/book/book.service';
+import { BookDocument } from 'src/book/schemas/book.schema';
 
 @Injectable()
 export class BorrowBookService {
   constructor(
     @InjectModel(BorrowBook.name)
     private readonly borrowBookModel: Model<BorrowBookDocument>,
+    private readonly bookService: BookService,
   ) {}
 
   async getBorrowBookQuery(
@@ -33,6 +36,7 @@ export class BorrowBookService {
     const existingRecord = await this.borrowBookModel.findOne({
       user: borrowBook.user,
       book: borrowBook.book,
+      status: 'borrowed',
     });
 
     if (existingRecord) {
@@ -48,7 +52,38 @@ export class BorrowBookService {
     }
 
     const newBorrowRecord = new this.borrowBookModel(borrowBook);
-    return newBorrowRecord.save();
+    const savedBorrowedRecord = await newBorrowRecord.save();
+
+    // Check and reduce available copies of the book
+    await this.bookService.updateAvailableCopies(borrowBook.book, -1);
+
+    const populatedRecord = await savedBorrowedRecord.populate('user book');
+
+    return populatedRecord;
+  }
+
+  async returnBook(id: string): Promise<BorrowBook> {
+    validateObjectId(id);
+
+    const borrowRecord = await this.borrowBookModel
+      .findById(id)
+      .populate('book');
+
+    if (!borrowRecord || borrowRecord.status === 'returned') {
+      throw new BadRequestException('Book is already returned or not found');
+    }
+
+    borrowRecord.status = 'returned';
+    borrowRecord.returnDate = new Date();
+    const savedBorrowRecord = await borrowRecord.save();
+
+    // Increase available copies of the book
+    const book = borrowRecord.book as BookDocument;
+    await this.bookService.updateAvailableCopies(book._id.toString(), 1);
+
+    const populatedRecord = await savedBorrowRecord.populate('user book');
+
+    return populatedRecord;
   }
 
   async getAllBorrowRecords(): Promise<BorrowBook[]> {
@@ -126,5 +161,39 @@ export class BorrowBookService {
     }
 
     return deletedBorrowRecord;
+  }
+
+  async getOverdueBooks(): Promise<BorrowBook[]> {
+    const currentDate = new Date();
+    const overdueBooks = await this.borrowBookModel
+      .find({
+        dueDate: { $lt: currentDate },
+        status: 'borrowed',
+      })
+      .populate('user book');
+
+    if (overdueBooks.length === 0) {
+      throw new NotFoundException('No overdue books found');
+    }
+
+    return overdueBooks;
+  }
+
+  async getUserOverdueBooks(userId: string): Promise<BorrowBook[]> {
+    validateObjectId(userId);
+    const currentDate = new Date();
+    const overdueBooks = await this.borrowBookModel
+      .find({
+        user: userId,
+        dueDate: { $lt: currentDate },
+        status: 'borrowed',
+      })
+      .populate('user book');
+
+    if (overdueBooks.length === 0) {
+      throw new NotFoundException('No overdue books found for this user');
+    }
+
+    return overdueBooks;
   }
 }

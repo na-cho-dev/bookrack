@@ -3,7 +3,10 @@ import { UserService } from './user.service';
 import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Roles } from 'src/decorators/user-roles.decorator';
 import { RolesGuard } from 'src/guards/user-roles.guard';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Users')
+@ApiCookieAuth('Authentication')
 @Controller('users')
 @UseGuards(JWTAuthGuard, RolesGuard)
 export class UserController {

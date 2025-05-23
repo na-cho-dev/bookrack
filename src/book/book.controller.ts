@@ -14,7 +14,10 @@ import { UpdateBookDto } from './dto/update-book.dto';
 import { RolesGuard } from 'src/guards/user-roles.guard';
 import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Roles } from 'src/decorators/user-roles.decorator';
+import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Books')
+@ApiCookieAuth('Authentication')
 @Controller('books')
 @UseGuards(JWTAuthGuard, RolesGuard)
 export class BookController {

@@ -15,11 +15,15 @@ import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { JWTRefreshAuthGuard } from 'src/guards/jwt-refresh-auth.guard';
 import { UserInterface } from '../user/interface/user.interface';
 import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
+import { ApiBody, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { LoginDto } from './dto/login.dto';
 
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiBody({ type: CreateUserDto })
   @Post('register')
   async register(@Body() userDto: CreateUserDto, @Res() response: Response) {
     const user = await this.authService.register(userDto);
@@ -31,6 +35,7 @@ export class AuthController {
     });
   }
 
+  @ApiBody({ type: LoginDto })
   @Post('login')
   @UseGuards(LocalAuthGuard)
   async login(@CurrentUser() user: UserInterface, @Res() response: Response) {
@@ -42,6 +47,7 @@ export class AuthController {
     });
   }
 
+  @ApiCookieAuth('Refresh')
   @Get('refresh')
   @UseGuards(JWTRefreshAuthGuard)
   async refreshToken(
@@ -55,6 +61,7 @@ export class AuthController {
     });
   }
 
+  @ApiCookieAuth('Authentication')
   @Get('logout')
   @UseGuards(JWTAuthGuard)
   async logout(@CurrentUser() user: UserInterface, @Res() response: Response) {

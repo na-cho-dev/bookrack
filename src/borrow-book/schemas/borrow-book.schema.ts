@@ -30,7 +30,14 @@ export class BorrowBook {
 export const BorrowBookSchema = SchemaFactory.createForClass(BorrowBook);
 
 BorrowBookSchema.set('toJSON', {
-  transform: (_doc, ret) => {
+  transform: (doc, ret) => {
+    delete ret.__v;
+    return ret;
+  },
+});
+
+BorrowBookSchema.set('toObject', {
+  transform: (doc, ret) => {
     delete ret.__v;
     return ret;
   },

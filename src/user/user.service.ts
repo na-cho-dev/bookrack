@@ -23,10 +23,12 @@ export class UserService {
     selectPassword = false,
     selectRefreshToken = false,
   ) {
-    const user = await this.userModel
-      .findOne(query)
-      .select(selectPassword ? '+password' : '-password')
-      .select(selectRefreshToken ? '+refreshToken' : '-refreshToken');
+    const selectFields = [
+      selectPassword ? '+password' : '-password',
+      selectRefreshToken ? '+refreshToken' : '-refreshToken',
+    ].join(' ');
+
+    const user = await this.userModel.findOne(query).select(selectFields);
 
     if (!user) {
       throw new NotFoundException('User not found');

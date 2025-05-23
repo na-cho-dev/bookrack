@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -34,18 +35,18 @@ export class AuthService {
     return null;
   }
 
-  async verifyUserRefreshToken(refreshToken: string, userId: string) {
+  async verifyUserRefreshToken(token: string, userId: string) {
     try {
-      const user = await this.userService.getUser({ _id: userId });
-      const authenticated = await compare(refreshToken, user.refreshToken);
+      const user = await this.userService.getUser({ _id: userId }, false, true);
+      const authenticated = await compare(token, user.refreshToken);
       if (!authenticated) {
         throw new NotFoundException('Refresh token not found');
       }
 
-      return user;
+      const { refreshToken, ...secureUser } = user.toObject();
+      return secureUser;
     } catch (error) {
-      console.log(error);
-      throw new UnauthorizedException('Refresh Token is not valid.');
+      throw new BadRequestException('Refresh Token Error');
     }
   }
 
