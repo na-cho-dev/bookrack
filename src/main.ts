@@ -19,10 +19,9 @@ async function bootstrap() {
   });
 
   const logger = new Logger(AppModule.name);
-  const PORT = envConfig.getEnv('PORT') || 3330;
+  const PORT = envConfig.getEnv('PORT', '3330');
 
   if (envConfig.getEnv('NODE_ENV') === 'development') {
-    // Swagger config
     const config = new DocumentBuilder()
       .setTitle('BookRack API')
       .setDescription('API documentation for the BookRack system')
