@@ -4,7 +4,7 @@ import { Book } from 'src/book/schemas/book.schema';
 import { User } from 'src/user/schemas/user.schema';
 
 export type BorrowBookDocument = BorrowBook & Document;
-export type BorrowBookStatus = 'borrowed' | 'returned';
+export type BorrowBookStatus = 'borrowed' | 'pending-return' | 'returned';
 
 @Schema()
 export class BorrowBook {

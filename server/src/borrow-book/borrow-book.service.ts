@@ -72,14 +72,33 @@ export class BorrowBookService {
       throw new BadRequestException('Book is already returned or not found');
     }
 
-    borrowRecord.status = 'returned';
-    borrowRecord.returnDate = new Date();
+    borrowRecord.status = 'pending-return';
     const savedBorrowRecord = await borrowRecord.save();
+    const populatedRecord = await savedBorrowRecord.populate('user book');
+
+    return populatedRecord;
+  }
+
+  async approveBookReturn(id: string): Promise<BorrowBook> {
+    validateObjectId(id);
+
+    const returnedBook = await this.borrowBookModel
+      .findById(id)
+      .populate('book');
+
+    if (!returnedBook || returnedBook.status === 'returned') {
+      throw new BadRequestException('Book is already returned or not found');
+    }
+
+    returnedBook.status = 'returned';
+    returnedBook.returnDate = new Date();
+    const savedreturnedBook = await returnedBook.save();
+
 
     // Increase available copies of the book
-    const book = borrowRecord.book as BookDocument;
+    const book = returnedBook.book as BookDocument;
     await this.bookService.updateAvailableCopies(book._id.toString(), 1);
-    const populatedRecord = await savedBorrowRecord.populate('user book');
+    const populatedRecord = await savedreturnedBook.populate('user book');
 
     return populatedRecord;
   }

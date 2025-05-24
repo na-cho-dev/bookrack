@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   UseGuards,
@@ -42,12 +43,22 @@ export class BorrowBookController {
     };
   }
 
-  @Get('return/:id')
+  @Patch('return/:id')
   async returnBook(@Param('id') id: string) {
     const returnedBook = await this.borrowBookService.returnBook(id);
 
     return {
       message: 'Book returned successfully',
+      returnedBook,
+    };
+  }
+
+  @Patch('return/:id/approve')
+  async approveBookReturn(@Param('id') id: string) {
+    const returnedBook = await this.borrowBookService.approveBookReturn(id);
+
+    return {
+      message: 'Book return has been approved successfully',
       returnedBook,
     };
   }
