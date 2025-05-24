@@ -1,0 +1,52 @@
+import { Response } from 'express';
+import { CreateUserDto } from 'src/user/dto/creat-user.dto';
+import { UserService } from 'src/user/user.service';
+import { UserInterface, UserResponseInterface } from '../user/interface/user.interface';
+import { EnvConfig } from 'src/common/config/env.config';
+import { JWTCookieUtil } from 'src/common/utils/jwt-cookie.utils';
+export declare class AuthService {
+    private readonly envConfig;
+    private readonly userService;
+    private readonly jwtCookieService;
+    constructor(envConfig: EnvConfig, userService: UserService, jwtCookieService: JWTCookieUtil);
+    validateUser(email: string, password: string): Promise<{
+        email: string;
+        name?: string;
+        role: import("../user/schemas/user.schema").UserRole;
+        refreshToken: string;
+        _id: unknown;
+        $locals: Record<string, unknown>;
+        $op: "save" | "validate" | "remove" | null;
+        $where: Record<string, unknown>;
+        baseModelName?: string;
+        collection: import("mongoose").Collection;
+        db: import("mongoose").Connection;
+        errors?: import("mongoose").Error.ValidationError;
+        id?: any;
+        isNew: boolean;
+        schema: import("mongoose").Schema;
+        __v: number;
+    } | null>;
+    verifyUserRefreshToken(token: string, userId: string): Promise<{
+        email: string;
+        name?: string;
+        password: string;
+        role: import("../user/schemas/user.schema").UserRole;
+        _id: unknown;
+        $locals: Record<string, unknown>;
+        $op: "save" | "validate" | "remove" | null;
+        $where: Record<string, unknown>;
+        baseModelName?: string;
+        collection: import("mongoose").Collection;
+        db: import("mongoose").Connection;
+        errors?: import("mongoose").Error.ValidationError;
+        id?: any;
+        isNew: boolean;
+        schema: import("mongoose").Schema;
+        __v: number;
+    }>;
+    register(userDto: CreateUserDto): Promise<UserResponseInterface>;
+    login(user: UserInterface, response: Response): Promise<UserInterface>;
+    refreshToken(user: UserInterface, response: Response): Promise<UserInterface>;
+    logout(user: UserInterface, response: Response): Promise<void>;
+}
