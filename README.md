@@ -78,7 +78,6 @@ BookRack follows a modular, layered architecture:
 ```bash
 git clone https://github.com/yourusername/bookrack.git
 cd bookrack
-pnpm install
 ```
 
 ### Configuration
@@ -165,7 +164,7 @@ bookrack/
 
 ## 📖 API Documentation
 
-Swagger UI: [http://localhost:3000/api-docs](http://localhost:3000/api-docs) (development mode)
+Swagger UI: [http://localhost:3300/api-docs](http://localhost:3000/api-docs) (development mode)
 
 ---
 
