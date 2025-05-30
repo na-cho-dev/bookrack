@@ -17,6 +17,7 @@ async function bootstrap() {
     origin: envConfig.getEnv('CLIENT_URL', 'http://localhost:4400'),
     credentials: true,
   });
+  app.setGlobalPrefix('api');
 
   const logger = new Logger(AppModule.name);
   const PORT = envConfig.getEnv('PORT', '3330');

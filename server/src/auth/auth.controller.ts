@@ -47,6 +47,16 @@ export class AuthController {
     });
   }
 
+  @ApiCookieAuth('Authentication')
+  @Get('current')
+  @UseGuards(JWTAuthGuard)
+  async getCurrentUser(@CurrentUser() user: UserInterface) {
+    return {
+      message: 'Login successful',
+      user,
+    };
+  }
+
   @ApiCookieAuth('Refresh')
   @Get('refresh')
   @UseGuards(JWTRefreshAuthGuard)

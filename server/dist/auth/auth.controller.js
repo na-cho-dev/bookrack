@@ -42,6 +42,12 @@ let AuthController = class AuthController {
             user,
         });
     }
+    async getCurrentUser(user) {
+        return {
+            message: 'Login successful',
+            user,
+        };
+    }
     async refreshToken(user, response) {
         const refreshedUser = await this.authService.refreshToken(user, response);
         response.json({
@@ -76,6 +82,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
+__decorate([
+    (0, swagger_1.ApiCookieAuth)('Authentication'),
+    (0, common_1.Get)('current'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "getCurrentUser", null);
 __decorate([
     (0, swagger_1.ApiCookieAuth)('Refresh'),
     (0, common_1.Get)('refresh'),

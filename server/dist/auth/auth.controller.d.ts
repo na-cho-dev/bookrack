@@ -7,6 +7,10 @@ export declare class AuthController {
     constructor(authService: AuthService);
     register(userDto: CreateUserDto, response: Response): Promise<void>;
     login(user: UserInterface, response: Response): Promise<void>;
+    getCurrentUser(user: UserInterface): Promise<{
+        message: string;
+        user: UserInterface;
+    }>;
     refreshToken(user: UserInterface, response: Response): Promise<void>;
     logout(user: UserInterface, response: Response): Promise<void>;
 }
