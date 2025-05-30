@@ -48,7 +48,7 @@ const Navbar = () => {
           <ul className="flex items-center">
             {!user ? (
               // User not logged in
-              <li className="text-xl font-extrabold">
+              <li className="text-lg font-bold">
                 {currentPath === "/login" ? (
                   <Link to={"/register"} className="flex items-center gap-1">
                     <LogIn className="w-6 text-sec" />

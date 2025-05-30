@@ -15,15 +15,14 @@ const Hero = () => {
       <div className="container mx-auto max-w-[1200px]">
         <div className="flex flex-col items-center justify-between">
           {/* Left side: Intro Text + Featured Highlights */}
-          <div className="space-y-12 flex flex-col items-center justify-center">
-            <h1 className="text-5xl md:text-8xl font-extrabold font-exo bg-gradient-to-r from-[#d97706] via-orange-500 to-yellow-500 bg-clip-text text-transparent">
-              Welcome to <span className="">BookRack!</span>
+          <div className="space-y-7 lg:space-y-12 flex flex-col items-center justify-center">
+            <h1 className="text-3xl md:text-8xl font-extrabold font-exo bg-gradient-to-r from-[#d97706] via-orange-500 to-yellow-500 bg-clip-text text-transparent text-center">
+              Your Library, Organized. Welcome to BookRack
             </h1>
 
-            <p className="text-xl text-tsec w-[70%] text-center">
-              BookRack is a complete library management tool for institutions,
-              schools, and communities to easily organize, track, and access
-              their book collections.
+            <p className="text-xl text-tsec w-full lg:w-[70%] text-center">
+              BookRack helps institutions and communities easily organize,
+              track, and access their library collections.
             </p>
 
             {/* Featured Highlights with icons */}
@@ -46,7 +45,7 @@ const Hero = () => {
             <p className="text-tsec pt-2 text-base">
               📚 Trusted by over <strong>1,000</strong> readers and counting!
             </p>
-            <div className="flex gap-8 text-black text-base">
+            <div className="hidden md:flex gap-8 text-black text-base">
               <div className="flex items-center gap-2">
                 <BookOpen className="w-6 h-6 text-sec" />
                 <span>Thousands of Books</span>
