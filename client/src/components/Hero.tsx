@@ -15,7 +15,7 @@ const Hero = () => {
       <div className="container mx-auto max-w-[1200px]">
         <div className="flex flex-col items-center justify-between">
           {/* Left side: Intro Text + Featured Highlights */}
-          <div className="space-y-7 lg:space-y-12 flex flex-col items-center justify-center">
+          <div className="space-y-9 lg:space-y-12 flex flex-col items-center justify-center">
             <h1 className="text-3xl md:text-8xl font-extrabold font-exo bg-gradient-to-r from-[#d97706] via-orange-500 to-yellow-500 bg-clip-text text-transparent text-center">
               Your Library, Organized. Welcome to BookRack
             </h1>
