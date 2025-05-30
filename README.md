@@ -1,76 +1,36 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
-
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
 # BookRack 📚
 
-BookRack is a robust, full-featured library management system built with [NestJS](https://nestjs.com/) and [MongoDB](https://www.mongodb.com/). It provides a secure, scalable, and extensible backend for managing books, users, and borrowing operations, making it ideal for schools, universities, or community libraries.
+BookRack is a modern, full-featured library management system for schools, universities, and community libraries. It consists of a robust backend built with [NestJS](https://nestjs.com/) and [MongoDB](https://www.mongodb.com/), and a responsive frontend built with [React](https://react.dev/), [TypeScript](https://www.typescriptlang.org/), and [Vite](https://vitejs.dev/).
 
 ---
 
 ## Table of Contents
 
 - [Features](#features)
-- [Architecture Overview](#architecture-overview)
 - [Tech Stack](#tech-stack)
+- [Architecture Overview](#architecture-overview)
 - [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-  - [Running the Application](#running-the-application)
-  - [Testing](#testing)
-- [API Documentation](#api-documentation)
 - [Project Structure](#project-structure)
+- [API Documentation](#api-documentation)
 - [Deployment](#deployment)
 - [Contributing](#contributing)
 - [License](#license)
+- [Acknowledgements](#acknowledgements)
 
 ---
 
-## 🔑 Key Features (Backend)
+## 🚀 Features
 
-- **User Authentication**: Secure JWT tokens stored in HTTP-only cookies
-- **Role-Based Access Control**: Manage admin and standard user permissions
-- **Book Management**: Add, update, delete, and view books
-- **Borrow & Return System**: Tracks borrowing, return status, and due dates
-- **Availability Tracking**: Dynamically updates available copies of each book
-- **Overdue Book Detection**: Flags books not returned on time
-- **Swagger API Docs**: Interactive documentation (development mode)
-- **Clean Modular Structure**: DTOs, services, guards, decorators, and custom error handling
-- **CORS & Cookie Auth**: Ready for frontend integration
-
----
-
-## Architecture Overview
-
-BookRack follows a modular, layered architecture:
-
-- **Controllers**: Handle HTTP requests and responses.
-- **Services**: Encapsulate business logic.
-- **Schemas/Models**: Define MongoDB collections using Mongoose.
-- **Guards & Decorators**: Implement authentication and authorization.
-- **DTOs**: Validate and type-check incoming data.
-
-This separation of concerns ensures maintainability, scalability, and testability.
+- User authentication (register, login, logout, session restore)
+- Role-based access control (admin/user)
+- Book management (add, update, delete, view)
+- Borrow and return system with due date tracking
+- Overdue book detection and availability tracking
+- User profile and library summary
+- Password strength meter and validation
+- Responsive UI with TailwindCSS
+- Toast notifications and loading states
+- Swagger API docs (backend)
 
 ---
 
@@ -84,32 +44,33 @@ This separation of concerns ensures maintainability, scalability, and testabilit
 - [Swagger](https://swagger.io/) via [@nestjs/swagger](https://docs.nestjs.com/openapi/introduction)
 - [Jest](https://jestjs.io/) for testing
 
-**Frontend (Planned):**
-- [React.js](https://react.dev/)
-- [TailwindCSS](https://tailwindcss.com/)
-- [Axios](https://axios-http.com/)
-- [React Query](https://tanstack.com/query/latest) or [SWR](https://swr.vercel.app/)
+**Frontend:**
+- [React](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/) for fast development
+- [TailwindCSS](https://tailwindcss.com/) for styling
+- [Zustand](https://zustand-demo.pmnd.rs/) for state management
+- [React Query](https://tanstack.com/query/latest) for data fetching/caching
+- [Axios](https://axios-http.com/) for HTTP requests
+- [Zod](https://zod.dev/) for schema validation
+- [React Hook Form](https://react-hook-form.com/) for forms
 
 ---
 
-## 🧑‍💻 Learning & Motivation
+## 🏗️ Architecture Overview
 
-This project is my playground for mastering authentication, security, API design, and modular architecture. As I transition into full-stack development, BookRack helps me bridge backend and frontend skills in a real-world context.
+BookRack follows a modular, layered architecture:
 
----
-
-## 💬 Feedback & Collaboration
-
-I'm open to feedback, tips, or collaboration opportunities from fellow devs! Feel free to open issues, submit PRs, or connect with me.
+- **Backend:** Controllers, services, schemas/models, guards, decorators, DTOs for clean separation of concerns.
+- **Frontend:** Modular components, hooks, Zustand stores, and schema validation for maintainability and scalability.
 
 ---
 
-## Getting Started
+## 🏁 Getting Started
 
 ### Prerequisites
 
 - Node.js (v18+ recommended)
-- pnpm (or npm/yarn)
+- pnpm, npm, or yarn
 - MongoDB instance (local or cloud)
 
 ### Installation
@@ -122,10 +83,23 @@ pnpm install
 
 ### Configuration
 
-1. Copy `.env.example` to `.env` and fill in your MongoDB URI and secrets.
+#### Backend
+
+1. Copy `.env.example` to `.env` in the root and fill in your MongoDB URI and secrets.
 2. Adjust config in `src/common/config/env.config.ts` as needed.
 
+#### Frontend
+
+1. Go to the `client` directory:
+    ```bash
+    cd client
+    ```
+2. Create a `.env` file if needed (see `.env.example`).
+3. Set `VITE_API_URL` to your backend server URL (default: `http://localhost:3330/api`).
+
 ### Running the Application
+
+#### Backend
 
 ```bash
 # Development
@@ -138,7 +112,16 @@ pnpm run start:prod
 
 The server will start on the port specified in your `.env` (default: 3000).
 
-### Testing
+#### Frontend
+
+```bash
+cd client
+pnpm run dev
+```
+
+The app will be available at [http://localhost:4400](http://localhost:4400) (or your configured port).
+
+### Testing (Backend)
 
 ```bash
 # Run all unit tests
@@ -156,24 +139,21 @@ pnpm run test:e2e
 
 ---
 
-## API Documentation
-
-Swagger UI: [http://localhost:3000/api-docs](http://localhost:3000/api-docs) (development mode)
-
----
-
-## Project Structure
+## 📦 Project Structure
 
 ```
 bookrack/
-├── src/
+├── client/                  # React frontend
+│   ├── src/
+│   └── ...
+├── src/                     # NestJS backend
 │   ├── app.module.ts
-│   ├── auth/                # Authentication & authorization logic
-│   ├── book/                # Book management (CRUD, schemas, DTOs)
-│   ├── borrow-book/         # Borrowing logic, records, overdue
-│   ├── common/              # Shared utilities, config, decorators, guards
-│   ├── user/                # User management
-│   └── ...                  # Other modules
+│   ├── auth/
+│   ├── book/
+│   ├── borrow-book/
+│   ├── common/
+│   ├── user/
+│   └── ...
 ├── test/                    # e2e tests
 ├── .env                     # Environment variables
 ├── package.json
@@ -183,7 +163,13 @@ bookrack/
 
 ---
 
-## Deployment
+## 📖 API Documentation
+
+Swagger UI: [http://localhost:3000/api-docs](http://localhost:3000/api-docs) (development mode)
+
+---
+
+## 🚀 Deployment
 
 BookRack is production-ready and can be deployed to any Node.js hosting platform.
 
@@ -198,16 +184,11 @@ BookRack is production-ready and can be deployed to any Node.js hosting platform
    ```bash
    pnpm run start:prod
    ```
-
-### Cloud Deployment
-
-- **Docker**: Add a `Dockerfile` for containerized deployments.
-- **Cloud Providers**: Deploy to AWS, Heroku, DigitalOcean, etc.
-- **NestJS Mau**: For a seamless AWS deployment, check out [NestJS Mau](https://mau.nestjs.com).
+4. **Deploy the frontend** (see Vite docs for static hosting or deploy to Vercel/Netlify).
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome! Please:
 
@@ -220,20 +201,21 @@ For major changes, open an issue first to discuss your ideas.
 
 ---
 
-## License
+## 📄 License
 
 MIT
 
 ---
 
-## Acknowledgements
+## 🙏 Acknowledgements
 
 - [NestJS](https://nestjs.com/)
 - [MongoDB](https://www.mongodb.com/)
+- [React](https://react.dev/)
 - [Passport.js](http://www.passportjs.org/)
 - [Jest](https://jestjs.io/)
 - All contributors and the open-source community!
 
 ---
 
-**Happy coding! 🚀**
+**Happy reading with BookRack!**
