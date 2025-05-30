@@ -24,7 +24,7 @@ let JWTCookieUtil = class JWTCookieUtil {
         return {
             httpOnly: true,
             secure: this.envConfig.getEnv('NODE_ENV') === 'production',
-            sameSite: 'strict',
+            sameSite: 'none',
             maxAge,
         };
     }
