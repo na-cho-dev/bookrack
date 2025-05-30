@@ -24,7 +24,5 @@ export const useCurrentUser = () => {
         setUser(null);
       }
     }
-
-    console.log(isLoading, isError, data);
   }, [data, isError, isLoading, setUser, setLoadingUser]);
 };
