@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useUserStore } from "../stores/useUserStore";
 
-const appUrl = import.meta.env.VITE_APP_URL || "http://localhost:3300";
+const appUrl = import.meta.env.VITE_APP_URL || "http://localhost:3330";
 
 const axiosInstance = axios.create({
   baseURL: `${appUrl}/api`,
