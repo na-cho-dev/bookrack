@@ -62,10 +62,10 @@ const Hero = () => {
 
             <Link
               to={"/register"}
-              className="bg-sec text-white px-6 py-3 rounded-md hover:bg-pri transition flex items-center gap-2 transform hover:scale-105 hover:shadow-lg"
+              className="group bg-sec text-white px-6 py-3 rounded-md hover:bg-pri transition flex items-center gap-2 transform hover:shadow-lg"
             >
               <p>Get Started</p>
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-2" />
             </Link>
           </div>
 
