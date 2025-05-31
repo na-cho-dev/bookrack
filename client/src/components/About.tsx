@@ -24,7 +24,7 @@ const About = () => {
   };
 
   return (
-    <section ref={ref} className="flex items-center min-h-[50vh] px-6 py-16">
+    <section ref={ref} className="flex items-center min-h-[50vh] py-20 px-6">
       <div className="container mx-auto max-w-[1200px] flex flex-col lg:flex-row items-center gap-12">
         {/* Text content */}
         <motion.div
