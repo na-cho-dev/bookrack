@@ -12,10 +12,12 @@ export class JWTCookieUtil {
   ) {}
 
   private cookieOptions(maxAge?: number) {
+    const sameSite: 'lax' | 'strict' | 'none' =
+      this.envConfig.getEnv('NODE_ENV') === 'production' ? 'none' : 'lax';
     return {
       httpOnly: true,
       secure: this.envConfig.getEnv('NODE_ENV') === 'production',
-      sameSite: 'none' as const,
+      sameSite,
       maxAge,
     };
   }

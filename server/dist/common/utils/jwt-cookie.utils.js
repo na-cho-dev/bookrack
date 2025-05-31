@@ -21,10 +21,11 @@ let JWTCookieUtil = class JWTCookieUtil {
         this.jwtService = jwtService;
     }
     cookieOptions(maxAge) {
+        const sameSite = this.envConfig.getEnv('NODE_ENV') === 'production' ? 'none' : 'lax';
         return {
             httpOnly: true,
             secure: this.envConfig.getEnv('NODE_ENV') === 'production',
-            sameSite: 'none',
+            sameSite,
             maxAge,
         };
     }

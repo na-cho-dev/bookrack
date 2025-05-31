@@ -28,14 +28,16 @@ async function bootstrap() {
         const document = swagger_1.SwaggerModule.createDocument(app, config);
         swagger_1.SwaggerModule.setup('api-docs', app, document);
     }
-    await app.listen(PORT);
+    const isProd = envConfig.getEnv('NODE_ENV') === 'production';
+    await app.listen(PORT, isProd ? '0.0.0.0' : 'localhost');
+    const appUrl = await app.getUrl();
     logger.log({
         message: 'Application is running',
-        url: `http://localhost:${PORT}`,
+        url: `${appUrl}/api`,
         env: envConfig.getEnv('NODE_ENV'),
         port: PORT,
         db: envConfig.getEnv('MONGODB_URI'),
-        api: `http://localhost:${PORT}/api-docs`,
+        api: `${appUrl}/api-docs`,
     });
 }
 bootstrap();
