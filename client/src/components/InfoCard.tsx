@@ -20,7 +20,7 @@ const InfoCard = ({
     whileInView={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.4, delay: index * 0.1 }}
     viewport={{ once: true }}
-    className={`bg-sec rounded-lg p-6 shadow hover:shadow-md transition ${className}`}
+    className={`bg-sec rounded-lg px-6 py-10 shadow hover:shadow-md transition ${className}`}
   >
     <Icon className="w-14 h-14 text-tpri mb-4 mx-auto" />
     <h3 className="text-white text-xl font-semibold mb-2">{title}</h3>
