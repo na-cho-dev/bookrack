@@ -4,7 +4,7 @@ import blob_home from "./blob_home.svg";
 import libImgOne from "./about_img1.jpg";
 import libImgTwo from "./about_img2.jpg";
 import libImgThree from "./about_img3.jpg";
-import libImgFour from "./about_img4.jpg";
+import libImgFour from "./about_img4.webp";
 import {
   ThumbsUp,
   ShieldCheck,
