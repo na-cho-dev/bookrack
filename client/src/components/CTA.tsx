@@ -1,22 +1,46 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
 const CTA = () => {
   return (
-    <section className="bg-[#fff3dd] text-center py-20 px-6 min-h-[30vh]">
-      <div className="container mx-auto max-w-[900px]">
-        <h2 className="text-4xl font-bold font-exo mb-4">
-          Ready to simplify your library?
-        </h2>
-        <p className="text-lg mb-8">
-          Join hundreds of institutions using BookRack to manage and modernize
-          their book systems.
-        </p>
-        <Link
-          to="/register"
-          className="bg-pri text-white font-semibold px-6 py-3 rounded-md hover:bg-sec transition"
+    <section className="bg-gradient-to-bl from-[#fff3dd] via-[#fff3dd] to-[#fcd590] px-6 py-20">
+      <div className="container mx-auto max-w-[1200px] text-center space-y-8">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-4xl md:text-5xl font-extrabold font-exo text-gray-800"
         >
-          Get Started for Free
-        </Link>
+          Ready to Organize Your Library?
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+          viewport={{ once: true }}
+          className="text-lg text-gray-700 max-w-2xl mx-auto"
+        >
+          Join 1,000+ users already using BookRack to streamline their library
+          management. It’s free and easy to get started.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          <Link
+            to={"/register"}
+            className="group bg-sec text-white px-6 py-3 rounded-md hover:bg-pri transition inline-flex items-center gap-2 transform hover:shadow-lg"
+          >
+            <p>Get Started Now</p>
+            <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-2" />
+          </Link>
+        </motion.div>
       </div>
     </section>
   );

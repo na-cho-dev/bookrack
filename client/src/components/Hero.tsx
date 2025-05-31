@@ -83,7 +83,14 @@ const Hero = () => {
             />
           </div> */}
 
-          <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 animate-bounce text-sec">
+          <div
+            className="absolute bottom-6 left-1/2 transform -translate-x-1/2 animate-bounce text-sec cursor-pointer"
+            onClick={() => {
+              const el = document.getElementById("feature");
+              if (el) el.scrollIntoView({ behavior: "smooth" });
+            }}
+            title="See features"
+          >
             <ArrowDownFromLine className="w-6 h-6" />
           </div>
         </div>

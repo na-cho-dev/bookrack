@@ -3,7 +3,7 @@ import InfoCard from "./InfoCard";
 
 const WhyChooseUs = () => {
   return (
-    <section className="bg-[#fff4df] py-20 px-6">
+    <section className="py-20 px-6">
       <div className="container mx-auto max-w-[1200px] text-center">
         <h2 className="text-4xl font-bold font-exo mb-4 text-tpri">
           Why Choose BookRack

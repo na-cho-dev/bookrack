@@ -41,18 +41,18 @@ const About = () => {
             and institutions to effortlessly manage and enjoy their library
             collections.
           </p>
-          <p className="text-gray-700">
+          <p className="text-lg text-gray-700">
             With an easy-to-use platform, robust features, and dedicated
             support, we help you keep your library organized, accessible, and
             vibrant.
           </p>
-          <p className="text-gray-700">
+          <p className="text-lg text-gray-700">
             Our team is passionate about fostering a love for reading and
             learning by providing tools that simplify library management.
             Whether you run a small community library or a large institution,
             BookRack adapts to your unique needs.
           </p>
-          <p className="text-gray-700">
+          <p className="text-lg text-gray-700">
             We believe in technology that connects people to knowledge
             effortlessly and in building lasting relationships with our users
             through continuous innovation and support.

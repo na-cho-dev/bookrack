@@ -3,7 +3,10 @@ import InfoCard from "./InfoCard";
 
 const Features = () => {
   return (
-    <section className="flex items-center min-h-[50vh] py-20 px-6 bg-gradient-to-tr from-[#fff3dd] via-[#fff3dd] to-[#fcd590]">
+    <section
+      id="feature"
+      className="flex items-center min-h-[50vh] py-20 px-6 bg-gradient-to-tr from-[#fff3dd] via-[#fff3dd] to-[#fcd590]"
+    >
       <div className="container mx-auto max-w-[1200px] text-center">
         <h2 className="text-4xl font-bold font-exo mb-4 text-tpri">
           How BookRack Works

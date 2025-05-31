@@ -82,3 +82,26 @@ export const reasons: Array<{
     desc: "We're always here to help you succeed with responsive assistance.",
   },
 ];
+
+export const faqs = [
+  {
+    question: "How do I register my library on BookRack?",
+    answer:
+      "Simply click on the 'Get Started' button on the homepage and follow the registration steps to set up your library.",
+  },
+  {
+    question: "Is BookRack free to use?",
+    answer:
+      "BookRack offers both free and premium plans to suit different needs. The free plan includes essential features, while premium plans unlock advanced tools.",
+  },
+  {
+    question: "Can I track borrowed books and returns?",
+    answer:
+      "Yes! BookRack provides a robust borrowing system to track borrowed books, due dates, and returns.",
+  },
+  {
+    question: "Is my library data secure?",
+    answer:
+      "Absolutely. We prioritize your data security with encrypted storage and regular backups.",
+  },
+];
