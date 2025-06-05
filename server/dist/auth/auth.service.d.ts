@@ -1,18 +1,21 @@
 import { Response } from 'express';
 import { CreateUserDto } from 'src/user/dto/creat-user.dto';
 import { UserService } from 'src/user/user.service';
-import { UserInterface, UserResponseInterface } from '../user/interface/user.interface';
+import { UserResponse } from '../user/interface/user.interface';
 import { EnvConfig } from 'src/common/config/env.config';
 import { JWTCookieUtil } from 'src/common/utils/jwt-cookie.utils';
+import { CreateAdminDto } from 'src/user/dto/create-admin.dto';
+import { MembershipService } from 'src/membership/membership.service';
 export declare class AuthService {
     private readonly envConfig;
     private readonly userService;
+    private readonly membershipService;
     private readonly jwtCookieService;
-    constructor(envConfig: EnvConfig, userService: UserService, jwtCookieService: JWTCookieUtil);
+    constructor(envConfig: EnvConfig, userService: UserService, membershipService: MembershipService, jwtCookieService: JWTCookieUtil);
     validateUser(email: string, password: string): Promise<{
         email: string;
-        name?: string;
-        role: import("../user/schemas/user.schema").UserRole;
+        name: string;
+        globalRole: "admin" | "staff" | "user";
         refreshToken: string;
         _id: unknown;
         $locals: Record<string, unknown>;
@@ -29,9 +32,9 @@ export declare class AuthService {
     } | null>;
     verifyUserRefreshToken(token: string, userId: string): Promise<{
         email: string;
-        name?: string;
+        name: string;
         password: string;
-        role: import("../user/schemas/user.schema").UserRole;
+        globalRole: "admin" | "staff" | "user";
         _id: unknown;
         $locals: Record<string, unknown>;
         $op: "save" | "validate" | "remove" | null;
@@ -45,8 +48,10 @@ export declare class AuthService {
         schema: import("mongoose").Schema;
         __v: number;
     }>;
-    register(userDto: CreateUserDto): Promise<UserResponseInterface>;
-    login(user: UserInterface, response: Response): Promise<UserInterface>;
-    refreshToken(user: UserInterface, response: Response): Promise<UserInterface>;
-    logout(user: UserInterface, response: Response): Promise<void>;
+    registerAdmin(adminDto: CreateAdminDto): Promise<UserResponse>;
+    registerUser(userDto: CreateUserDto): Promise<UserResponse>;
+    login(user: UserResponse, response: Response): Promise<UserResponse>;
+    getCurrentUser(user: UserResponse, orgId: string): Promise<any>;
+    refreshToken(user: UserResponse, response: Response): Promise<UserResponse>;
+    logout(user: UserResponse, response: Response): Promise<void>;
 }

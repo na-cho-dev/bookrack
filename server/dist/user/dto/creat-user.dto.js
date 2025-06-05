@@ -12,11 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.CreateUserDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+const organization_shema_1 = require("../../organization/schemas/organization.shema");
 class CreateUserDto {
     email;
     name;
+    organizationCode;
     password;
-    role;
 }
 exports.CreateUserDto = CreateUserDto;
 __decorate([
@@ -25,6 +26,7 @@ __decorate([
         example: 'user@example.com',
     }),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsEmail)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "email", void 0);
@@ -34,9 +36,18 @@ __decorate([
         example: 'John Doe',
     }),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "name", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'The organization code',
+        type: organization_shema_1.Organization,
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "organizationCode", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'The password of the user',
@@ -47,9 +58,4 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "password", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "role", void 0);
 //# sourceMappingURL=creat-user.dto.js.map

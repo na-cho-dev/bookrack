@@ -23,6 +23,7 @@ let LocalAuthStrategy = class LocalAuthStrategy extends (0, passport_1.PassportS
         this.authService = authService;
     }
     async validate(email, password) {
+        email = email.toLowerCase();
         const user = await this.authService.validateUser(email, password);
         if (!user) {
             throw new common_1.UnauthorizedException('Invalid email or password');

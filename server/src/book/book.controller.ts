@@ -11,20 +11,21 @@ import {
 import { AddBookDto } from './dto/create-book.dto';
 import { BookService } from './book.service';
 import { UpdateBookDto } from './dto/update-book.dto';
-import { RolesGuard } from 'src/guards/user-roles.guard';
+import { MembershipRoleGuard } from 'src/guards/membership-role.guard';
 import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
-import { Roles } from 'src/decorators/user-roles.decorator';
+import { MembershipRoles } from 'src/decorators/membership-role.decorator';
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
+import { MembershipRole } from 'src/membership/schemas/membership.schema';
 
 @ApiTags('Books')
 @ApiCookieAuth('Authentication')
 @Controller('books')
-@UseGuards(JWTAuthGuard, RolesGuard)
+@UseGuards(JWTAuthGuard, MembershipRoleGuard)
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
   @Post()
-  @Roles('admin')
+  @MembershipRoles(MembershipRole.ADMIN)
   async addBook(@Body() bookDto: AddBookDto) {
     const book = await this.bookService.addBook(bookDto);
     return {
@@ -52,7 +53,7 @@ export class BookController {
   }
 
   @Put(':id')
-  @Roles('admin')
+  @MembershipRoles(MembershipRole.ADMIN)
   async updateBook(@Param('id') id: string, @Body() bookDto: UpdateBookDto) {
     const updatedBook = await this.bookService.updateBookById(id, bookDto);
     return {
@@ -62,7 +63,7 @@ export class BookController {
   }
 
   @Delete(':id')
-  @Roles('admin')
+  @MembershipRoles(MembershipRole.ADMIN)
   async deleteBook(@Param('id') id: string) {
     const deletedBook = await this.bookService.deleteBookById(id);
     return {

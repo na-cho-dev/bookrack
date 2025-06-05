@@ -9,10 +9,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RolesGuard = void 0;
+exports.MembershipRoleGuard = void 0;
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
-let RolesGuard = class RolesGuard {
+let MembershipRoleGuard = class MembershipRoleGuard {
     reflector;
     constructor(reflector) {
         this.reflector = reflector;
@@ -22,16 +22,16 @@ let RolesGuard = class RolesGuard {
         if (!requiredRoles)
             return true;
         const request = context.switchToHttp().getRequest();
-        const user = request.user;
-        if (!requiredRoles.includes(user.role)) {
+        const role = request.membership.role;
+        if (!requiredRoles.includes(role)) {
             throw new common_1.ForbiddenException('You do not have permission to access this resource');
         }
         return true;
     }
 };
-exports.RolesGuard = RolesGuard;
-exports.RolesGuard = RolesGuard = __decorate([
+exports.MembershipRoleGuard = MembershipRoleGuard;
+exports.MembershipRoleGuard = MembershipRoleGuard = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [core_1.Reflector])
-], RolesGuard);
-//# sourceMappingURL=user-roles.guard.js.map
+], MembershipRoleGuard);
+//# sourceMappingURL=membership-role.guard.js.map

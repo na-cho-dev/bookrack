@@ -18,7 +18,7 @@ const borrow_book_service_1 = require("./borrow-book.service");
 const create_borrow_book_dto_1 = require("./dto/create-borrow-book.dto");
 const update_borrow_book_dto_1 = require("./dto/update-borrow-book.dto");
 const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
-const user_roles_guard_1 = require("../guards/user-roles.guard");
+const membership_role_guard_1 = require("../guards/membership-role.guard");
 const swagger_1 = require("@nestjs/swagger");
 let BorrowBookController = class BorrowBookController {
     borrowBookService;
@@ -184,7 +184,7 @@ exports.BorrowBookController = BorrowBookController = __decorate([
     (0, swagger_1.ApiTags)('Borrow Books'),
     (0, swagger_1.ApiCookieAuth)('Authentication'),
     (0, common_1.Controller)('borrow-books'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard, user_roles_guard_1.RolesGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard, membership_role_guard_1.MembershipRoleGuard),
     __metadata("design:paramtypes", [borrow_book_service_1.BorrowBookService])
 ], BorrowBookController);
 //# sourceMappingURL=borrow-book.controller.js.map

@@ -8,8 +8,8 @@ export declare class LocalAuthStrategy extends LocalAuthStrategy_base {
     constructor(authService: AuthService);
     validate(email: string, password: string): Promise<{
         email: string;
-        name?: string;
-        role: import("../../user/schemas/user.schema").UserRole;
+        name: string;
+        globalRole: "admin" | "staff" | "user";
         refreshToken: string;
         _id: unknown;
         $locals: Record<string, unknown>;

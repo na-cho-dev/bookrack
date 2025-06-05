@@ -17,6 +17,8 @@ const user_module_1 = require("./user/user.module");
 const env_config_1 = require("./common/config/env.config");
 const book_module_1 = require("./book/book.module");
 const borrow_book_module_1 = require("./borrow-book/borrow-book.module");
+const organization_module_1 = require("./organization/organization.module");
+const membership_module_1 = require("./membership/membership.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -40,6 +42,8 @@ exports.AppModule = AppModule = __decorate([
             user_module_1.UserModule,
             book_module_1.BookModule,
             borrow_book_module_1.BorrowBookModule,
+            organization_module_1.OrganizationModule,
+            membership_module_1.MembershipModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService, env_config_1.EnvConfig],

@@ -2,7 +2,6 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export type UserDocument = User & Document;
-export type UserRole = 'user' | 'admin';
 
 @Schema()
 export class User {
@@ -10,13 +9,14 @@ export class User {
   email: string;
 
   @Prop()
-  name?: string;
+  name: string;
 
   @Prop({ required: true, select: false })
   password: string;
 
-  @Prop({ default: 'user', enum: ['user', 'admin'] })
-  role: UserRole;
+  // Role here can be optional, as it's handled per organization in Membership
+  @Prop({ enum: ['admin', 'staff', 'user'], default: 'user' })
+  globalRole: 'admin' | 'staff' | 'user'; // optional: can use this if needed globally
 
   @Prop({ select: false })
   refreshToken: string;

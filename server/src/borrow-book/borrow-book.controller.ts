@@ -13,13 +13,13 @@ import { BorrowBookService } from './borrow-book.service';
 import { CreateBorrowBookDto } from './dto/create-borrow-book.dto';
 import { UpdateBorrowBookDto } from './dto/update-borrow-book.dto';
 import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/guards/user-roles.guard';
+import { MembershipRoleGuard } from 'src/guards/membership-role.guard';
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Borrow Books')
 @ApiCookieAuth('Authentication')
 @Controller('borrow-books')
-@UseGuards(JWTAuthGuard, RolesGuard)
+@UseGuards(JWTAuthGuard, MembershipRoleGuard)
 export class BorrowBookController {
   constructor(private readonly borrowBookService: BorrowBookService) {}
 

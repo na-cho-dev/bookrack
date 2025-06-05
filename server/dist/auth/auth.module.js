@@ -18,12 +18,13 @@ const jwt_auth_strategy_1 = require("./strategy/jwt-auth.strategy");
 const env_config_1 = require("../common/config/env.config");
 const jwt_cookie_utils_1 = require("../common/utils/jwt-cookie.utils");
 const jwt_refresh_auth_strategy_1 = require("./strategy/jwt-refresh-auth.strategy");
+const membership_module_1 = require("../membership/membership.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [user_module_1.UserModule, passport_1.PassportModule, jwt_1.JwtModule],
+        imports: [user_module_1.UserModule, passport_1.PassportModule, jwt_1.JwtModule, membership_module_1.MembershipModule],
         controllers: [auth_controller_1.AuthController],
         providers: [
             auth_service_1.AuthService,

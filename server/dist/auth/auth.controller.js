@@ -22,13 +22,25 @@ const jwt_refresh_auth_guard_1 = require("../guards/jwt-refresh-auth.guard");
 const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
 const swagger_1 = require("@nestjs/swagger");
 const login_dto_1 = require("./dto/login.dto");
+const create_admin_dto_1 = require("../user/dto/create-admin.dto");
+const membership_service_1 = require("../membership/membership.service");
 let AuthController = class AuthController {
     authService;
-    constructor(authService) {
+    membershipService;
+    constructor(authService, membershipService) {
         this.authService = authService;
+        this.membershipService = membershipService;
     }
-    async register(userDto, response) {
-        const user = await this.authService.register(userDto);
+    async registerAdmin(adminDto, response) {
+        const user = await this.authService.registerAdmin(adminDto);
+        await this.authService.login(user, response);
+        response.json({
+            message: 'Account Created Successfully',
+            user,
+        });
+    }
+    async registerUser(userDto, response) {
+        const user = await this.authService.registerUser(userDto);
         await this.authService.login(user, response);
         response.json({
             message: 'Account Created Successfully',
@@ -36,17 +48,14 @@ let AuthController = class AuthController {
         });
     }
     async login(user, response) {
-        await this.authService.login(user, response);
+        const userResponse = await this.authService.login(user, response);
         response.json({
             message: 'Login successful',
-            user,
+            user: userResponse,
         });
     }
-    async getCurrentUser(user) {
-        return {
-            message: 'Login successful',
-            user,
-        };
+    async getCurrentUser(user, orgId) {
+        return await this.authService.getCurrentUser(user, orgId);
     }
     async refreshToken(user, response) {
         const refreshedUser = await this.authService.refreshToken(user, response);
@@ -64,14 +73,23 @@ let AuthController = class AuthController {
 };
 exports.AuthController = AuthController;
 __decorate([
+    (0, swagger_1.ApiBody)({ type: create_admin_dto_1.CreateAdminDto }),
+    (0, common_1.Post)('admin/register'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [create_admin_dto_1.CreateAdminDto, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "registerAdmin", null);
+__decorate([
     (0, swagger_1.ApiBody)({ type: creat_user_dto_1.CreateUserDto }),
-    (0, common_1.Post)('register'),
+    (0, common_1.Post)('user/register'),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [creat_user_dto_1.CreateUserDto, Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "register", null);
+], AuthController.prototype, "registerUser", null);
 __decorate([
     (0, swagger_1.ApiBody)({ type: login_dto_1.LoginDto }),
     (0, common_1.Post)('login'),
@@ -84,11 +102,12 @@ __decorate([
 ], AuthController.prototype, "login", null);
 __decorate([
     (0, swagger_1.ApiCookieAuth)('Authentication'),
-    (0, common_1.Get)('current'),
+    (0, common_1.Get)('current-user'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Headers)('x-organization-id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [Object, String]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "getCurrentUser", null);
 __decorate([
@@ -114,6 +133,7 @@ __decorate([
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('Auth'),
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        membership_service_1.MembershipService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

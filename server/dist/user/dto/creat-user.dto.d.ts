@@ -1,7 +1,6 @@
-import { UserRole } from 'src/user/schemas/user.schema';
 export declare class CreateUserDto {
     email: string;
-    name?: string;
+    name: string;
+    organizationCode: string;
     password: string;
-    role?: UserRole;
 }

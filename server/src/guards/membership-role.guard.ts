@@ -7,7 +7,7 @@ import {
 import { Reflector } from '@nestjs/core';
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class MembershipRoleGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
@@ -19,9 +19,10 @@ export class RolesGuard implements CanActivate {
     if (!requiredRoles) return true; // No roles specified = allow access
 
     const request = context.switchToHttp().getRequest();
-    const user = request.user;
 
-    if (!requiredRoles.includes(user.role)) {
+    const role = request.membership.role;
+
+    if (!requiredRoles.includes(role)) {
       throw new ForbiddenException(
         'You do not have permission to access this resource',
       );

@@ -9,9 +9,10 @@ import { JWTAuthStrategy } from './strategy/jwt-auth.strategy';
 import { EnvConfig } from 'src/common/config/env.config';
 import { JWTCookieUtil } from 'src/common/utils/jwt-cookie.utils';
 import { JWTRefreshAuthStrategy } from './strategy/jwt-refresh-auth.strategy';
+import { MembershipModule } from 'src/membership/membership.module';
 
 @Module({
-  imports: [UserModule, PassportModule, JwtModule],
+  imports: [UserModule, PassportModule, JwtModule, MembershipModule],
   controllers: [AuthController],
   providers: [
     AuthService,

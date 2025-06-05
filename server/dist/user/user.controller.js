@@ -16,9 +16,8 @@ exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("./user.service");
 const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
-const user_roles_decorator_1 = require("../decorators/user-roles.decorator");
-const user_roles_guard_1 = require("../guards/user-roles.guard");
 const swagger_1 = require("@nestjs/swagger");
+const update_user_dto_1 = require("./dto/update-user.dto");
 let UserController = class UserController {
     userService;
     constructor(userService) {
@@ -32,11 +31,17 @@ let UserController = class UserController {
         const user = await this.userService.getUserById(id);
         return user;
     }
+    async updateUser(id, updateUserDto) {
+        return this.userService.updateUser({ _id: id }, updateUserDto);
+    }
+    async deleteUser(id) {
+        return this.userService.deleteUser(id);
+    }
 };
 exports.UserController = UserController;
 __decorate([
     (0, common_1.Get)(),
-    (0, user_roles_decorator_1.Roles)('admin'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
@@ -48,11 +53,26 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserById", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, update_user_dto_1.UpdateUserDto]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateUser", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "deleteUser", null);
 exports.UserController = UserController = __decorate([
     (0, swagger_1.ApiTags)('Users'),
     (0, swagger_1.ApiCookieAuth)('Authentication'),
     (0, common_1.Controller)('users'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard, user_roles_guard_1.RolesGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 //# sourceMappingURL=user.controller.js.map

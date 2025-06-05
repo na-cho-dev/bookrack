@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -9,18 +10,21 @@ import { CreateUserDto } from 'src/user/dto/creat-user.dto';
 import { UserService } from 'src/user/user.service';
 import { TokenPayload } from './interface/token-payload.interface';
 import {
-  UserInterface,
-  UserResponseInterface,
+  UserCreationInput,
+  UserResponse,
 } from '../user/interface/user.interface';
 import { compare, hash } from 'bcrypt';
 import { EnvConfig } from 'src/common/config/env.config';
 import { JWTCookieUtil } from 'src/common/utils/jwt-cookie.utils';
+import { CreateAdminDto } from 'src/user/dto/create-admin.dto';
+import { MembershipService } from 'src/membership/membership.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly envConfig: EnvConfig,
     private readonly userService: UserService,
+    private readonly membershipService: MembershipService,
     private readonly jwtCookieService: JWTCookieUtil,
   ) {}
 
@@ -50,12 +54,19 @@ export class AuthService {
     }
   }
 
-  async register(userDto: CreateUserDto): Promise<UserResponseInterface> {
-    return await this.userService.create(userDto);
+  async registerAdmin(adminDto: CreateAdminDto): Promise<UserResponse> {
+    return await this.userService.createAdmin(adminDto);
   }
 
-  async login(user: UserInterface, response: Response) {
-    const payload: TokenPayload = { sub: String(user._id), email: user.email };
+  async registerUser(userDto: CreateUserDto): Promise<UserResponse> {
+    return await this.userService.createUser(userDto);
+  }
+
+  async login(user: UserResponse, response: Response): Promise<UserResponse> {
+    const payload: TokenPayload = {
+      sub: String(user._id),
+      email: user.email,
+    };
 
     const accessToken = await this.jwtCookieService.signToken(
       payload,
@@ -76,11 +87,56 @@ export class AuthService {
     this.jwtCookieService.setAuthCookie(response, accessToken, 'access');
     this.jwtCookieService.setAuthCookie(response, refreshToken, 'refresh');
 
-    return user;
+    const memberships = await this.membershipService.findAllByUserId(
+      String(user._id),
+    );
+
+    const userResponse: UserResponse = {
+      _id: String(user._id),
+      email: user.email,
+      name: user.name,
+      memberships,
+    };
+
+    return userResponse;
   }
 
-  async refreshToken(user: UserInterface, response: Response) {
-    const payload: TokenPayload = { sub: String(user._id), email: user.email };
+  async getCurrentUser(user: UserResponse, orgId: string): Promise<any> {
+    if (!orgId) {
+      // No organization context -> return basic user info
+      return {
+        message: 'Logged in successfully (basic)',
+        user,
+      };
+    }
+
+    // Organization context -> validate membership
+    const membership = await this.membershipService.findByUserAndOrganization(
+      String(user._id),
+      orgId,
+    );
+
+    if (!membership) {
+      throw new ForbiddenException(
+        'Could not find membership for user in organization',
+      );
+    }
+
+    return {
+      message: 'Logged in successfully (with organization)',
+      user: {
+        user,
+        organization: membership.organization,
+        membershipRole: membership.role,
+      },
+    };
+  }
+
+  async refreshToken(user: UserResponse, response: Response) {
+    const payload: TokenPayload = {
+      sub: String(user._id),
+      email: user.email,
+    };
     const accessToken = await this.jwtCookieService.signToken(
       payload,
       'access',
@@ -92,7 +148,7 @@ export class AuthService {
     return user;
   }
 
-  async logout(user: UserInterface, response: Response) {
+  async logout(user: UserResponse, response: Response) {
     // Delete refresh token from the database
     await this.userService.updateUser(
       { _id: user._id },

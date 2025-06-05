@@ -15,7 +15,7 @@ let User = class User {
     email;
     name;
     password;
-    role;
+    globalRole;
     refreshToken;
 };
 exports.User = User;
@@ -32,9 +32,9 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: 'user', enum: ['user', 'admin'] }),
+    (0, mongoose_1.Prop)({ enum: ['admin', 'staff', 'user'], default: 'user' }),
     __metadata("design:type", String)
-], User.prototype, "role", void 0);
+], User.prototype, "globalRole", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ select: false }),
     __metadata("design:type", String)

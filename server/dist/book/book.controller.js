@@ -17,10 +17,11 @@ const common_1 = require("@nestjs/common");
 const create_book_dto_1 = require("./dto/create-book.dto");
 const book_service_1 = require("./book.service");
 const update_book_dto_1 = require("./dto/update-book.dto");
-const user_roles_guard_1 = require("../guards/user-roles.guard");
+const membership_role_guard_1 = require("../guards/membership-role.guard");
 const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
-const user_roles_decorator_1 = require("../decorators/user-roles.decorator");
+const membership_role_decorator_1 = require("../decorators/membership-role.decorator");
 const swagger_1 = require("@nestjs/swagger");
+const membership_schema_1 = require("../membership/schemas/membership.schema");
 let BookController = class BookController {
     bookService;
     constructor(bookService) {
@@ -65,7 +66,7 @@ let BookController = class BookController {
 exports.BookController = BookController;
 __decorate([
     (0, common_1.Post)(),
-    (0, user_roles_decorator_1.Roles)('admin'),
+    (0, membership_role_decorator_1.MembershipRoles)(membership_schema_1.MembershipRole.ADMIN),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_book_dto_1.AddBookDto]),
@@ -86,7 +87,7 @@ __decorate([
 ], BookController.prototype, "getBookById", null);
 __decorate([
     (0, common_1.Put)(':id'),
-    (0, user_roles_decorator_1.Roles)('admin'),
+    (0, membership_role_decorator_1.MembershipRoles)(membership_schema_1.MembershipRole.ADMIN),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -95,7 +96,7 @@ __decorate([
 ], BookController.prototype, "updateBook", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    (0, user_roles_decorator_1.Roles)('admin'),
+    (0, membership_role_decorator_1.MembershipRoles)(membership_schema_1.MembershipRole.ADMIN),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -105,7 +106,7 @@ exports.BookController = BookController = __decorate([
     (0, swagger_1.ApiTags)('Books'),
     (0, swagger_1.ApiCookieAuth)('Authentication'),
     (0, common_1.Controller)('books'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard, user_roles_guard_1.RolesGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard, membership_role_guard_1.MembershipRoleGuard),
     __metadata("design:paramtypes", [book_service_1.BookService])
 ], BookController);
 //# sourceMappingURL=book.controller.js.map

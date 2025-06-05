@@ -8,6 +8,8 @@ import { UserModule } from './user/user.module';
 import { EnvConfig } from './common/config/env.config';
 import { BookModule } from './book/book.module';
 import { BorrowBookModule } from './borrow-book/borrow-book.module';
+import { OrganizationModule } from './organization/organization.module';
+import { MembershipModule } from './membership/membership.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { BorrowBookModule } from './borrow-book/borrow-book.module';
     UserModule,
     BookModule,
     BorrowBookModule,
+    OrganizationModule,
+    MembershipModule,
   ],
   controllers: [AppController],
   providers: [AppService, EnvConfig],

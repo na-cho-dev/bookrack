@@ -11,9 +11,9 @@ export declare class JWTRefreshAuthStrategy extends JWTRefreshAuthStrategy_base 
     constructor(envConfig: EnvConfig, authService: AuthService);
     validate(request: Request, payload: TokenPayload): Promise<{
         email: string;
-        name?: string;
+        name: string;
         password: string;
-        role: import("../../user/schemas/user.schema").UserRole;
+        globalRole: "admin" | "staff" | "user";
         _id: unknown;
         $locals: Record<string, unknown>;
         $op: "save" | "validate" | "remove" | null;

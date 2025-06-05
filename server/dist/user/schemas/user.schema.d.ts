@@ -1,11 +1,10 @@
 import { Document } from 'mongoose';
 export type UserDocument = User & Document;
-export type UserRole = 'user' | 'admin';
 export declare class User {
     email: string;
-    name?: string;
+    name: string;
     password: string;
-    role: UserRole;
+    globalRole: 'admin' | 'staff' | 'user';
     refreshToken: string;
 }
 export declare const UserSchema: import("mongoose").Schema<User, import("mongoose").Model<User, any, any, any, Document<unknown, any, User, any> & User & {

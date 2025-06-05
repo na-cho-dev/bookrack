@@ -16,13 +16,20 @@ exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
-const user_schema_1 = require("./schemas/user.schema");
 const bcrypt_1 = require("bcrypt");
 const validate_objectid_utils_1 = require("../common/utils/validate-objectid.utils");
+const user_schema_1 = require("./schemas/user.schema");
+const organization_service_1 = require("../organization/organization.service");
+const membership_service_1 = require("../membership/membership.service");
+const membership_schema_1 = require("../membership/schemas/membership.schema");
 let UserService = class UserService {
     userModel;
-    constructor(userModel) {
+    organizationService;
+    membershipService;
+    constructor(userModel, organizationService, membershipService) {
         this.userModel = userModel;
+        this.organizationService = organizationService;
+        this.membershipService = membershipService;
     }
     async getUser(query, selectPassword = false, selectRefreshToken = false) {
         const selectFields = [
@@ -35,23 +42,64 @@ let UserService = class UserService {
         }
         return user;
     }
-    async create(userDto) {
-        const existingUser = await this.userModel.findOne({ email: userDto.email });
-        if (existingUser) {
-            throw new common_1.ConflictException('User with this email already exists.');
+    async createAdmin(adminDto) {
+        const email = adminDto.email.toLowerCase();
+        let user = await this.userModel.findOne({ email });
+        if (!user) {
+            user = await this.userModel.create({
+                email,
+                name: adminDto.name,
+                password: await (0, bcrypt_1.hash)(adminDto.password, 10),
+            });
         }
-        const email = userDto.email.toLowerCase();
-        const user = new this.userModel({
-            ...userDto,
-            email,
-            password: await (0, bcrypt_1.hash)(userDto.password, 10),
+        const organization = await this.organizationService.createOrganization({
+            name: adminDto.organizationName,
+            description: adminDto.organizationDescription,
+            owner: email,
         });
-        const savedUser = await user.save();
-        const { password, ...secureUser } = savedUser.toObject();
-        return {
-            ...secureUser,
-            _id: secureUser._id?.toString(),
+        await this.membershipService.createMembership(String(user._id), String(organization._id), membership_schema_1.MembershipRole.ADMIN);
+        const memberships = await this.membershipService.findAllByUserId(String(user._id));
+        const userResponse = {
+            _id: String(user._id),
+            email: user.email,
+            name: user.name,
+            memberships,
         };
+        return userResponse;
+    }
+    async createUser(userDto) {
+        const email = userDto.email.toLowerCase();
+        let user = await this.userModel.findOne({ email });
+        if (!user) {
+            user = new this.userModel({
+                email,
+                name: userDto.name,
+                password: await (0, bcrypt_1.hash)(userDto.password, 10),
+            });
+            user = await user.save();
+        }
+        const organization = await this.organizationService.findOne({
+            code: userDto.organizationCode,
+        });
+        if (!organization) {
+            throw new common_1.NotFoundException('Organization not found.');
+        }
+        const existingMembership = await this.membershipService.findOne({
+            user: user._id,
+            organization: organization._id,
+        });
+        if (existingMembership) {
+            throw new common_1.ConflictException('User is already a member of this organization.');
+        }
+        await this.membershipService.createMembership(String(user._id), String(organization._id), membership_schema_1.MembershipRole.USER);
+        const memberships = await this.membershipService.findAllByUserId(String(user._id));
+        const userResponse = {
+            _id: String(user._id),
+            email: user.email,
+            name: user.name,
+            memberships,
+        };
+        return userResponse;
     }
     async getUserById(id) {
         (0, validate_objectid_utils_1.validateObjectId)(id);
@@ -77,11 +125,21 @@ let UserService = class UserService {
         }
         return user;
     }
+    async deleteUser(id) {
+        (0, validate_objectid_utils_1.validateObjectId)(id);
+        const user = await this.userModel.findByIdAndDelete(id);
+        if (!user) {
+            throw new common_1.NotFoundException('User not found');
+        }
+        return user;
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(user_schema_1.User.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        organization_service_1.OrganizationService,
+        membership_service_1.MembershipService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map
