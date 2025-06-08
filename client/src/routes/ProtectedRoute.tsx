@@ -11,7 +11,13 @@ export const ProtectedRouteWithoutOrg = ({
   const currentMembership = useUserStore((s) => s.currentMembership);
 
   if (!user) return <Navigate to="/login" replace />;
-  if (currentMembership) return <Navigate to="/dashboard" replace />;
+  if (currentMembership) {
+    if (currentMembership.role === "admin") {
+      return <Navigate to="/dashboard/admin" replace />;
+    } else if (currentMembership.role === "user") {
+      return <Navigate to="/dashboard/member" replace />;
+    }
+  } 
 
   return children;
 };

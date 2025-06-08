@@ -20,11 +20,16 @@ const SelectOrganization = () => {
     const membership =
       memberships.find((m) => m.organization._id === orgId) ?? null;
 
+    console.log("Membership: ", membership);
+
     // Set the membership globally
     setCurrentMembership(membership);
 
-    // Navigate after selection
-    navigate("/dashboard");
+    if (membership?.role === "admin") {
+      navigate("/dashboard/admin");
+    } else if (membership?.role === "user") {
+      navigate("/dashboard/member");
+    }
   };
 
   useEffect(() => {
@@ -34,7 +39,7 @@ const SelectOrganization = () => {
   }, [memberships, navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#fff6e5] via-[#fff1cc] to-[#ffe6b3] flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-[#fff4df] p-8 rounded-2xl shadow-lg border border-gray-100">
         <div className="text-center mb-6">
           {user?.name ? (

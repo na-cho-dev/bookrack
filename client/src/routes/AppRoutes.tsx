@@ -4,11 +4,11 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import SelectOrganization from "../pages/SelectOrganization";
-import UserProfile from "../pages/UserProfile";
 import {
   ProtectedRouteWithOrg,
   ProtectedRouteWithoutOrg,
 } from "./ProtectedRoute";
+import AdminDashboard from "../pages/AdminDashboard";
 
 const AppRoutes = () => {
   return (
@@ -42,10 +42,10 @@ const AppRoutes = () => {
       />
 
       <Route
-        path="/dashboard"
+        path="/dashboard/admin"
         element={
           <ProtectedRouteWithOrg>
-            <UserProfile />
+            <AdminDashboard />
           </ProtectedRouteWithOrg>
         }
       />
