@@ -23,13 +23,10 @@ const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
 const swagger_1 = require("@nestjs/swagger");
 const login_dto_1 = require("./dto/login.dto");
 const create_admin_dto_1 = require("../user/dto/create-admin.dto");
-const membership_service_1 = require("../membership/membership.service");
 let AuthController = class AuthController {
     authService;
-    membershipService;
-    constructor(authService, membershipService) {
+    constructor(authService) {
         this.authService = authService;
-        this.membershipService = membershipService;
     }
     async registerAdmin(adminDto, response) {
         const user = await this.authService.registerAdmin(adminDto);
@@ -133,7 +130,6 @@ __decorate([
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiTags)('Auth'),
     (0, common_1.Controller)('auth'),
-    __metadata("design:paramtypes", [auth_service_1.AuthService,
-        membership_service_1.MembershipService])
+    __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

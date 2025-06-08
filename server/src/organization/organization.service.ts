@@ -106,18 +106,6 @@ export class OrganizationService {
     return orgs;
   }
 
-  async getUserOrgs(userId: string): Promise<MembershipDocument[]> {
-    const memberships = await this.membershipService.findAllByUserId(
-      String(userId),
-    );
-
-    if (!memberships || memberships.length === 0) {
-      throw new NotFoundException('No organizations found for this user');
-    }
-
-    return memberships;
-  }
-
   async updateOrganization(
     id: string,
     updateData: UpdateQuery<CreateOrganizationDto>,

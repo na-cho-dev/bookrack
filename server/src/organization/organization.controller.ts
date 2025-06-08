@@ -34,12 +34,6 @@ export class OrganizationController {
     return this.organizationService.getAllOrgs();
   }
 
-  @Get('user/all')
-  // @UseGuards(MembershipGuard)
-  async getUserOrgs(@CurrentUser() user: UserResponse) {
-    return this.organizationService.getUserOrgs(user._id);
-  }
-
   @Get('code/:code')
   // @UseGuards(MembershipGuard)
   async getOrgByCode(@Param('code') code: string) {

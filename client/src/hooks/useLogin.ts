@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { loginUser } from "../api/auth";
+import { loginUser } from "../api/auth.api";
 import toast from "react-hot-toast";
 import type { LoginPayload, User } from "../types/auth";
 

@@ -3,9 +3,11 @@ import AppRoutes from "./routes/AppRoutes";
 import { useCurrentUser } from "./hooks/useCurrentUser";
 import { useUserStore } from "./stores/useUserStore";
 import { LoaderPinwheelIcon } from "lucide-react";
+import { useLoadMemberships } from "./hooks/useLoadMemberships";
 
 const App = () => {
   useCurrentUser(); // loads user on app start
+  useLoadMemberships();
   const loadingUser = useUserStore((state) => state.loadingUser);
 
   if (loadingUser) {

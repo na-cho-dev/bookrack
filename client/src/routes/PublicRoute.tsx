@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
 import type { JSX } from "react";
 
@@ -6,11 +6,16 @@ interface PublicRouteProps {
   children: JSX.Element;
 }
 
-const PublicRoute = ({ children }: PublicRouteProps) => {
-  const user = useUserStore((state) => state.user);
+const publicPaths = ["/login", "/register", "/forgot-password"];
 
-  if (user) {
-    return <Navigate to="/dashboard" replace />;
+const PublicRoute = ({ children }: PublicRouteProps) => {
+  const { user, loadingUser } = useUserStore();
+  const location = useLocation();
+
+  if (loadingUser) return null; // Prevent redirect during user loading
+
+  if (user && publicPaths.includes(location.pathname)) {
+    return <Navigate to="/select-org" replace />;
   }
 
   return children;

@@ -49,10 +49,10 @@ const Footer = () => {
         {/* Contact / Socials */}
         <div>
           <h3 className="text-lg font-semibold mb-2">Connect</h3>
-          <ul className="flex gap-10">
+          <ul className="flex gap-7">
             <li>
               <a href="mailto:info@bookrack.com" aria-label="Email">
-                <FaEnvelope className="w-5 h-5 md:w-6 md:h-6 text-tpr hover:scale-125 transition" />
+                <FaEnvelope className="w-4 h-4 md:w-6 md:h-6 text-tpr hover:scale-125 transition" />
               </a>
             </li>
             <li>
@@ -62,7 +62,7 @@ const Footer = () => {
                 rel="noreferrer"
                 aria-label="Twitter"
               >
-                <FaTwitter className="w-5 h-5 md:w-6 md:h-6 text-tpr hover:scale-125 transition" />
+                <FaTwitter className="w-4 h-4 md:w-6 md:h-6 text-tpr hover:scale-125 transition" />
               </a>
             </li>
             <li>
@@ -72,7 +72,7 @@ const Footer = () => {
                 rel="noreferrer"
                 aria-label="Facebook"
               >
-                <FaFacebookF className="w-5 h-5 md:w-6 md:h-6 text-tpr hover:scale-125 transition" />
+                <FaFacebookF className="w-4 h-4 md:w-6 md:h-6 text-tpr hover:scale-125 transition" />
               </a>
             </li>
             <li>
@@ -82,7 +82,7 @@ const Footer = () => {
                 rel="noreferrer"
                 aria-label="GitHub"
               >
-                <FaGithub className="w-5 h-5 md:w-6 md:h-6 text-tpr hover:scale-125 transition" />
+                <FaGithub className="w-4 h-4 md:w-6 md:h-6 text-tpr hover:scale-125 transition" />
               </a>
             </li>
           </ul>
@@ -90,7 +90,9 @@ const Footer = () => {
       </div>
 
       {/* Bottom */}
+
       <div className="mt-8 text-center text-sm text-white">
+        <hr className="mb-5" />
         &copy; {new Date().getFullYear()} BookRack. All rights reserved.
       </div>
     </footer>

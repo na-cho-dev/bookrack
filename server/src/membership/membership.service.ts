@@ -62,6 +62,7 @@ export class MembershipService {
   }
 
   async findAllByUserId(userId: string): Promise<MembershipDocument[]> {
+    validateObjectId(userId);
     const memberships = await this.membershipModel
       .find({ user: userId })
       .populate('organization')
@@ -74,6 +75,7 @@ export class MembershipService {
   }
 
   async findUsersByOrganization(orgId: string) {
+    validateObjectId(orgId);
     return this.membershipModel
       .find({ organization: orgId })
       .populate('user', '-password -refreshToken');
@@ -83,6 +85,8 @@ export class MembershipService {
     userId: string,
     organizationId: string,
   ): Promise<MembershipDocument | null> {
+    validateObjectId(userId);
+    validateObjectId(organizationId);
     const membership = await this.membershipModel
       .findOne({ user: userId, organization: organizationId })
       .populate('organization');
@@ -92,6 +96,18 @@ export class MembershipService {
 
     return membership;
   }
+
+  // async findUserMemberships(userId: string): Promise<MembershipDocument[]> {
+  //   const memberships = await this.findAllByUserId(
+  //     String(userId),
+  //   );
+
+  //   if (!memberships || memberships.length === 0) {
+  //     throw new NotFoundException('No organizations found for this user');
+  //   }
+
+  //   return memberships;
+  // }
 
   async findAllMemberships(): Promise<MembershipDocument[]> {
     const memberships = await this.membershipModel

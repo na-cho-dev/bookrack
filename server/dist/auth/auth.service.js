@@ -16,16 +16,19 @@ const bcrypt_1 = require("bcrypt");
 const env_config_1 = require("../common/config/env.config");
 const jwt_cookie_utils_1 = require("../common/utils/jwt-cookie.utils");
 const membership_service_1 = require("../membership/membership.service");
+const organization_service_1 = require("../organization/organization.service");
 let AuthService = class AuthService {
     envConfig;
     userService;
     membershipService;
     jwtCookieService;
-    constructor(envConfig, userService, membershipService, jwtCookieService) {
+    organizationService;
+    constructor(envConfig, userService, membershipService, jwtCookieService, organizationService) {
         this.envConfig = envConfig;
         this.userService = userService;
         this.membershipService = membershipService;
         this.jwtCookieService = jwtCookieService;
+        this.organizationService = organizationService;
     }
     async validateUser(email, password) {
         const user = await this.userService.getUser({ email }, true);
@@ -76,9 +79,15 @@ let AuthService = class AuthService {
     }
     async getCurrentUser(user, orgId) {
         if (!orgId) {
+            const memberships = await this.membershipService.findAllByUserId(user._id);
             return {
                 message: 'Logged in successfully (basic)',
-                user,
+                user: {
+                    _id: user._id,
+                    email: user.email,
+                    name: user.name,
+                    memberships,
+                },
             };
         }
         const membership = await this.membershipService.findByUserAndOrganization(String(user._id), orgId);
@@ -88,9 +97,10 @@ let AuthService = class AuthService {
         return {
             message: 'Logged in successfully (with organization)',
             user: {
-                user,
-                organization: membership.organization,
-                membershipRole: membership.role,
+                _id: user._id,
+                email: user.email,
+                name: user.name,
+                membership,
             },
         };
     }
@@ -114,6 +124,7 @@ exports.AuthService = AuthService = __decorate([
     __metadata("design:paramtypes", [env_config_1.EnvConfig,
         user_service_1.UserService,
         membership_service_1.MembershipService,
-        jwt_cookie_utils_1.JWTCookieUtil])
+        jwt_cookie_utils_1.JWTCookieUtil,
+        organization_service_1.OrganizationService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

@@ -11,6 +11,10 @@ import { useUserStore } from "../stores/useUserStore";
 
 const Login = () => {
   const setUser = useUserStore((state) => state.setUser);
+  const setMemberships = useUserStore((state) => state.setMemberships);
+  const setCurrentMembership = useUserStore(
+    (state) => state.setCurrentMembership
+  );
   const { mutate: login, isPending } = useLogin();
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -28,9 +32,19 @@ const Login = () => {
   const onSubmit = (data: LoginSchemaPayload) => {
     login(data, {
       onSuccess: (data) => {
+        if ("memberships" in data) {
+          setMemberships(data.memberships);
+          setCurrentMembership(null);
+          navigate("/select-org");
+        } else if ("membership" in data) {
+          setMemberships([data.membership]);
+          setCurrentMembership(data.membership);
+          navigate("/dashboard");
+        }
+
         setUser(data);
         reset();
-        navigate("/dashboard");
+        navigate("/select-org");
       },
     });
   };

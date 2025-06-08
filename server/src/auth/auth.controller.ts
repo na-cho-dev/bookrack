@@ -22,15 +22,11 @@ import { ApiBody, ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { CreateAdminDto } from 'src/user/dto/create-admin.dto';
 import { MembershipGuard } from 'src/guards/membership.guard';
-import { MembershipService } from 'src/membership/membership.service';
 
 @ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly membershipService: MembershipService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @ApiBody({ type: CreateAdminDto })
   @Post('admin/register')

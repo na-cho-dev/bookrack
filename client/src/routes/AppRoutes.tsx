@@ -1,10 +1,14 @@
 import { Routes, Route } from "react-router-dom";
+import PublicRoute from "./PublicRoute";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import SelectOrganization from "../pages/SelectOrganization";
 import UserProfile from "../pages/UserProfile";
-import ProtectedRoute from "./ProtectedRoutes";
-import PublicRoute from "./PublicRoute";
+import {
+  ProtectedRouteWithOrg,
+  ProtectedRouteWithoutOrg,
+} from "./ProtectedRoute";
 
 const AppRoutes = () => {
   return (
@@ -29,11 +33,20 @@ const AppRoutes = () => {
       />
 
       <Route
+        path="/select-org"
+        element={
+          <ProtectedRouteWithoutOrg>
+            <SelectOrganization />
+          </ProtectedRouteWithoutOrg>
+        }
+      />
+
+      <Route
         path="/dashboard"
         element={
-          <ProtectedRoute>
+          <ProtectedRouteWithOrg>
             <UserProfile />
-          </ProtectedRoute>
+          </ProtectedRouteWithOrg>
         }
       />
     </Routes>

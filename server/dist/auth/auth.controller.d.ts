@@ -3,11 +3,9 @@ import { CreateUserDto } from 'src/user/dto/creat-user.dto';
 import { Response } from 'express';
 import { UserResponse } from '../user/interface/user.interface';
 import { CreateAdminDto } from 'src/user/dto/create-admin.dto';
-import { MembershipService } from 'src/membership/membership.service';
 export declare class AuthController {
     private readonly authService;
-    private readonly membershipService;
-    constructor(authService: AuthService, membershipService: MembershipService);
+    constructor(authService: AuthService);
     registerAdmin(adminDto: CreateAdminDto, response: Response): Promise<void>;
     registerUser(userDto: CreateUserDto, response: Response): Promise<void>;
     login(user: UserResponse, response: Response): Promise<void>;

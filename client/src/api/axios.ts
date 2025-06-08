@@ -7,6 +7,16 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+axiosInstance.interceptors.request.use((config) => {
+  const currentMembership = useUserStore.getState().currentMembership;
+
+  if (currentMembership?.organization._id) {
+    config.headers["x-organization-id"] = currentMembership.organization._id;
+  }
+
+  return config;
+});
+
 let isRefreshing = false;
 let failedQueue: {
   resolve: (value?: any) => void;
@@ -29,14 +39,19 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    const skipRefresh = ["/auth/login", "/auth/register", "/auth/refresh"].some(
-      (url) => originalRequest.url.includes(url)
-    );
+    const skipRefresh = [
+      "/auth/login",
+      "/auth/admin/register",
+      "/auth/user/register",
+      "/auth/refresh",
+      "/auth/logout",
+    ].some((url) => originalRequest.url.includes(url));
 
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !skipRefresh
+      !skipRefresh &&
+      useUserStore.getState().user
     ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {

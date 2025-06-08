@@ -18,6 +18,9 @@ import {
 import { Membership } from 'src/decorators/membership.decorator';
 import { MembershipService } from './membership.service';
 import { MembershipRoles } from 'src/decorators/membership-role.decorator';
+import { CurrentUser } from 'src/decorators/current-user.decorator';
+import { UserResponse } from 'src/user/interface/user.interface';
+import { log } from 'console';
 
 @Controller('membership')
 export class MembershipController {
@@ -36,6 +39,13 @@ export class MembershipController {
   getUsersByOrganization(@Membership() membership: MembershipDocument) {
     const orgId = membership.organization._id;
     return this.membershipService.findUsersByOrganization(String(orgId));
+  }
+
+  @Get('user/all')
+  @UseGuards(JWTAuthGuard)
+  async getUserOrgs(@CurrentUser() user: UserResponse) {
+    const orgs = await this.membershipService.findAllByUserId(String(user._id));
+    return orgs;
   }
 
   @Patch(':id/role')

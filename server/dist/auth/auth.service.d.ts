@@ -6,12 +6,14 @@ import { EnvConfig } from 'src/common/config/env.config';
 import { JWTCookieUtil } from 'src/common/utils/jwt-cookie.utils';
 import { CreateAdminDto } from 'src/user/dto/create-admin.dto';
 import { MembershipService } from 'src/membership/membership.service';
+import { OrganizationService } from 'src/organization/organization.service';
 export declare class AuthService {
     private readonly envConfig;
     private readonly userService;
     private readonly membershipService;
     private readonly jwtCookieService;
-    constructor(envConfig: EnvConfig, userService: UserService, membershipService: MembershipService, jwtCookieService: JWTCookieUtil);
+    private readonly organizationService;
+    constructor(envConfig: EnvConfig, userService: UserService, membershipService: MembershipService, jwtCookieService: JWTCookieUtil, organizationService: OrganizationService);
     validateUser(email: string, password: string): Promise<{
         email: string;
         name: string;

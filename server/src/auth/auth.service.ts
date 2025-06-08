@@ -18,6 +18,7 @@ import { EnvConfig } from 'src/common/config/env.config';
 import { JWTCookieUtil } from 'src/common/utils/jwt-cookie.utils';
 import { CreateAdminDto } from 'src/user/dto/create-admin.dto';
 import { MembershipService } from 'src/membership/membership.service';
+import { OrganizationService } from 'src/organization/organization.service';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly membershipService: MembershipService,
     private readonly jwtCookieService: JWTCookieUtil,
+    private readonly organizationService: OrganizationService,
   ) {}
 
   async validateUser(email: string, password: string) {
@@ -104,9 +106,18 @@ export class AuthService {
   async getCurrentUser(user: UserResponse, orgId: string): Promise<any> {
     if (!orgId) {
       // No organization context -> return basic user info
+      const memberships = await this.membershipService.findAllByUserId(
+        user._id,
+      );
+
       return {
         message: 'Logged in successfully (basic)',
-        user,
+        user: {
+          _id: user._id,
+          email: user.email,
+          name: user.name,
+          memberships,
+        },
       };
     }
 
@@ -125,9 +136,10 @@ export class AuthService {
     return {
       message: 'Logged in successfully (with organization)',
       user: {
-        user,
-        organization: membership.organization,
-        membershipRole: membership.role,
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        membership,
       },
     };
   }

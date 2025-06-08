@@ -21,6 +21,7 @@ const membership_schema_1 = require("./schemas/membership.schema");
 const membership_decorator_1 = require("../decorators/membership.decorator");
 const membership_service_1 = require("./membership.service");
 const membership_role_decorator_1 = require("../decorators/membership-role.decorator");
+const current_user_decorator_1 = require("../decorators/current-user.decorator");
 let MembershipController = class MembershipController {
     membershipService;
     constructor(membershipService) {
@@ -32,6 +33,10 @@ let MembershipController = class MembershipController {
     getUsersByOrganization(membership) {
         const orgId = membership.organization._id;
         return this.membershipService.findUsersByOrganization(String(orgId));
+    }
+    async getUserOrgs(user) {
+        const orgs = await this.membershipService.findAllByUserId(String(user._id));
+        return orgs;
     }
     async updateMemberRole(adminMembership, membershipId, role) {
         return this.membershipService.updateMemberRole(adminMembership, membershipId, role);
@@ -55,6 +60,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], MembershipController.prototype, "getUsersByOrganization", null);
+__decorate([
+    (0, common_1.Get)('user/all'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], MembershipController.prototype, "getUserOrgs", null);
 __decorate([
     (0, common_1.Patch)(':id/role'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard, membership_guard_1.MembershipGuard, membership_role_guard_1.MembershipRoleGuard),

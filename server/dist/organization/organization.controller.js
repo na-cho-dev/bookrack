@@ -18,7 +18,6 @@ const organization_service_1 = require("./organization.service");
 const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
 const membership_decorator_1 = require("../decorators/membership.decorator");
 const membership_schema_1 = require("../membership/schemas/membership.schema");
-const current_user_decorator_1 = require("../decorators/current-user.decorator");
 const search_organization_dto_1 = require("./dto/search-organization.dto");
 const membership_role_decorator_1 = require("../decorators/membership-role.decorator");
 const membership_guard_1 = require("../guards/membership.guard");
@@ -30,9 +29,6 @@ let OrganizationController = class OrganizationController {
     }
     async getAllOrgs() {
         return this.organizationService.getAllOrgs();
-    }
-    async getUserOrgs(user) {
-        return this.organizationService.getUserOrgs(user._id);
     }
     async getOrgByCode(code) {
         return this.organizationService.getOrgByCode(code);
@@ -59,13 +55,6 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], OrganizationController.prototype, "getAllOrgs", null);
-__decorate([
-    (0, common_1.Get)('user/all'),
-    __param(0, (0, current_user_decorator_1.CurrentUser)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], OrganizationController.prototype, "getUserOrgs", null);
 __decorate([
     (0, common_1.Get)('code/:code'),
     __param(0, (0, common_1.Param)('code')),

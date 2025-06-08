@@ -88,13 +88,6 @@ let OrganizationService = class OrganizationService {
         }
         return orgs;
     }
-    async getUserOrgs(userId) {
-        const memberships = await this.membershipService.findAllByUserId(String(userId));
-        if (!memberships || memberships.length === 0) {
-            throw new common_1.NotFoundException('No organizations found for this user');
-        }
-        return memberships;
-    }
     async updateOrganization(id, updateData) {
         const organization = await this.organizationModel.findByIdAndUpdate(id, updateData, { new: true });
         if (!organization) {

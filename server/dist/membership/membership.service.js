@@ -52,6 +52,7 @@ let MembershipService = class MembershipService {
         return membership;
     }
     async findAllByUserId(userId) {
+        (0, validate_objectid_utils_1.validateObjectId)(userId);
         const memberships = await this.membershipModel
             .find({ user: userId })
             .populate('organization')
@@ -62,11 +63,14 @@ let MembershipService = class MembershipService {
         return memberships;
     }
     async findUsersByOrganization(orgId) {
+        (0, validate_objectid_utils_1.validateObjectId)(orgId);
         return this.membershipModel
             .find({ organization: orgId })
             .populate('user', '-password -refreshToken');
     }
     async findByUserAndOrganization(userId, organizationId) {
+        (0, validate_objectid_utils_1.validateObjectId)(userId);
+        (0, validate_objectid_utils_1.validateObjectId)(organizationId);
         const membership = await this.membershipModel
             .findOne({ user: userId, organization: organizationId })
             .populate('organization');
