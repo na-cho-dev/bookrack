@@ -33,7 +33,7 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Membership.prototype, "user", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true, unique: true }),
+    (0, mongoose_1.Prop)({ required: true }),
     __metadata("design:type", String)
 ], Membership.prototype, "userEmail", void 0);
 __decorate([

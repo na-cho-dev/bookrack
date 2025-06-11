@@ -54,8 +54,11 @@ const OrgSwitcherDrawer: React.FC<Props> = ({ open, onClose, onLogout }) => {
 
                 <div>
                   <Link
-                    to="/dashboard"
+                    to="/dashboard/admin"
                     className="flex items-center justify-start gap-1 text-sec font-bold"
+                    onClick={() => {
+                      onClose();
+                    }}
                   >
                     <LayoutDashboard className="w-6" />
                     <span className="">Dashboard</span>

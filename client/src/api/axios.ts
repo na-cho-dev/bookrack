@@ -39,6 +39,8 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    console.log("Original request:", originalRequest);
+
     const skipRefresh = [
       "/auth/login",
       "/auth/admin/register",
@@ -50,8 +52,7 @@ axiosInstance.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !skipRefresh &&
-      useUserStore.getState().user
+      !skipRefresh
     ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -63,13 +64,17 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        await axiosInstance.get("/auth/refresh"); // Should send HTTP-only cookie
+        await axiosInstance.get("/auth/refresh");
+        const { data: refreshedUser } = await axiosInstance.get(
+          "/auth/current-user"
+        );
+        useUserStore.getState().setUser(refreshedUser);
         processQueue(null);
-        return axiosInstance(originalRequest); // Retry original request
+        return axiosInstance(originalRequest);
       } catch (err) {
         processQueue(err);
         useUserStore.getState().setUser(null);
-        window.location.href = "/login"; // Force logout
+        window.location.href = "/login";
         return Promise.reject(err);
       } finally {
         isRefreshing = false;
