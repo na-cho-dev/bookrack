@@ -1,9 +1,9 @@
-import About from "../components/About";
-import CTA from "../components/CTA";
-import FAQ from "../components/FAQ";
-import Features from "../components/Features";
-import Footer from "../components/Footer";
-import Hero from "../components/Hero";
+import About from "../components/Home/About";
+import CTA from "../components/Home/CTA";
+import FAQ from "../components/Home/FAQ";
+import Features from "../components/Home/Features";
+import Footer from "../components/Home/Footer";
+import Hero from "../components/Home/Hero";
 import WhyChooseUs from "../components/WhyChooseUs";
 
 const Home = () => {

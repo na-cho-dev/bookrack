@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { faqs } from "../assets/assets";
+import { faqs } from "../../assets/assets";
 import { useState } from "react";
 import { Minus, Plus } from "lucide-react";
 

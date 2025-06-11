@@ -9,7 +9,7 @@ import BorrowRequestsTab from "../components/BorrowRequestTab";
 import UsersTab from "../components/UserTab";
 
 const AdminDashboard = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "dashboard";
 

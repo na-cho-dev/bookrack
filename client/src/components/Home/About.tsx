@@ -1,4 +1,4 @@
-import { ImageAssets } from "../assets/assets";
+import { ImageAssets } from "../../assets/assets";
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { useInView } from "framer-motion";

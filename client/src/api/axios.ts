@@ -74,7 +74,6 @@ axiosInstance.interceptors.response.use(
       } catch (err) {
         processQueue(err);
         useUserStore.getState().setUser(null);
-        window.location.href = "/login";
         return Promise.reject(err);
       } finally {
         isRefreshing = false;

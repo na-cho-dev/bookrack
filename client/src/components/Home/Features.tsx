@@ -1,5 +1,5 @@
-import { features } from "../assets/assets";
-import InfoCard from "./InfoCard";
+import { features } from "../../assets/assets";
+import InfoCard from "../InfoCard";
 
 const Features = () => {
   return (
