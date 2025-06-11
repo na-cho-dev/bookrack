@@ -21,14 +21,14 @@ const AdminDashboardTab = () => {
   const user = useUserStore((state) => state.user);
   const currentMembership = useUserStore((s) => s.currentMembership);
 
-  const [stats, setStats] = useState<Stats>({
+  const [stats] = useState<Stats>({
     totalBooks: 0,
     availableBooks: 0,
     borrowedBooks: 0,
     pendingRequests: 0,
   });
 
-  const [borrowRequests, setBorrowRequests] = useState<BorrowRequest[]>([]);
+  const [borrowRequests] = useState<BorrowRequest[]>([]);
 
   return (
     <div className="flex justify-center items-center">
