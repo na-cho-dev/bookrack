@@ -22,7 +22,7 @@ const InfoCard = ({
     viewport={{ once: true }}
     className={`flex flex-col justify-center items-center bg-sec rounded-lg px-6 py-10 shadow hover:shadow-md transition ${className}`}
   >
-    <p className="bg-pri rounded-full mb-4 p-3">
+    <p className="bg-[#ffdb98] rounded-full mb-4 p-3">
       <Icon className="w-10 h-10 text-tpri " />
     </p>
     <h3 className="text-white text-xl font-semibold mb-2">{title}</h3>

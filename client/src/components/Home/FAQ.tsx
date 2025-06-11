@@ -28,7 +28,7 @@ const FAQ = () => {
               onClick={() => toggle(i)}
             >
               <div className="flex justify-between items-center">
-                <h3 className="text-xl font-semibold text-tpri">
+                <h3 className="text-lg md:text-xl font-semibold text-tpri">
                   {faq.question}
                 </h3>
                 <span className="text-white font-bold text-sm">
@@ -47,7 +47,7 @@ const FAQ = () => {
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.1, ease: "easeIn" }}
-                    className="text-white mt-3 text-lg leading-relaxed text-left overflow-hidden"
+                    className="text-white mt-3 text-base md:text-lg leading-relaxed text-left overflow-hidden"
                   >
                     {faq.answer}
                   </motion.div>

@@ -47,15 +47,19 @@ const Navbar = () => {
         <div className="container mx-auto max-w-[1200px]">
           <div className="flex justify-between items-center px-4 py-3">
             <Link to={"/"} className="flex items-center gap-3">
-              <img src={ImageAssets.logo} alt="" width={40} />
-              <p className="font-extrabold text-3xl font-exo text-tpri">
+              <img
+                src={ImageAssets.logo}
+                alt=""
+                className="w-8 md:w-10 lg:w-12"
+              />{" "}
+              <p className="font-extrabold text-2xl md:text-3xl font-exo text-tpri">
                 Book<span className="text-sec">Rack</span>
               </p>
             </Link>
             <ul className="flex items-center">
               {!user ? (
                 // User not logged in
-                <li className="text-base font-bold">
+                <li className="text-sm md:text-base font-bold">
                   {currentPath === "/login" ? (
                     <Link to={"/register"} className="flex items-center gap-1">
                       <LogIn className="w-6 text-sec" />
