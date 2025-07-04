@@ -11,7 +11,7 @@ import { validateObjectId } from 'src/common/utils/validate-objectid.utils';
 import { UpdateBookDto } from 'src/book/dto/update-book.dto';
 import { UpdateBorrowBookDto } from './dto/update-borrow-book.dto';
 import { BookService } from 'src/book/book.service';
-import { BookDocument } from 'src/book/schemas/book.schema';
+import { Book, BookDocument } from 'src/book/schemas/book.schema';
 
 @Injectable()
 export class BorrowBookService {
@@ -27,14 +27,35 @@ export class BorrowBookService {
     return this.borrowBookModel.find(query ?? {});
   }
 
+  async validateBookOrganization(
+    bookId: string,
+    orgId: string,
+  ): Promise<BookDocument> {
+    validateObjectId(bookId);
+    const book = await this.bookService.getBookById(bookId, orgId);
+    if (!book) {
+      throw new BadRequestException('Book not found in this organization');
+    }
+    if (!book)
+      throw new BadRequestException(
+        'Book does not belong to this organization',
+      );
+
+    return book;
+  }
+
   async createBorrowRecord(
     borrowBook: CreateBorrowBookDto,
+    userId: string,
+    orgId: string,
   ): Promise<BorrowBook> {
-    validateObjectId(borrowBook.user);
     validateObjectId(borrowBook.book);
 
+    // Fetch the book and check organization
+    await this.validateBookOrganization(borrowBook.book, orgId);
+
     const existingRecord = await this.borrowBookModel.findOne({
-      user: borrowBook.user,
+      user: userId,
       book: borrowBook.book,
       status: 'borrowed',
     });
@@ -45,32 +66,76 @@ export class BorrowBookService {
       );
     }
 
-    if (borrowBook.dueDate < borrowBook.borrowDate) {
-      throw new BadRequestException(
-        'Due date cannot be earlier than borrow date',
-      );
-    }
+    // if (borrowBook.dueDate < borrowBook.borrowDate) {
+    //   throw new BadRequestException(
+    //     'Due date cannot be earlier than borrow date',
+    //   );
+    // }
 
-    const newBorrowRecord = new this.borrowBookModel(borrowBook);
+    const newBorrowRecord = new this.borrowBookModel({
+      ...borrowBook,
+      requestedAt: new Date(),
+      user: userId,
+      status: 'pending',
+    });
     const savedBorrowedRecord = await newBorrowRecord.save();
-
-    // Check and reduce available copies of the book
-    await this.bookService.updateAvailableCopies(borrowBook.book, -1);
     const populatedRecord = await savedBorrowedRecord.populate('user book');
+
+    // // Check and reduce available copies of the book
+    // await this.bookService.updateAvailableCopies(borrowBook.book, -1);
 
     return populatedRecord;
   }
 
-  async returnBook(id: string): Promise<BorrowBook> {
+  async approveBorrowRequest(
+    id: string,
+    updateData: UpdateBorrowBookDto,
+    orgId: string,
+  ): Promise<BorrowBook> {
+    validateObjectId(id);
+    // Find the borrow record and ensure it's pending
+    const borrowRecord = await this.borrowBookModel.findById(id);
+    if (!borrowRecord) throw new NotFoundException('Borrow request not found');
+
+    await this.validateBookOrganization(String(borrowRecord.book), orgId);
+
+    if (borrowRecord.status !== 'pending')
+      throw new BadRequestException('Request is not pending');
+
+    // Check and reduce available copies of the book
+    const book = borrowRecord.book as BookDocument;
+    await this.bookService.updateAvailableCopies(String(book._id), -1);
+
+    // Set borrow and due dates
+    const borrowDate = new Date();
+    const dueDate =
+      updateData.dueDate ||
+      new Date(borrowDate.getTime() + 14 * 24 * 60 * 60 * 1000);
+    if (updateData.dueDate && dueDate < borrowDate)
+      throw new BadRequestException(
+        'Due date cannot be earlier than borrow date',
+      );
+
+    // Update Borrow Record
+    borrowRecord.set({
+      status: 'borrowed',
+      borrowDate,
+      dueDate,
+    });
+    await borrowRecord.save();
+
+    return borrowRecord;
+  }
+
+  async returnBook(id: string, orgId: string): Promise<BorrowBook> {
     validateObjectId(id);
 
-    const borrowRecord = await this.borrowBookModel
-      .findById(id)
-      .populate('book');
+    const borrowRecord = await this.borrowBookModel.findById(id);
 
-    if (!borrowRecord || borrowRecord.status === 'returned') {
+    if (!borrowRecord || borrowRecord.status === 'returned')
       throw new BadRequestException('Book is already returned or not found');
-    }
+
+    await this.validateBookOrganization(String(borrowRecord.book), orgId);
 
     borrowRecord.status = 'pending-return';
     const savedBorrowRecord = await borrowRecord.save();
@@ -79,21 +144,19 @@ export class BorrowBookService {
     return populatedRecord;
   }
 
-  async approveBookReturn(id: string): Promise<BorrowBook> {
+  async approveBookReturn(id: string, orgId: string): Promise<BorrowBook> {
     validateObjectId(id);
 
-    const returnedBook = await this.borrowBookModel
-      .findById(id)
-      .populate('book');
+    const returnedBook = await this.borrowBookModel.findById(id);
 
-    if (!returnedBook || returnedBook.status === 'returned') {
+    if (!returnedBook || returnedBook.status === 'returned')
       throw new BadRequestException('Book is already returned or not found');
-    }
+
+    await this.validateBookOrganization(String(returnedBook.book), orgId);
 
     returnedBook.status = 'returned';
     returnedBook.returnDate = new Date();
     const savedreturnedBook = await returnedBook.save();
-
 
     // Increase available copies of the book
     const book = returnedBook.book as BookDocument;
@@ -103,15 +166,35 @@ export class BorrowBookService {
     return populatedRecord;
   }
 
-  async getAllBorrowRecords(): Promise<BorrowBook[]> {
+  async getBorrowRecordsByStatus(
+    orgId: string,
+    status?: string,
+  ): Promise<BorrowBook[]> {
+    if (status && !['pending', 'borrowed', 'returned'].includes(status))
+      throw new BadRequestException(
+        'Invalid status. Allowed values are: pending, borrowed, returned',
+      );
+
+    const query: any = {};
+    if (status) query.status = status;
+
     const borrowRecords = await this.borrowBookModel
-      .find()
-      .populate('user book');
-    if (!borrowRecords || borrowRecords.length === 0) {
-      throw new NotFoundException('No borrow records found');
+      .find(query)
+      .populate([{ path: 'book' }, { path: 'user', select: 'name email' }]);
+
+    // Filter by organization
+    const filtered = borrowRecords.filter((record) => {
+      const book = record.book as BookDocument;
+      return book && book.organization.toString() === orgId;
+    });
+
+    if (!filtered.length) {
+      throw new NotFoundException(
+        'No borrow records found for this organization',
+      );
     }
 
-    return borrowRecords;
+    return filtered;
   }
 
   async getBorrowRecordsByUserId(userId: string): Promise<BorrowBook[]> {
@@ -121,18 +204,6 @@ export class BorrowBookService {
       .populate('user book');
     if (borrowRecords.length === 0) {
       throw new NotFoundException('No borrow records found for this user');
-    }
-
-    return borrowRecords;
-  }
-
-  async getBorrowRecordsByBookId(bookId: string): Promise<BorrowBook[]> {
-    validateObjectId(bookId);
-    const borrowRecords = await this.borrowBookModel
-      .find({ book: bookId })
-      .populate('user book');
-    if (borrowRecords.length === 0) {
-      throw new NotFoundException('No borrow records found for this book');
     }
 
     return borrowRecords;

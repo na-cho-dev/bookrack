@@ -4,7 +4,11 @@ import { Book } from 'src/book/schemas/book.schema';
 import { User } from 'src/user/schemas/user.schema';
 
 export type BorrowBookDocument = BorrowBook & Document;
-export type BorrowBookStatus = 'borrowed' | 'pending-return' | 'returned';
+export type BorrowBookStatus =
+  | 'pending'
+  | 'borrowed'
+  | 'pending-return'
+  | 'returned';
 
 @Schema()
 export class BorrowBook {
@@ -14,16 +18,19 @@ export class BorrowBook {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Book', required: true })
   book: Book;
 
-  @Prop({ required: true })
-  borrowDate: Date;
+  @Prop()
+  requestAt?: Date;
 
-  @Prop({ required: true })
-  dueDate: Date;
+  @Prop()
+  borrowDate?: Date;
+
+  @Prop()
+  dueDate?: Date;
 
   @Prop()
   returnDate?: Date;
 
-  @Prop({ default: 'borrowed' })
+  @Prop({ default: 'pending' })
   status: BorrowBookStatus;
 }
 

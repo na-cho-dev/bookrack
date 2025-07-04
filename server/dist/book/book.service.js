@@ -26,26 +26,41 @@ let BookService = class BookService {
     async getBookQuery(query) {
         return this.bookModel.find(query ?? {});
     }
-    async addBook(bookData) {
-        const existingBook = await this.bookModel.findOne({ isbn: bookData.isbn });
+    async addBook(bookData, orgId) {
+        const existingBook = await this.bookModel.findOne({
+            isbn: bookData.isbn,
+            organization: orgId,
+        });
         if (existingBook) {
             throw new common_1.BadRequestException('Book with this ISBN already exists');
         }
-        const book = new this.bookModel(bookData);
+        const book = new this.bookModel({ ...bookData, organization: orgId });
         return book.save();
     }
-    async getAllBooks() {
-        const books = await this.bookModel.find();
+    async getAllBooksByOrg(orgId) {
+        const books = await this.bookModel
+            .find({ organization: orgId })
+            .populate('organization');
         if (!books || books.length === 0) {
             throw new common_1.NotFoundException('No books found');
         }
         return books;
     }
-    async getBookById(id) {
+    async getAvailableBooksByOrg(orgId) {
+        const books = await this.bookModel
+            .find({ organization: orgId, availableCopies: { $gt: 0 } })
+            .populate('organization');
+        if (!books || books.length === 0)
+            throw new common_1.NotFoundException('No available books found');
+        return books;
+    }
+    async getBookById(id, orgId) {
         (0, validate_objectid_utils_1.validateObjectId)(id);
-        const book = await this.bookModel.findById(id);
+        const book = await this.bookModel
+            .findOne({ _id: id, organization: orgId })
+            .populate('organization');
         if (!book) {
-            throw new common_1.BadRequestException('Book not found');
+            throw new common_1.BadRequestException('Book not found in this organization');
         }
         return book;
     }

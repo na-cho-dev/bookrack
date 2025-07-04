@@ -29,47 +29,77 @@ let BorrowBookService = class BorrowBookService {
     async getBorrowBookQuery(query) {
         return this.borrowBookModel.find(query ?? {});
     }
-    async createBorrowRecord(borrowBook) {
-        (0, validate_objectid_utils_1.validateObjectId)(borrowBook.user);
+    async validateBookOrganization(bookId, orgId) {
+        (0, validate_objectid_utils_1.validateObjectId)(bookId);
+        const book = await this.bookService.getBookById(bookId, orgId);
+        if (!book) {
+            throw new common_1.BadRequestException('Book not found in this organization');
+        }
+        if (!book)
+            throw new common_1.BadRequestException('Book does not belong to this organization');
+        return book;
+    }
+    async createBorrowRecord(borrowBook, userId, orgId) {
         (0, validate_objectid_utils_1.validateObjectId)(borrowBook.book);
+        await this.validateBookOrganization(borrowBook.book, orgId);
         const existingRecord = await this.borrowBookModel.findOne({
-            user: borrowBook.user,
+            user: userId,
             book: borrowBook.book,
             status: 'borrowed',
         });
         if (existingRecord) {
             throw new common_1.BadRequestException('Borrow record already exists for this user and book');
         }
-        if (borrowBook.dueDate < borrowBook.borrowDate) {
-            throw new common_1.BadRequestException('Due date cannot be earlier than borrow date');
-        }
-        const newBorrowRecord = new this.borrowBookModel(borrowBook);
+        const newBorrowRecord = new this.borrowBookModel({
+            ...borrowBook,
+            requestedAt: new Date(),
+            user: userId,
+            status: 'pending',
+        });
         const savedBorrowedRecord = await newBorrowRecord.save();
-        await this.bookService.updateAvailableCopies(borrowBook.book, -1);
         const populatedRecord = await savedBorrowedRecord.populate('user book');
         return populatedRecord;
     }
-    async returnBook(id) {
+    async approveBorrowRequest(id, updateData, orgId) {
         (0, validate_objectid_utils_1.validateObjectId)(id);
-        const borrowRecord = await this.borrowBookModel
-            .findById(id)
-            .populate('book');
-        if (!borrowRecord || borrowRecord.status === 'returned') {
+        const borrowRecord = await this.borrowBookModel.findById(id);
+        if (!borrowRecord)
+            throw new common_1.NotFoundException('Borrow request not found');
+        await this.validateBookOrganization(String(borrowRecord.book), orgId);
+        if (borrowRecord.status !== 'pending')
+            throw new common_1.BadRequestException('Request is not pending');
+        const book = borrowRecord.book;
+        await this.bookService.updateAvailableCopies(String(book._id), -1);
+        const borrowDate = new Date();
+        const dueDate = updateData.dueDate ||
+            new Date(borrowDate.getTime() + 14 * 24 * 60 * 60 * 1000);
+        if (updateData.dueDate && dueDate < borrowDate)
+            throw new common_1.BadRequestException('Due date cannot be earlier than borrow date');
+        borrowRecord.set({
+            status: 'borrowed',
+            borrowDate,
+            dueDate,
+        });
+        await borrowRecord.save();
+        return borrowRecord;
+    }
+    async returnBook(id, orgId) {
+        (0, validate_objectid_utils_1.validateObjectId)(id);
+        const borrowRecord = await this.borrowBookModel.findById(id);
+        if (!borrowRecord || borrowRecord.status === 'returned')
             throw new common_1.BadRequestException('Book is already returned or not found');
-        }
+        await this.validateBookOrganization(String(borrowRecord.book), orgId);
         borrowRecord.status = 'pending-return';
         const savedBorrowRecord = await borrowRecord.save();
         const populatedRecord = await savedBorrowRecord.populate('user book');
         return populatedRecord;
     }
-    async approveBookReturn(id) {
+    async approveBookReturn(id, orgId) {
         (0, validate_objectid_utils_1.validateObjectId)(id);
-        const returnedBook = await this.borrowBookModel
-            .findById(id)
-            .populate('book');
-        if (!returnedBook || returnedBook.status === 'returned') {
+        const returnedBook = await this.borrowBookModel.findById(id);
+        if (!returnedBook || returnedBook.status === 'returned')
             throw new common_1.BadRequestException('Book is already returned or not found');
-        }
+        await this.validateBookOrganization(String(returnedBook.book), orgId);
         returnedBook.status = 'returned';
         returnedBook.returnDate = new Date();
         const savedreturnedBook = await returnedBook.save();
@@ -78,14 +108,23 @@ let BorrowBookService = class BorrowBookService {
         const populatedRecord = await savedreturnedBook.populate('user book');
         return populatedRecord;
     }
-    async getAllBorrowRecords() {
+    async getBorrowRecordsByStatus(orgId, status) {
+        if (status && !['pending', 'borrowed', 'returned'].includes(status))
+            throw new common_1.BadRequestException('Invalid status. Allowed values are: pending, borrowed, returned');
+        const query = {};
+        if (status)
+            query.status = status;
         const borrowRecords = await this.borrowBookModel
-            .find()
-            .populate('user book');
-        if (!borrowRecords || borrowRecords.length === 0) {
-            throw new common_1.NotFoundException('No borrow records found');
+            .find(query)
+            .populate([{ path: 'book' }, { path: 'user', select: 'name email' }]);
+        const filtered = borrowRecords.filter((record) => {
+            const book = record.book;
+            return book && book.organization.toString() === orgId;
+        });
+        if (!filtered.length) {
+            throw new common_1.NotFoundException('No borrow records found for this organization');
         }
-        return borrowRecords;
+        return filtered;
     }
     async getBorrowRecordsByUserId(userId) {
         (0, validate_objectid_utils_1.validateObjectId)(userId);
@@ -94,16 +133,6 @@ let BorrowBookService = class BorrowBookService {
             .populate('user book');
         if (borrowRecords.length === 0) {
             throw new common_1.NotFoundException('No borrow records found for this user');
-        }
-        return borrowRecords;
-    }
-    async getBorrowRecordsByBookId(bookId) {
-        (0, validate_objectid_utils_1.validateObjectId)(bookId);
-        const borrowRecords = await this.borrowBookModel
-            .find({ book: bookId })
-            .populate('user book');
-        if (borrowRecords.length === 0) {
-            throw new common_1.NotFoundException('No borrow records found for this book');
         }
         return borrowRecords;
     }

@@ -59,7 +59,7 @@ const Navbar = () => {
             <ul className="flex items-center">
               {!user ? (
                 // User not logged in
-                <li className="text-sm md:text-base font-bold">
+                <li className="flex gap-8 text-sm md:text-base font-bold">
                   {currentPath === "/login" ? (
                     <Link to={"/register"} className="flex items-center gap-1">
                       <LogIn className="w-6 text-sec" />
@@ -71,6 +71,12 @@ const Navbar = () => {
                       <span>Login</span>
                     </Link>
                   )}
+                  <Link
+                    to={"/register"}
+                    className="group bg-sec text-white px-4 py-3 rounded-md hover:bg-pri transition flex items-center gap-2 transform hover:shadow-lg"
+                  >
+                    <p>Get Started</p>
+                  </Link>
                 </li>
               ) : (
                 // User logged in
@@ -80,7 +86,7 @@ const Navbar = () => {
                   ) : (
                     <li>
                       <Link
-                        to="/dashboard"
+                        to="/dashboard/admin"
                         className="flex items-center justify-center gap-1 text-sec font-bold"
                       >
                         <LayoutDashboard className="w-6" />

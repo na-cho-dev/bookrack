@@ -1,34 +1,27 @@
-import { useState } from "react";
 import { BookOpen, CheckCircle, Clock, Archive, User } from "lucide-react";
 import { useUserStore } from "../../stores/useUserStore";
-
-interface Stats {
-  totalBooks: number;
-  availableBooks: number;
-  borrowedBooks: number;
-  pendingRequests: number;
-}
-
-interface BorrowRequest {
-  _id: string;
-  bookTitle: string;
-  userName: string;
-  status: "pending" | "approved" | "rejected";
-  requestedAt: string;
-}
+import {
+  useAllBooks,
+  useAvailableBooks,
+  useBorrowedBooks,
+  usePendingBorrowRequests,
+} from "../../hooks/useBook";
 
 const AdminDashboardTab = () => {
   const user = useUserStore((state) => state.user);
   const currentMembership = useUserStore((s) => s.currentMembership);
 
-  const [stats] = useState<Stats>({
-    totalBooks: 0,
-    availableBooks: 0,
-    borrowedBooks: 0,
-    pendingRequests: 0,
-  });
+  const { data: allBooks } = useAllBooks();
+  const { data: availableBooks } = useAvailableBooks();
+  const { data: borrowedBooks } = useBorrowedBooks();
+  const { data: pendingRequests } = usePendingBorrowRequests();
 
-  const [borrowRequests] = useState<BorrowRequest[]>([]);
+  const stats = {
+    totalBooks: allBooks?.length ?? 0,
+    availableBooks: availableBooks?.length ?? 0,
+    borrowedBooks: borrowedBooks?.length ?? 0,
+    pendingRequests: pendingRequests?.length ?? 0,
+  };
 
   return (
     <div className="flex justify-center items-center">
@@ -40,7 +33,7 @@ const AdminDashboardTab = () => {
             <span className="text-sec">{user?.name ?? "Admin"}</span>
           </h1>
           <p className="text-gray-500 text-sm">
-            Organization: {currentMembership?.organization.name}
+            Organization: {currentMembership?.organization.name ?? "Loading..."}
           </p>
         </div>
 
@@ -53,21 +46,21 @@ const AdminDashboardTab = () => {
               <p className="text-xl font-bold">{stats.totalBooks}</p>
             </div>
           </div>
-          <div className="bg-[#fffcf8]  p-5 rounded-xl shadow border flex gap-4 items-center">
+          <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
             <CheckCircle className="text-green-500 w-8 h-8" />
             <div>
               <p className="text-sm text-gray-500">Available</p>
               <p className="text-xl font-bold">{stats.availableBooks}</p>
             </div>
           </div>
-          <div className="bg-[#fffcf8]  p-5 rounded-xl shadow border flex gap-4 items-center">
+          <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
             <Archive className="text-yellow-600 w-8 h-8" />
             <div>
               <p className="text-sm text-gray-500">Borrowed</p>
               <p className="text-xl font-bold">{stats.borrowedBooks}</p>
             </div>
           </div>
-          <div className="bg-[#fffcf8]  p-5 rounded-xl shadow border flex gap-4 items-center">
+          <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
             <Clock className="text-red-500 w-8 h-8" />
             <div>
               <p className="text-sm text-gray-500">Pending Requests</p>
@@ -77,7 +70,7 @@ const AdminDashboardTab = () => {
         </div>
 
         {/* Recent Borrow Requests */}
-        <div className="bg-[#fffcf8]  rounded-xl shadow border p-6">
+        <div className="bg-[#fffcf8] rounded-xl shadow border p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-gray-800">
               Recent Borrow Requests
@@ -101,20 +94,22 @@ const AdminDashboardTab = () => {
                 </tr>
               </thead>
               <tbody>
-                {borrowRequests.length > 0 ? (
-                  borrowRequests.map((req) => (
+                {pendingRequests && pendingRequests.length > 0 ? (
+                  pendingRequests.map((req) => (
                     <tr key={req._id} className="border-b text-gray-700">
-                      <td className="py-2 pr-4 flex items-center gap-2">
+                      <td className="py-4 pr-4 flex items-center gap-2">
                         <User className="w-4 h-4 text-gray-400" />
-                        {req.userName}
+                        {req.user.name ?? "Unknown"}
                       </td>
-                      <td className="py-2 pr-4">{req.bookTitle}</td>
-                      <td className="py-2 pr-4">
+                      <td className="py-4 pr-4">
+                        {req.book?.title ?? "Unknown"}
+                      </td>
+                      <td className="py-4 pr-4">
                         <span
                           className={`px-2 py-1 text-xs rounded font-medium ${
                             req.status === "pending"
                               ? "bg-yellow-100 text-yellow-700"
-                              : req.status === "approved"
+                              : req.status === "borrowed"
                               ? "bg-green-100 text-green-700"
                               : "bg-red-100 text-red-700"
                           }`}
@@ -122,8 +117,8 @@ const AdminDashboardTab = () => {
                           {req.status}
                         </span>
                       </td>
-                      <td className="py-2 pr-4">
-                        {new Date(req.requestedAt).toLocaleDateString()}
+                      <td className="py-4 pr-4">
+                        {new Date(req.borrowDate).toLocaleDateString()}
                       </td>
                     </tr>
                   ))

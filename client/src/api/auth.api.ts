@@ -3,7 +3,7 @@ import type {
   RegisterAdminPayload,
   RegisterUserPayload,
   User,
-} from "../types/auth";
+} from "../types/auth.type";
 import axiosInstance from "./axios";
 
 export const loginUser = async (data: LoginPayload): Promise<User> => {

@@ -17,8 +17,6 @@ import {
 } from 'src/membership/schemas/membership.schema';
 import { UpdateQuery } from 'mongoose';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
-import { UserResponse } from 'src/user/interface/user.interface';
-import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { SearchOrganizationDto } from './dto/search-organization.dto';
 import { MembershipRoles } from 'src/decorators/membership-role.decorator';
 import { MembershipGuard } from 'src/guards/membership.guard';

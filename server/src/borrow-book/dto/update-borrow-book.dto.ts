@@ -20,6 +20,14 @@ export class UpdateBorrowBookDto {
   book: string;
 
   @ApiProperty({
+    description: 'The date the book was requested',
+    example: '2023-03-15',
+  })
+  @IsDateString()
+  @IsOptional()
+  requestedAt: string;
+
+  @ApiProperty({
     description: 'The date the book was borrowed',
     example: '2023-03-15',
   })

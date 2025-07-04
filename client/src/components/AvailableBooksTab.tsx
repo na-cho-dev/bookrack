@@ -1,10 +1,22 @@
 import { BookOpen, Eye } from "lucide-react";
+import { useState } from "react";
+import BookViewModal from "./modals/BookViewModal";
+import type { Book } from "../types/book.type";
+import { useAvailableBooks } from "../hooks/useBook";
 
 const AvailableBooksTab = () => {
+  const [viewModalOpen, setViewModalOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<any | null>(null);
+  const { data: availableBooks } = useAvailableBooks();
+
+  const handleView = (availableBooks: Book) => {
+    setSelectedBook(availableBooks);
+    setViewModalOpen(true);
+  };
+
   return (
     <div className="flex justify-center items-center">
       <div className="py-14 px-14 space-y-8 w-full">
-        {/* Header */}
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">
@@ -16,7 +28,6 @@ const AvailableBooksTab = () => {
           </div>
         </div>
 
-        {/* Table Card */}
         <div className="bg-[#fffcf8] rounded-xl shadow border p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-gray-800">In Stock</h2>
@@ -38,47 +49,44 @@ const AvailableBooksTab = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* Replace with real data */}
-                <tr className="border-b text-gray-700">
-                  <td className="py-2 pr-4 flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-gray-400" />
-                    The Alchemist
-                  </td>
-                  <td className="py-2 pr-4">Paulo Coelho</td>
-                  <td className="py-2 pr-4">Philosophical</td>
-                  <td className="py-2 pr-4">
-                    <button className="flex items-center gap-1 text-sec text-sm hover:underline">
-                      <Eye className="w-4 h-4" />
-                      View
-                    </button>
-                  </td>
-                </tr>
-
-                <tr className="border-b text-gray-700">
-                  <td className="py-2 pr-4 flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-gray-400" />
-                    Becoming
-                  </td>
-                  <td className="py-2 pr-4">Michelle Obama</td>
-                  <td className="py-2 pr-4">Memoir</td>
-                  <td className="py-2 pr-4">
-                    <button className="flex items-center gap-1 text-sec text-sm hover:underline">
-                      <Eye className="w-4 h-4" />
-                      View
-                    </button>
-                  </td>
-                </tr>
-
-                <tr>
-                  <td colSpan={4} className="text-center text-gray-400 py-4">
-                    More available books will appear here...
-                  </td>
-                </tr>
+                {availableBooks && availableBooks.length > 0 ? (
+                  availableBooks.map((book) => (
+                    <tr key={book.isbn} className="border-b text-gray-700">
+                      <td className="py-4 pr-4 flex items-center gap-2">
+                        <BookOpen className="w-4 h-4 text-gray-400" />
+                        {book.title}
+                      </td>
+                      <td className="py-4 pr-4">{book.author}</td>
+                      <td className="py-4 pr-4">{book.genre}</td>
+                      <td className="py-4 pr-4">
+                        <button
+                          onClick={() => handleView(book)}
+                          className="flex items-center gap-1 text-sec text-sm hover:underline"
+                        >
+                          <Eye className="w-4 h-4" />
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="py-4 text-center text-gray-400">
+                      No Books Available
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
       </div>
+
+      <BookViewModal
+        isOpen={viewModalOpen}
+        onClose={() => setViewModalOpen(false)}
+        book={selectedBook}
+      />
     </div>
   );
 };

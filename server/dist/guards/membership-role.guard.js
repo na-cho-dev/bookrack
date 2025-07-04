@@ -22,6 +22,9 @@ let MembershipRoleGuard = class MembershipRoleGuard {
         if (!requiredRoles)
             return true;
         const request = context.switchToHttp().getRequest();
+        if (!request.membership) {
+            throw new common_1.ForbiddenException('Membership context not found.');
+        }
         const role = request.membership.role;
         if (!requiredRoles.includes(role)) {
             throw new common_1.ForbiddenException('You do not have permission to access this resource');

@@ -13,21 +13,9 @@ exports.CreateBorrowBookDto = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class CreateBorrowBookDto {
-    user;
     book;
-    borrowDate;
-    dueDate;
 }
 exports.CreateBorrowBookDto = CreateBorrowBookDto;
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The ID of the user borrowing the book',
-        example: '60d21b4667d0d8992e610c85',
-    }),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], CreateBorrowBookDto.prototype, "user", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'The ID of the book being borrowed',
@@ -37,22 +25,4 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateBorrowBookDto.prototype, "book", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The date the book was borrowed',
-        example: '2023-03-15',
-    }),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsDateString)(),
-    __metadata("design:type", String)
-], CreateBorrowBookDto.prototype, "borrowDate", void 0);
-__decorate([
-    (0, swagger_1.ApiProperty)({
-        description: 'The date the book is due',
-        example: '2023-03-22',
-    }),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsDateString)(),
-    __metadata("design:type", String)
-], CreateBorrowBookDto.prototype, "dueDate", void 0);
 //# sourceMappingURL=create-borrow-book.dto.js.map

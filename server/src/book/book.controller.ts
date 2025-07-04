@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   Param,
   Post,
   Put,
@@ -16,27 +17,42 @@ import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
 import { MembershipRoles } from 'src/decorators/membership-role.decorator';
 import { ApiCookieAuth, ApiTags } from '@nestjs/swagger';
 import { MembershipRole } from 'src/membership/schemas/membership.schema';
+import { MembershipGuard } from 'src/guards/membership.guard';
 
 @ApiTags('Books')
 @ApiCookieAuth('Authentication')
 @Controller('books')
-@UseGuards(JWTAuthGuard, MembershipRoleGuard)
+@UseGuards(JWTAuthGuard, MembershipGuard, MembershipRoleGuard)
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
-  @Post()
+  @Post('add')
   @MembershipRoles(MembershipRole.ADMIN)
-  async addBook(@Body() bookDto: AddBookDto) {
-    const book = await this.bookService.addBook(bookDto);
+  async addBook(
+    @Body() bookDto: AddBookDto,
+    @Headers('x-organization-id') orgId: string,
+  ) {
+    const book = await this.bookService.addBook(bookDto, orgId);
     return {
       message: 'Book added successfully',
       book,
     };
   }
 
-  @Get()
-  async getAllBooks() {
-    const books = await this.bookService.getAllBooks();
+  @Get('all')
+  @MembershipRoles(MembershipRole.ADMIN)
+  async getAllBooks(@Headers('x-organization-id') orgId: string) {
+    const books = await this.bookService.getAllBooksByOrg(orgId);
+    return {
+      message: 'Books retrieved successfully',
+      books,
+    };
+  }
+
+  @Get('available')
+  @MembershipRoles(MembershipRole.ADMIN)
+  async getAvailableBooks(@Headers('x-organization-id') orgId: string) {
+    const books = await this.bookService.getAvailableBooksByOrg(orgId);
     return {
       message: 'Books retrieved successfully',
       books,
@@ -44,8 +60,11 @@ export class BookController {
   }
 
   @Get(':id')
-  async getBookById(@Param('id') id: string) {
-    const book = await this.bookService.getBookById(id);
+  async getBookById(
+    @Param('id') id: string,
+    @Headers('x-organization-id') orgId: string,
+  ) {
+    const book = await this.bookService.getBookById(id, orgId);
     return {
       message: 'Book retrieved successfully',
       book,

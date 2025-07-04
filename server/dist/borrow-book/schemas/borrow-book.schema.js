@@ -17,6 +17,7 @@ const user_schema_1 = require("../../user/schemas/user.schema");
 let BorrowBook = class BorrowBook {
     user;
     book;
+    requestAt;
     borrowDate;
     dueDate;
     returnDate;
@@ -32,11 +33,15 @@ __decorate([
     __metadata("design:type", book_schema_1.Book)
 ], BorrowBook.prototype, "book", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
+    __metadata("design:type", Date)
+], BorrowBook.prototype, "requestAt", void 0);
+__decorate([
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Date)
 ], BorrowBook.prototype, "borrowDate", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
+    (0, mongoose_1.Prop)(),
     __metadata("design:type", Date)
 ], BorrowBook.prototype, "dueDate", void 0);
 __decorate([
@@ -44,7 +49,7 @@ __decorate([
     __metadata("design:type", Date)
 ], BorrowBook.prototype, "returnDate", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ default: 'borrowed' }),
+    (0, mongoose_1.Prop)({ default: 'pending' }),
     __metadata("design:type", String)
 ], BorrowBook.prototype, "status", void 0);
 exports.BorrowBook = BorrowBook = __decorate([

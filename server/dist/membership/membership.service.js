@@ -45,34 +45,35 @@ let MembershipService = class MembershipService {
     async findOne(query) {
         const membership = await this.membershipModel
             .findOne(query)
+            .populate('user', '-password -refreshToken')
             .populate('organization');
-        if (!membership) {
+        if (!membership)
             return null;
-        }
         return membership;
     }
     async findAllByUserId(userId) {
         (0, validate_objectid_utils_1.validateObjectId)(userId);
         const memberships = await this.membershipModel
             .find({ user: userId })
-            .populate('organization')
-            .select('-user');
-        if (!memberships || memberships.length === 0) {
+            .populate('user', '-password -refreshToken')
+            .populate('organization');
+        if (!memberships || memberships.length === 0)
             return [];
-        }
         return memberships;
     }
     async findUsersByOrganization(orgId) {
         (0, validate_objectid_utils_1.validateObjectId)(orgId);
         return this.membershipModel
             .find({ organization: orgId })
-            .populate('user', '-password -refreshToken');
+            .populate('user', '-password -refreshToken')
+            .populate('organization');
     }
     async findByUserAndOrganization(userId, organizationId) {
         (0, validate_objectid_utils_1.validateObjectId)(userId);
         (0, validate_objectid_utils_1.validateObjectId)(organizationId);
         const membership = await this.membershipModel
             .findOne({ user: userId, organization: organizationId })
+            .populate('user', '-password -refreshToken')
             .populate('organization');
         if (!membership) {
             return null;
@@ -82,7 +83,8 @@ let MembershipService = class MembershipService {
     async findAllMemberships() {
         const memberships = await this.membershipModel
             .find()
-            .populate('user organization');
+            .populate('user', '-password -refreshToken')
+            .populate('organization');
         if (!memberships || memberships.length === 0) {
             return [];
         }

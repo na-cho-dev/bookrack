@@ -21,7 +21,7 @@ async function bootstrap() {
     if (envConfig.getEnv('NODE_ENV') === 'development') {
         const config = new swagger_1.DocumentBuilder()
             .setTitle('BookRack API')
-            .setDescription('API documentation for the BookRack system')
+            .setDescription('API documentation for the BookRack System')
             .setVersion('1.0')
             .addCookieAuth('Authentication')
             .build();

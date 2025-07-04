@@ -1,5 +1,5 @@
-import { reasons } from "../assets/assets";
-import InfoCard from "./InfoCard";
+import { reasons } from "../../assets/assets";
+import InfoCard from "../InfoCard";
 
 const WhyChooseUs = () => {
   return (
@@ -15,6 +15,7 @@ const WhyChooseUs = () => {
         <div className="grid md:grid-cols-4 gap-8">
           {reasons.map((reason, index) => (
             <InfoCard
+              key={index}
               icon={reason.icon}
               title={reason.title}
               desc={reason.desc}

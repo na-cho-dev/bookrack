@@ -81,7 +81,7 @@ const OrgSwitcherDrawer: React.FC<Props> = ({ open, onClose, onLogout }) => {
                           : "hover:bg-gray-100 text-gray-800"
                       }`}
                     >
-                      {mem.organization.name}
+                      <Link to="/dashboard/admin">{mem.organization.name}</Link>
                     </button>
                   ))}
                 </div>

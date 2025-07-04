@@ -20,16 +20,10 @@ export interface RegisterAdminPayload {
 
 export interface Membership {
   _id: string;
-  userEmail: string;
+  user: User;
   role: string;
   createdAt: string;
-  organization: {
-    _id: string;
-    name: string;
-    description: string;
-    owner: string;
-    code: string;
-  };
+  organization: Organization;
 }
 
 export interface Organization {
@@ -44,6 +38,7 @@ export interface BasicUser {
   _id: string;
   email: string;
   name: string;
+  globalRole: string;
   memberships: Membership[];
 }
 
@@ -51,6 +46,7 @@ export interface OrgScopedUser {
   _id: string;
   email: string;
   name: string;
+  globalRole: string;
   membership: Membership;
 }
 

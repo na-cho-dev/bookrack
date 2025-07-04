@@ -20,7 +20,7 @@ const SelectOrganization = () => {
     const membership =
       memberships.find((m) => m.organization._id === orgId) ?? null;
 
-    console.log("Membership: ", membership);
+    // console.log("Membership: ", membership);
 
     // Set the membership globally
     setCurrentMembership(membership);

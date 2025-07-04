@@ -15,6 +15,7 @@ const swagger_1 = require("@nestjs/swagger");
 class UpdateBorrowBookDto {
     user;
     book;
+    requestedAt;
     borrowDate;
     dueDate;
     returnDate;
@@ -39,6 +40,15 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateBorrowBookDto.prototype, "book", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        description: 'The date the book was requested',
+        example: '2023-03-15',
+    }),
+    (0, class_validator_1.IsDateString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateBorrowBookDto.prototype, "requestedAt", void 0);
 __decorate([
     (0, swagger_1.ApiProperty)({
         description: 'The date the book was borrowed',

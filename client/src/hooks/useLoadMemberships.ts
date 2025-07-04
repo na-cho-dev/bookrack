@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useUserStore } from "../stores/useUserStore";
-import { getUserMemberships } from "../api/membership.api";
+import { getOrgUser, getUserMemberships } from "../api/membership.api";
 
 export const useLoadMemberships = () => {
   const setLoadingUser = useUserStore((state) => state.setLoadingUser);
@@ -24,6 +24,16 @@ export const useLoadMemberships = () => {
       }
     }
   }, [data, isError, isLoading]);
+
+  return { isLoading, isError, data };
+};
+
+export const useOrganizationUsers = () => {
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["org-users"],
+    queryFn: getOrgUser,
+    retry: false,
+  });
 
   return { isLoading, isError, data };
 };

@@ -20,6 +20,10 @@ export class MembershipRoleGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest();
 
+    if (!request.membership) {
+      throw new ForbiddenException('Membership context not found.');
+    }
+
     const role = request.membership.role;
 
     if (!requiredRoles.includes(role)) {

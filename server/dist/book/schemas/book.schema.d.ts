@@ -3,6 +3,7 @@ export type BookDocument = Book & Document & {
     _id: mongoose.Types.ObjectId;
 };
 export declare class Book {
+    organization: mongoose.Types.ObjectId;
     isbn: string;
     title: string;
     author: string;

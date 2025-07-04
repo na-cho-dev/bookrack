@@ -2,12 +2,13 @@ import mongoose, { Document } from 'mongoose';
 import { Book } from 'src/book/schemas/book.schema';
 import { User } from 'src/user/schemas/user.schema';
 export type BorrowBookDocument = BorrowBook & Document;
-export type BorrowBookStatus = 'borrowed' | 'pending-return' | 'returned';
+export type BorrowBookStatus = 'pending' | 'borrowed' | 'pending-return' | 'returned';
 export declare class BorrowBook {
     user: User;
     book: Book;
-    borrowDate: Date;
-    dueDate: Date;
+    requestAt?: Date;
+    borrowDate?: Date;
+    dueDate?: Date;
     returnDate?: Date;
     status: BorrowBookStatus;
 }

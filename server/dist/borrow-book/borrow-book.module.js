@@ -13,6 +13,7 @@ const borrow_book_service_1 = require("./borrow-book.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const borrow_book_schema_1 = require("./schemas/borrow-book.schema");
 const book_module_1 = require("../book/book.module");
+const membership_module_1 = require("../membership/membership.module");
 let BorrowBookModule = class BorrowBookModule {
 };
 exports.BorrowBookModule = BorrowBookModule;
@@ -23,6 +24,7 @@ exports.BorrowBookModule = BorrowBookModule = __decorate([
                 { name: borrow_book_schema_1.BorrowBook.name, schema: borrow_book_schema_1.BorrowBookSchema },
             ]),
             book_module_1.BookModule,
+            membership_module_1.MembershipModule,
         ],
         controllers: [borrow_book_controller_1.BorrowBookController],
         providers: [borrow_book_service_1.BorrowBookService],

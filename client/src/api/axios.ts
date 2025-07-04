@@ -39,7 +39,7 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    console.log("Original request:", originalRequest);
+    // console.log("Original request:", originalRequest);
 
     const skipRefresh = [
       "/auth/login",

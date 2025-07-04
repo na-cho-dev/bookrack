@@ -5,7 +5,14 @@ export type BookDocument = Book & Document & { _id: mongoose.Types.ObjectId };
 
 @Schema()
 export class Book {
-  @Prop({ unique: true, required: true })
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Organization',
+    required: true,
+  })
+  organization: mongoose.Types.ObjectId;
+
+  @Prop({ required: true })
   isbn: string;
 
   @Prop({ required: true })

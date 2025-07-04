@@ -5,11 +5,12 @@ export declare enum MembershipRole {
     STAFF = "staff",
     USER = "user"
 }
+export type MembershipStatus = 'pending' | 'active' | 'rejected';
 export declare class Membership {
     user: Types.ObjectId;
-    userEmail: string;
     organization: Types.ObjectId;
     role: MembershipRole;
+    status: MembershipStatus;
     createdAt: Date;
 }
 export declare const MembershipSchema: import("mongoose").Schema<Membership, import("mongoose").Model<Membership, any, any, any, Document<unknown, any, Membership, any> & Membership & {

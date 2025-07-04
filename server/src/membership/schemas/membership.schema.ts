@@ -9,20 +9,24 @@ export enum MembershipRole {
   STAFF = 'staff',
   USER = 'user',
 }
+export type MembershipStatus = 'pending' | 'active' | 'rejected';
 
 @Schema()
 export class Membership {
   @Prop({ type: Types.ObjectId, ref: User.name, required: true })
   user: Types.ObjectId;
 
-  @Prop({ required: true })
-  userEmail: string;
+  // @Prop({ required: true })
+  // userEmail: string;
 
   @Prop({ type: Types.ObjectId, ref: Organization.name, required: true })
   organization: Types.ObjectId;
 
   @Prop({ enum: MembershipRole, required: true })
   role: MembershipRole;
+
+  @Prop({ default: 'pending' })
+  status: MembershipStatus;
 
   @Prop({ default: Date.now })
   createdAt: Date;

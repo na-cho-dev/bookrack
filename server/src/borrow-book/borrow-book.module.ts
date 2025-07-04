@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { BorrowBook, BorrowBookSchema } from './schemas/borrow-book.schema';
 import { BookService } from 'src/book/book.service';
 import { BookModule } from 'src/book/book.module';
+import { MembershipModule } from 'src/membership/membership.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { BookModule } from 'src/book/book.module';
       { name: BorrowBook.name, schema: BorrowBookSchema },
     ]),
     BookModule,
+    MembershipModule,
   ],
   controllers: [BorrowBookController],
   providers: [BorrowBookService],

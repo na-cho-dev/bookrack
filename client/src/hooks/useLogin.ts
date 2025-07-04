@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../api/auth.api";
 import toast from "react-hot-toast";
-import type { LoginPayload, User } from "../types/auth";
+import type { LoginPayload, User } from "../types/auth.type";
 
 export const useLogin = () => {
   return useMutation<User, any, LoginPayload>({

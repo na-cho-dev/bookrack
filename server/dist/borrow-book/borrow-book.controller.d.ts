@@ -1,30 +1,31 @@
 import { BorrowBookService } from './borrow-book.service';
 import { CreateBorrowBookDto } from './dto/create-borrow-book.dto';
 import { UpdateBorrowBookDto } from './dto/update-borrow-book.dto';
+import { UserResponse } from 'src/user/interface/user.interface';
 export declare class BorrowBookController {
     private readonly borrowBookService;
     constructor(borrowBookService: BorrowBookService);
-    createBorrowRecord(borrowBookDto: CreateBorrowBookDto): Promise<{
+    createBorrowRecord(borrowBookDto: CreateBorrowBookDto, user: UserResponse, orgId: string): Promise<{
         message: string;
         data: import("./schemas/borrow-book.schema").BorrowBook;
     }>;
-    getAllBorrowRecords(): Promise<{
+    getBorrowRecordsByStatus(orgId: string, status?: string): Promise<{
         message: string;
         borrowRecords: import("./schemas/borrow-book.schema").BorrowBook[];
     }>;
-    returnBook(id: string): Promise<{
+    approveBorrowRequest(id: string, updateData: UpdateBorrowBookDto, orgId: string): Promise<{
+        message: string;
+        borrowedBookRequest: import("./schemas/borrow-book.schema").BorrowBook;
+    }>;
+    returnBook(id: string, orgId: string): Promise<{
         message: string;
         returnedBook: import("./schemas/borrow-book.schema").BorrowBook;
     }>;
-    approveBookReturn(id: string): Promise<{
+    approveBookReturn(id: string, orgId: string): Promise<{
         message: string;
         returnedBook: import("./schemas/borrow-book.schema").BorrowBook;
     }>;
     getBorrowRecordsByUserId(userId: string): Promise<{
-        message: string;
-        borrowRecords: import("./schemas/borrow-book.schema").BorrowBook[];
-    }>;
-    getBorrowRecordsByBookId(bookId: string): Promise<{
         message: string;
         borrowRecords: import("./schemas/borrow-book.schema").BorrowBook[];
     }>;

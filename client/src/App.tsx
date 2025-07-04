@@ -1,27 +1,26 @@
+import AppInitializer from "./components/layout/AppInitializaer";
 import Navbar from "./components/Navbar";
 import AppRoutes from "./routes/AppRoutes";
-import { useCurrentUser } from "./hooks/useCurrentUser";
-import { useUserStore } from "./stores/useUserStore";
 import { LoaderPinwheelIcon } from "lucide-react";
-import { useLoadMemberships } from "./hooks/useLoadMemberships";
+import { useAppLoading } from "./hooks/useAppLoading";
 
 const App = () => {
-  useCurrentUser(); // loads user on app start
-  useLoadMemberships();
-  const loadingUser = useUserStore((state) => state.loadingUser);
-
-  if (loadingUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoaderPinwheelIcon className="animate-spin w-16 h-16 text-sec" />
-      </div>
-    );
-  }
+  const { isAppLoading } = useAppLoading();
 
   return (
     <>
-      <Navbar />
-      <AppRoutes />
+      <AppInitializer />
+
+      {isAppLoading ? (
+        <div className="min-h-screen flex items-center justify-center">
+          <LoaderPinwheelIcon className="animate-spin w-16 h-16 text-sec" />
+        </div>
+      ) : (
+        <>
+          <Navbar />
+          <AppRoutes />
+        </>
+      )}
     </>
   );
 };

@@ -22,27 +22,35 @@ const jwt_auth_guard_1 = require("../guards/jwt-auth.guard");
 const membership_role_decorator_1 = require("../decorators/membership-role.decorator");
 const swagger_1 = require("@nestjs/swagger");
 const membership_schema_1 = require("../membership/schemas/membership.schema");
+const membership_guard_1 = require("../guards/membership.guard");
 let BookController = class BookController {
     bookService;
     constructor(bookService) {
         this.bookService = bookService;
     }
-    async addBook(bookDto) {
-        const book = await this.bookService.addBook(bookDto);
+    async addBook(bookDto, orgId) {
+        const book = await this.bookService.addBook(bookDto, orgId);
         return {
             message: 'Book added successfully',
             book,
         };
     }
-    async getAllBooks() {
-        const books = await this.bookService.getAllBooks();
+    async getAllBooks(orgId) {
+        const books = await this.bookService.getAllBooksByOrg(orgId);
         return {
             message: 'Books retrieved successfully',
             books,
         };
     }
-    async getBookById(id) {
-        const book = await this.bookService.getBookById(id);
+    async getAvailableBooks(orgId) {
+        const books = await this.bookService.getAvailableBooksByOrg(orgId);
+        return {
+            message: 'Books retrieved successfully',
+            books,
+        };
+    }
+    async getBookById(id, orgId) {
+        const book = await this.bookService.getBookById(id, orgId);
         return {
             message: 'Book retrieved successfully',
             book,
@@ -65,24 +73,36 @@ let BookController = class BookController {
 };
 exports.BookController = BookController;
 __decorate([
-    (0, common_1.Post)(),
+    (0, common_1.Post)('add'),
     (0, membership_role_decorator_1.MembershipRoles)(membership_schema_1.MembershipRole.ADMIN),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Headers)('x-organization-id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_book_dto_1.AddBookDto]),
+    __metadata("design:paramtypes", [create_book_dto_1.AddBookDto, String]),
     __metadata("design:returntype", Promise)
 ], BookController.prototype, "addBook", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('all'),
+    (0, membership_role_decorator_1.MembershipRoles)(membership_schema_1.MembershipRole.ADMIN),
+    __param(0, (0, common_1.Headers)('x-organization-id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], BookController.prototype, "getAllBooks", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('available'),
+    (0, membership_role_decorator_1.MembershipRoles)(membership_schema_1.MembershipRole.ADMIN),
+    __param(0, (0, common_1.Headers)('x-organization-id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], BookController.prototype, "getAvailableBooks", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Headers)('x-organization-id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], BookController.prototype, "getBookById", null);
 __decorate([
@@ -106,7 +126,7 @@ exports.BookController = BookController = __decorate([
     (0, swagger_1.ApiTags)('Books'),
     (0, swagger_1.ApiCookieAuth)('Authentication'),
     (0, common_1.Controller)('books'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard, membership_role_guard_1.MembershipRoleGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard, membership_guard_1.MembershipGuard, membership_role_guard_1.MembershipRoleGuard),
     __metadata("design:paramtypes", [book_service_1.BookService])
 ], BookController);
 //# sourceMappingURL=book.controller.js.map

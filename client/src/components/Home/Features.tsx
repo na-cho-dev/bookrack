@@ -18,6 +18,7 @@ const Features = () => {
         <div className="grid md:grid-cols-4 gap-8">
           {features.map((item, index) => (
             <InfoCard
+              key={index}
               icon={item.icon}
               title={item.title}
               desc={item.desc}

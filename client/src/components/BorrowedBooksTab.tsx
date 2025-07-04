@@ -1,6 +1,9 @@
 import { BookOpen, User2, CalendarCheck } from "lucide-react";
+import { useBorrowedBooks } from "../hooks/useBook";
 
 const BorrowedBooksTab = () => {
+  const { data: borrowedBooks } = useBorrowedBooks();
+
   return (
     <div className="flex justify-center items-center">
       <div className="py-14 px-14 space-y-8 w-full">
@@ -38,34 +41,42 @@ const BorrowedBooksTab = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* Replace with real data */}
-                <tr className="border-b text-gray-700">
-                  <td className="">
-                    <span className="flex items-center gap-2">
-                      <BookOpen className="w-4 h-4 text-gray-400" />
-                      Atomic Habits
-                    </span>
-                  </td>
-                  <td className="py-2 pr-4 flex items-center gap-2">
-                    <span className="flex items-center gap-2">
-                      <User2 className="w-4 h-4 text-gray-400" />
-                      Ada Nwankwo
-                    </span>
-                  </td>
-                  <td className="py-2 pr-4">
-                    <CalendarCheck className="w-4 h-4 inline mr-1 text-gray-400" />
-                    2025-06-01
-                  </td>
-                  <td className="py-2 pr-4">
-                    <CalendarCheck className="w-4 h-4 inline mr-1 text-gray-400" />
-                    2025-06-01
-                  </td>
-                </tr>
-                <tr>
-                  <td colSpan={4} className="text-center text-gray-400 py-4">
-                    More borrowed books will appear here...
-                  </td>
-                </tr>
+                {borrowedBooks && borrowedBooks.length > 0 ? (
+                  borrowedBooks.map((book) => (
+                    <tr key={book._id} className="border-b text-gray-700">
+                      <td className="py-4 pr-4">
+                        <div className="flex items-center gap-2">
+                          <BookOpen className="w-4 h-4 text-gray-400" />
+                          {book.book.title}
+                        </div>
+                      </td>
+                      <td className="py-4 pr-4">
+                        <div className="flex items-center gap-2">
+                          <User2 className="w-4 h-4 text-gray-400" />
+                          {book.user.name}
+                        </div>
+                      </td>
+                      <td className="py-4 pr-4">
+                        <div className="flex items-center gap-2">
+                          <CalendarCheck className="w-4 h-4 text-gray-400" />
+                          {new Date(book.borrowDate).toLocaleString()}
+                        </div>
+                      </td>
+                      <td className="py-4 pr-4">
+                        <div className="flex items-center gap-2">
+                          <CalendarCheck className="w-4 h-4 text-gray-400" />
+                          {new Date(book.dueDate).toLocaleString()}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="py-4 text-center text-gray-400">
+                      No Books Borrowed Yet
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

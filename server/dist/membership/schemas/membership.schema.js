@@ -22,9 +22,9 @@ var MembershipRole;
 })(MembershipRole || (exports.MembershipRole = MembershipRole = {}));
 let Membership = class Membership {
     user;
-    userEmail;
     organization;
     role;
+    status;
     createdAt;
 };
 exports.Membership = Membership;
@@ -33,10 +33,6 @@ __decorate([
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Membership.prototype, "user", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ required: true }),
-    __metadata("design:type", String)
-], Membership.prototype, "userEmail", void 0);
-__decorate([
     (0, mongoose_1.Prop)({ type: mongoose_2.Types.ObjectId, ref: organization_shema_1.Organization.name, required: true }),
     __metadata("design:type", mongoose_2.Types.ObjectId)
 ], Membership.prototype, "organization", void 0);
@@ -44,6 +40,10 @@ __decorate([
     (0, mongoose_1.Prop)({ enum: MembershipRole, required: true }),
     __metadata("design:type", String)
 ], Membership.prototype, "role", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ default: 'pending' }),
+    __metadata("design:type", String)
+], Membership.prototype, "status", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ default: Date.now }),
     __metadata("design:type", Date)

@@ -5,7 +5,7 @@ import type {
   RegisterAdminPayload,
   RegisterUserPayload,
   User,
-} from "../types/auth";
+} from "../types/auth.type";
 
 export const useRegisterUser = () => {
   return useMutation<User, any, RegisterUserPayload>({
