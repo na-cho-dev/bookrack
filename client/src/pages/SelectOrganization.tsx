@@ -1,8 +1,16 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
-import { useEffect, useState } from "react";
-import { UserCircleIcon, ChevronDownIcon, CheckIcon } from "lucide-react";
+import { useState } from "react";
+import {
+  UserCircleIcon,
+  ChevronDownIcon,
+  CheckIcon,
+  PlusCircle,
+  LogIn,
+} from "lucide-react";
 import { Listbox } from "@headlessui/react";
+import JoinOrgModal from "../components/modals/JoinOrgModal";
+// import { queryClient } from "../utils/queryClient";
 
 const SelectOrganization = () => {
   const navigate = useNavigate();
@@ -11,19 +19,22 @@ const SelectOrganization = () => {
   const setCurrentMembership = useUserStore(
     (state) => state.setCurrentMembership
   );
+
   const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
 
   const handleSelect = (orgId: string) => {
     setSelectedOrgId(orgId);
 
-    // Find membership by selected org id
     const membership =
       memberships.find((m) => m.organization._id === orgId) ?? null;
-
-    // console.log("Membership: ", membership);
-
-    // Set the membership globally
     setCurrentMembership(membership);
+
+    console.log("Membership Before: ", membership);
+
+    // queryClient.removeQueries({ queryKey: ["all-books"], exact: false });
+
+    console.log("Membership After: ", membership);
 
     if (membership?.role === "admin") {
       navigate("/dashboard/admin");
@@ -32,15 +43,10 @@ const SelectOrganization = () => {
     }
   };
 
-  useEffect(() => {
-    if (!memberships || memberships.length === 0) {
-      navigate("/login");
-    }
-  }, [memberships, navigate]);
-
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-[#fff4df] p-8 rounded-2xl shadow-lg border border-gray-100">
+        {/* Header */}
         <div className="text-center mb-6">
           {user?.name ? (
             <h2 className="text-2xl font-semibold text-gray-700">
@@ -54,61 +60,116 @@ const SelectOrganization = () => {
           </p>
         </div>
 
-        <div className="relative">
-          <Listbox value={selectedOrgId} onChange={handleSelect}>
-            <div className="relative mt-2">
-              <Listbox.Button className="relative w-full cursor-default rounded-lg bg-[#fff4df] border border-gray-300 py-3 pl-4 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-sec focus:border-sec text-gray-700">
-                <span className="block truncate">
-                  {selectedOrgId
-                    ? memberships.find(
-                        (m) => m.organization._id === selectedOrgId
-                      )?.organization.name
-                    : "Select an organization"}
-                </span>
-                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                  <ChevronDownIcon className="h-5 w-5 text-gray-400" />
-                </span>
-              </Listbox.Button>
+        {/* No organizations */}
+        {memberships.length === 0 ? (
+          <div className="text-center">
+            <p className="text-gray-600 mb-4">
+              You're not part of any organization yet.
+            </p>
+            <div className="flex flex-col gap-3">
+              <Link
+                to="/create-org"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sec text-white rounded-lg hover:bg-sec-dark transition w-full"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Create Organization
+              </Link>
 
-              <Listbox.Options className="absolute z-10 mt-2 w-full rounded-lg bg-[#fffbf3] border border-gray-200 shadow-lg max-h-60 overflow-auto focus:outline-none text-sm">
-                {memberships.map((mem) => (
-                  <Listbox.Option
-                    key={mem._id}
-                    value={mem.organization._id}
-                    className={({ active }) =>
-                      `relative cursor-pointer select-none py-5 pl-10 pr-4 ${
-                        active ? "bg-sec text-white" : "text-gray-900"
-                      }`
-                    }
-                  >
-                    {({ selected }) => (
-                      <>
-                        <span
-                          className={`block truncate ${
-                            selected ? "font-medium" : "font-normal"
-                          }`}
-                        >
-                          {mem.organization.name}
-                        </span>
-                        {selected ? (
-                          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-white">
-                            <CheckIcon className="h-4 w-4" />
-                          </span>
-                        ) : null}
-                      </>
-                    )}
-                  </Listbox.Option>
-                ))}
-              </Listbox.Options>
+              <button
+                onClick={() => setIsJoinModalOpen(true)}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-sec text-sec rounded-lg hover:bg-sec hover:text-white transition w-full"
+              >
+                <LogIn className="w-4 h-4" />
+                Join Organization
+              </button>
             </div>
-          </Listbox>
-        </div>
+          </div>
+        ) : (
+          <>
+            {/* Dropdown selection */}
+            <div className="relative">
+              <Listbox value={selectedOrgId} onChange={handleSelect}>
+                <div className="relative mt-2">
+                  <Listbox.Button className="relative w-full cursor-default rounded-lg bg-[#fff4df] border border-gray-300 py-3 pl-4 pr-10 text-left shadow-sm focus:outline-none focus:ring-2 focus:ring-sec focus:border-sec text-gray-700">
+                    <span className="block truncate">
+                      {selectedOrgId
+                        ? memberships.find(
+                            (m) => m.organization._id === selectedOrgId
+                          )?.organization.name
+                        : "Select an organization"}
+                    </span>
+                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
+                      <ChevronDownIcon className="h-5 w-5 text-gray-400" />
+                    </span>
+                  </Listbox.Button>
 
-        <p className="text-sm text-gray-400 mt-4 text-center">
-          You are a member of{" "}
-          <span className="text-sec">{memberships.length}</span> organization
-          {memberships.length !== 1 ? "s" : ""}.
-        </p>
+                  <Listbox.Options className="absolute z-10 mt-2 w-full rounded-lg bg-[#fffbf3] border border-gray-200 shadow-lg max-h-60 overflow-auto focus:outline-none text-sm">
+                    {memberships.map((mem) => (
+                      <Listbox.Option
+                        key={mem._id}
+                        value={mem.organization._id}
+                        className={({ active }) =>
+                          `relative cursor-pointer select-none py-5 pl-10 pr-4 ${
+                            active ? "bg-sec text-white" : "text-gray-900"
+                          }`
+                        }
+                      >
+                        {({ selected }) => (
+                          <>
+                            <span
+                              className={`block truncate ${
+                                selected ? "font-medium" : "font-normal"
+                              }`}
+                            >
+                              {mem.organization.name}
+                            </span>
+                            {selected ? (
+                              <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-white">
+                                <CheckIcon className="h-4 w-4" />
+                              </span>
+                            ) : null}
+                          </>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
+              </Listbox>
+            </div>
+
+            {/* Membership info */}
+            <p className="text-sm text-gray-400 mt-4 text-center">
+              You are a member of{" "}
+              <span className="text-sec">{memberships.length}</span>{" "}
+              organization{memberships.length !== 1 ? "s" : ""}.
+            </p>
+
+            {/* Extra actions */}
+            <div className="mt-6 flex flex-col gap-3">
+              <Link
+                to="/create-org"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sec text-white rounded-lg hover:bg-sec-dark transition w-full"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Create Organization
+              </Link>
+
+              <button
+                onClick={() => setIsJoinModalOpen(true)}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 border border-sec text-sec rounded-lg hover:bg-sec hover:text-white transition w-full"
+              >
+                <LogIn className="w-4 h-4" />
+                Join Organization
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* Join Org Modal */}
+        <JoinOrgModal
+          open={isJoinModalOpen}
+          onClose={() => setIsJoinModalOpen(false)}
+        />
       </div>
     </div>
   );

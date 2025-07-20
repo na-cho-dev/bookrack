@@ -1,12 +1,13 @@
 import { useState } from "react";
-import AdminNavDrawer from "../components/Admin/AdminNavDrawer";
-import AdminDashboardTab from "../components/Admin/AdminDashboardTab";
+import AdminNavDrawer from "../components/DashboardAdmin/AdminNavDrawer";
+import AdminDashboardTab from "../components/DashboardAdmin/AdminDashboardTab";
 import { useSearchParams } from "react-router-dom";
-import BooksTab from "../components/BooksTab";
-import AvailableBooksTab from "../components/AvailableBooksTab";
-import BorrowedBooksTab from "../components/BorrowedBooksTab";
-import BorrowRequestsTab from "../components/BorrowRequestTab";
-import UsersTab from "../components/UserTab";
+import BooksTab from "../components/DashboardAdmin/BooksTab";
+import AvailableBooksTab from "../components/DashboardAdmin/AvailableBooksTab";
+import BorrowedBooksTab from "../components/DashboardAdmin/BorrowedBooksTab";
+import BorrowRequestsTab from "../components/DashboardAdmin/BorrowRequestTab";
+import UsersTab from "../components/DashboardAdmin/UserTab";
+import SettingsTab from "../components/SettingsTab";
 
 const AdminDashboard = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
@@ -35,6 +36,7 @@ const AdminDashboard = () => {
           {activeTab === "borrowed" && <BorrowedBooksTab />}
           {activeTab === "requests" && <BorrowRequestsTab />}
           {activeTab === "users" && <UsersTab />}
+          {activeTab === "settings" && <SettingsTab />}
         </div>
       </div>
     </div>

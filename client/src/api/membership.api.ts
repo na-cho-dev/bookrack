@@ -10,3 +10,15 @@ export const getOrgUser = async (): Promise<Membership[]> => {
   const response = await axiosInstance.get("/membership/organization/users");
   return response.data;
 };
+
+export const leaveOrg = async (): Promise<void> => {
+  const response = await axiosInstance.delete(`/membership/leave`);
+  return response.data;
+};
+
+export const joinOrg = async (orgCode: string): Promise<Membership> => {
+  const response = await axiosInstance.post(`/membership/join`, {
+    orgCode,
+  });
+  return response.data;
+};

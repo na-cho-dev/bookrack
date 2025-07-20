@@ -43,7 +43,6 @@ export interface AddBookPayload {
   publishedYear: number;
   totalCopies: number;
   availableCopies: number;
-  organization: Organization;
 }
 
 export interface UpdateBookPayload extends Partial<AddBookPayload> {

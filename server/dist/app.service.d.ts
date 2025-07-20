@@ -1,5 +1,3 @@
 export declare class AppService {
-    health(): {
-        status: string;
-    };
+    health(): Record<string, any>;
 }

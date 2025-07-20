@@ -27,6 +27,10 @@ let MembershipController = class MembershipController {
     constructor(membershipService) {
         this.membershipService = membershipService;
     }
+    async joinOrg(orgCode, user) {
+        const userId = user._id;
+        return this.membershipService.joinOrganization(userId, orgCode);
+    }
     getAllMemberships() {
         return this.membershipService.findAllMemberships();
     }
@@ -41,8 +45,21 @@ let MembershipController = class MembershipController {
     async updateMemberRole(adminMembership, membershipId, role) {
         return this.membershipService.updateMemberRole(adminMembership, membershipId, role);
     }
+    async leaveOrganization(user, membership) {
+        const orgId = membership.organization._id.toString();
+        return this.membershipService.leaveOrganization(String(user._id), String(orgId));
+    }
 };
 exports.MembershipController = MembershipController;
+__decorate([
+    (0, common_1.Post)('join'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard),
+    __param(0, (0, common_1.Body)('orgCode')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], MembershipController.prototype, "joinOrg", null);
 __decorate([
     (0, common_1.Get)(),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard, membership_guard_1.MembershipGuard, membership_role_guard_1.MembershipRoleGuard),
@@ -79,6 +96,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String]),
     __metadata("design:returntype", Promise)
 ], MembershipController.prototype, "updateMemberRole", null);
+__decorate([
+    (0, common_1.Delete)('leave'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JWTAuthGuard, membership_guard_1.MembershipGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, membership_decorator_1.Membership)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], MembershipController.prototype, "leaveOrganization", null);
 exports.MembershipController = MembershipController = __decorate([
     (0, common_1.Controller)('membership'),
     __metadata("design:paramtypes", [membership_service_1.MembershipService])

@@ -1,8 +1,10 @@
-import { X, LogOut, LayoutDashboard } from "lucide-react";
+import { X, LogOut, LayoutDashboard, LogIn } from "lucide-react";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import { useUserStore } from "../stores/useUserStore";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useLeaveOrg } from "../hooks/useMembership";
+import JoinOrgModal from "./modals/JoinOrgModal";
 
 interface Props {
   open: boolean;
@@ -14,6 +16,18 @@ const OrgSwitcherDrawer: React.FC<Props> = ({ open, onClose, onLogout }) => {
   const memberships = useUserStore((s) => s.memberships ?? []);
   const currentMembership = useUserStore((s) => s.currentMembership);
   const setCurrentMembership = useUserStore((s) => s.setCurrentMembership);
+  const navigate = useNavigate();
+  const leaveOrgMutation = useLeaveOrg();
+  const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
+
+  const handleLeaveOrganization = async () => {
+    try {
+      await leaveOrgMutation.mutateAsync();
+      navigate("/select-org");
+    } catch (err) {
+      console.error("Failed to leave org", err);
+    }
+  };
 
   return (
     <Transition show={open} as={Fragment}>
@@ -53,47 +67,87 @@ const OrgSwitcherDrawer: React.FC<Props> = ({ open, onClose, onLogout }) => {
                 </div>
 
                 <div>
-                  <Link
-                    to="/dashboard/admin"
-                    className="flex items-center justify-start gap-1 text-sec font-bold"
+                  <button
                     onClick={() => {
+                      const route =
+                        currentMembership?.role === "admin"
+                          ? "/dashboard/admin"
+                          : "/dashboard/member";
+                      navigate(route);
                       onClose();
                     }}
+                    className="flex items-center justify-start gap-1 text-sec font-bold"
                   >
                     <LayoutDashboard className="w-6" />
                     <span className="">Dashboard</span>
-                  </Link>
+                  </button>
                 </div>
 
                 {/* Organizations list */}
                 <div className="flex-1 overflow-y-auto space-y-2">
                   {memberships.map((mem) => (
-                    <button
+                    <div
                       key={mem._id}
-                      onClick={() => {
-                        setCurrentMembership(mem);
-                        onClose();
-                      }}
-                      className={`w-full text-left px-3 py-2 rounded-md transition ${
+                      className={`flex justify-between items-center px-3 py-2 rounded-md transition ${
                         currentMembership?.organization._id ===
                         mem.organization._id
                           ? "bg-sec text-white"
                           : "hover:bg-gray-100 text-gray-800"
                       }`}
                     >
-                      <Link to="/dashboard/admin">{mem.organization.name}</Link>
-                    </button>
+                      <button
+                        onClick={() => {
+                          setCurrentMembership(mem);
+                          onClose();
+
+                          const route =
+                            mem.role === "admin"
+                              ? "/dashboard/admin"
+                              : "/dashboard/member";
+                          navigate(route, { replace: true });
+                        }}
+                        className="flex-1 text-left"
+                      >
+                        {mem.organization.name}
+                      </button>
+                    </div>
                   ))}
                 </div>
 
-                {/* Logout button */}
-                <button
-                  onClick={onLogout}
-                  className="mt-5 flex items-center gap-2 text-red-600 font-bold"
-                >
-                  <LogOut className="w-5 h-5" />
-                  Logout
-                </button>
+                <div>
+                  {/* Join button with icon */}
+                  <button
+                    onClick={() => setIsJoinModalOpen(true)}
+                    className="mt-5 flex items-center gap-2 text-sec font-bold"
+                    title="Leave Organization"
+                  >
+                    <LogIn className="w-5 h-5" />
+                    Join Organization
+                  </button>
+                  {/* Leave button with icon */}
+                  <button
+                    onClick={handleLeaveOrganization}
+                    className="mt-5 flex items-center gap-2 text-red-600 font-bold"
+                    title="Leave Organization"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    Leave Organization
+                  </button>
+                  {/* Logout button */}
+                  <button
+                    onClick={onLogout}
+                    className="mt-5 flex items-center gap-2 text-red-600 font-bold"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    Logout
+                  </button>
+
+                  {/* Join Org Modal */}
+                  <JoinOrgModal
+                    open={isJoinModalOpen}
+                    onClose={() => setIsJoinModalOpen(false)}
+                  />
+                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>

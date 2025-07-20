@@ -1,22 +1,13 @@
 // components/BookModal.tsx
 import { X } from "lucide-react";
 import { useState, useEffect } from "react";
-
-type BookFormData = {
-  title: string;
-  author: string;
-  isbn: string;
-  publishedYear: number | string;
-  totalCopies: number | string;
-  availableCopies: number | string;
-  genre: string;
-};
+import type { AddBookPayload } from "../../types/book.type";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: BookFormData, mode: "create" | "edit") => void;
-  initialData?: BookFormData;
+  onSubmit: (data: AddBookPayload, mode: "create" | "edit") => void;
+  initialData?: AddBookPayload & { _id?: string };
   mode?: "create" | "edit";
 };
 
@@ -27,31 +18,31 @@ const BookModal = ({
   initialData,
   mode = "create",
 }: Props) => {
-  const [form, setForm] = useState<BookFormData>({
+  const [form, setForm] = useState<AddBookPayload>({
     title: "",
     author: "",
     isbn: "",
-    publishedYear: "",
-    totalCopies: "",
-    availableCopies: "",
+    publishedYear: 0,
+    totalCopies: 0,
+    availableCopies: 0,
     genre: "",
   });
 
   useEffect(() => {
-    if (initialData) {
+    if (mode === "edit" && initialData) {
       setForm(initialData);
-    } else {
+    } else if (mode === "create") {
       setForm({
         title: "",
         author: "",
         isbn: "",
-        publishedYear: "",
-        totalCopies: "",
-        availableCopies: "",
+        publishedYear: 0,
+        totalCopies: 0,
+        availableCopies: 0,
         genre: "",
       });
     }
-  }, [initialData]);
+  }, [initialData, mode]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -107,7 +98,7 @@ const BookModal = ({
                     : "text"
                 }
                 name={field.name}
-                value={form[field.name as keyof BookFormData]}
+                value={form[field.name as keyof AddBookPayload]}
                 onChange={handleChange}
                 className="w-full border rounded-md px-3 py-2 mt-1 text-sm focus:ring-sec focus:outline-none"
                 required

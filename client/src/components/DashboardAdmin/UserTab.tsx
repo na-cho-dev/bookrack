@@ -1,7 +1,7 @@
 import { UserCircle2, Mail, Shield } from "lucide-react";
 // import { useState } from "react";
 // import PendingUserRequestsModal from "./modals/PendingUserRequestsModal";
-import { useOrganizationUsers } from "../hooks/useLoadMemberships";
+import { useOrganizationUsers } from "../../hooks/useLoadMemberships";
 
 const UsersTab = () => {
   // const [modalOpen, setModalOpen] = useState(false);

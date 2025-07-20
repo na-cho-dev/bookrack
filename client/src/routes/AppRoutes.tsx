@@ -9,6 +9,7 @@ import {
   ProtectedRouteWithoutOrg,
 } from "./ProtectedRoute";
 import AdminDashboard from "../pages/AdminDashboard";
+import MemberDashboard from "../pages/MemberDashboard";
 
 const AppRoutes = () => {
   return (
@@ -46,6 +47,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRouteWithOrg>
             <AdminDashboard />
+          </ProtectedRouteWithOrg>
+        }
+      />
+
+      <Route
+        path="/dashboard/member"
+        element={
+          <ProtectedRouteWithOrg>
+            <MemberDashboard />
           </ProtectedRouteWithOrg>
         }
       />

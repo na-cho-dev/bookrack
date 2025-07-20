@@ -83,7 +83,6 @@ __decorate([
 ], BookController.prototype, "addBook", null);
 __decorate([
     (0, common_1.Get)('all'),
-    (0, membership_role_decorator_1.MembershipRoles)(membership_schema_1.MembershipRole.ADMIN),
     __param(0, (0, common_1.Headers)('x-organization-id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -91,7 +90,6 @@ __decorate([
 ], BookController.prototype, "getAllBooks", null);
 __decorate([
     (0, common_1.Get)('available'),
-    (0, membership_role_decorator_1.MembershipRoles)(membership_schema_1.MembershipRole.ADMIN),
     __param(0, (0, common_1.Headers)('x-organization-id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

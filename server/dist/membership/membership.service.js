@@ -19,12 +19,15 @@ const membership_schema_1 = require("./schemas/membership.schema");
 const mongoose_2 = require("mongoose");
 const user_service_1 = require("../user/user.service");
 const validate_objectid_utils_1 = require("../common/utils/validate-objectid.utils");
+const organization_service_1 = require("../organization/organization.service");
 let MembershipService = class MembershipService {
     membershipModel;
     userService;
-    constructor(membershipModel, userService) {
+    organizationService;
+    constructor(membershipModel, userService, organizationService) {
         this.membershipModel = membershipModel;
         this.userService = userService;
+        this.organizationService = organizationService;
     }
     async createMembership(userId, organizationId, role) {
         const existing = await this.membershipModel.findOne({
@@ -37,10 +40,36 @@ let MembershipService = class MembershipService {
         const user = await this.userService.getUserById(userId);
         return this.membershipModel.create({
             user: userId,
-            userEmail: user.email,
             organization: organizationId,
             role,
         });
+    }
+    async joinOrganization(userId, organizationCode) {
+        const org = await this.organizationService.findOne({
+            code: organizationCode,
+        });
+        if (!org) {
+            throw new common_1.NotFoundException('Organization not found with provided code');
+        }
+        const existing = await this.membershipModel.findOne({
+            user: String(userId),
+            organization: String(org._id),
+        });
+        if (existing) {
+            throw new common_1.BadRequestException('You are already a member of this organization');
+        }
+        const membership = await this.membershipModel.create({
+            user: String(userId),
+            organization: String(org._id),
+            role: 'user',
+            status: 'pending',
+        });
+        if (!membership) {
+            throw new common_1.ConflictException('Failed to join organization');
+        }
+        await membership.populate('user', '-password -refreshToken');
+        await membership.populate('organization');
+        return membership;
     }
     async findOne(query) {
         const membership = await this.membershipModel
@@ -106,13 +135,26 @@ let MembershipService = class MembershipService {
         await membership.save();
         return membership;
     }
+    async leaveOrganization(userId, orgId) {
+        (0, validate_objectid_utils_1.validateObjectId)(userId);
+        (0, validate_objectid_utils_1.validateObjectId)(orgId);
+        const membership = await this.membershipModel.findOneAndDelete({
+            user: userId,
+            organization: orgId,
+        });
+        if (!membership) {
+            throw new common_1.NotFoundException('Membership not found');
+        }
+    }
 };
 exports.MembershipService = MembershipService;
 exports.MembershipService = MembershipService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(membership_schema_1.Membership.name)),
     __param(1, (0, common_1.Inject)((0, common_1.forwardRef)(() => user_service_1.UserService))),
+    __param(2, (0, common_1.Inject)((0, common_1.forwardRef)(() => organization_service_1.OrganizationService))),
     __metadata("design:paramtypes", [mongoose_2.Model,
-        user_service_1.UserService])
+        user_service_1.UserService,
+        organization_service_1.OrganizationService])
 ], MembershipService);
 //# sourceMappingURL=membership.service.js.map

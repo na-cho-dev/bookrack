@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   forwardRef,
@@ -12,9 +13,10 @@ import {
   MembershipDocument,
   MembershipRole,
 } from './schemas/membership.schema';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { UserService } from 'src/user/user.service';
 import { validateObjectId } from 'src/common/utils/validate-objectid.utils';
+import { OrganizationService } from 'src/organization/organization.service';
 
 @Injectable()
 export class MembershipService {
@@ -23,6 +25,8 @@ export class MembershipService {
     private readonly membershipModel: Model<MembershipDocument>,
     @Inject(forwardRef(() => UserService))
     private readonly userService: UserService,
+    @Inject(forwardRef(() => OrganizationService))
+    private readonly organizationService: OrganizationService,
   ) {}
 
   async createMembership(
@@ -42,10 +46,52 @@ export class MembershipService {
 
     return this.membershipModel.create({
       user: userId,
-      userEmail: user.email,
       organization: organizationId,
       role,
     });
+  }
+
+  async joinOrganization(
+    userId: string,
+    organizationCode: string,
+  ): Promise<MembershipDocument> {
+    // Find the organization by code
+    const org = await this.organizationService.findOne({
+      code: organizationCode,
+    });
+    if (!org) {
+      throw new NotFoundException('Organization not found with provided code');
+    }
+
+    // Prevent duplicate membership
+    const existing = await this.membershipModel.findOne({
+      user: String(userId),
+      organization: String(org._id),
+    });
+
+    if (existing) {
+      throw new BadRequestException(
+        'You are already a member of this organization',
+      );
+    }
+
+    // Create the membership (default role: user, status: pending or active)
+    const membership = await this.membershipModel.create({
+      user: String(userId),
+      organization: String(org._id),
+      role: 'user',
+      status: 'pending', // or 'pending' if you want admin approval
+    });
+
+    if (!membership) {
+      throw new ConflictException('Failed to join organization');
+    }
+
+    // Populate Membership with user and organization details
+    await membership.populate('user', '-password -refreshToken');
+    await membership.populate('organization');
+
+    return membership;
   }
 
   async findOne(
@@ -150,5 +196,19 @@ export class MembershipService {
     await membership.save();
 
     return membership;
+  }
+
+  async leaveOrganization(userId: string, orgId: string): Promise<void> {
+    validateObjectId(userId);
+    validateObjectId(orgId);
+
+    const membership = await this.membershipModel.findOneAndDelete({
+      user: userId,
+      organization: orgId,
+    });
+
+    if (!membership) {
+      throw new NotFoundException('Membership not found');
+    }
   }
 }

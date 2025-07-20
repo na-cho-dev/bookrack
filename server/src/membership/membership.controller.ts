@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   Param,
   Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
@@ -25,6 +27,16 @@ import { log } from 'console';
 @Controller('membership')
 export class MembershipController {
   constructor(private readonly membershipService: MembershipService) {}
+
+  @Post('join')
+  @UseGuards(JWTAuthGuard)
+  async joinOrg(
+    @Body('orgCode') orgCode: string,
+    @CurrentUser() user: UserResponse,
+  ) {
+    const userId = user._id;
+    return this.membershipService.joinOrganization(userId, orgCode);
+  }
 
   @Get()
   @UseGuards(JWTAuthGuard, MembershipGuard, MembershipRoleGuard)
@@ -60,6 +72,19 @@ export class MembershipController {
       adminMembership,
       membershipId,
       role,
+    );
+  }
+
+  @Delete('leave')
+  @UseGuards(JWTAuthGuard, MembershipGuard)
+  async leaveOrganization(
+    @CurrentUser() user: UserResponse,
+    @Membership() membership: MembershipDocument,
+  ) {
+    const orgId = membership.organization._id.toString();
+    return this.membershipService.leaveOrganization(
+      String(user._id),
+      String(orgId),
     );
   }
 }

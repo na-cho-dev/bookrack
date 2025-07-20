@@ -1,8 +1,15 @@
-import { BookOpen, Plus } from "lucide-react";
+import { BookOpen, Plus, MoreVertical, Edit, Trash } from "lucide-react";
+import { Menu } from "@headlessui/react";
 import { useState } from "react";
-import BookModal from "./modals/BookModal";
+import BookModal from "../modals/BookModal";
 // import { useUserStore } from "../stores/useUserStore";
-import { useAllBooks } from "../hooks/useBook";
+import {
+  useAllBooks,
+  useCreateBook,
+  useDeleteBook,
+  useUpdateBook,
+} from "../../hooks/useBook";
+import type { AddBookPayload, UpdateBookPayload } from "../../types/book.type";
 
 const BooksTab = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,25 +18,43 @@ const BooksTab = () => {
 
   // const currentMembership = useUserStore((s) => s.currentMembership);
   const { data: books } = useAllBooks();
+  const createBookMutation = useCreateBook();
+  const updateBookMutation = useUpdateBook();
+  const deleteBookMutation = useDeleteBook();
 
   const handleAddClick = () => {
-    setSelectedBook(null);
+    setSelectedBook({
+      title: "",
+      author: "",
+      isbn: "",
+      publishedYear: 0,
+      totalCopies: 0,
+      availableCopies: 0,
+      genre: "",
+    });
     setModalMode("create");
     setIsModalOpen(true);
   };
 
-  const handleEditClick = (book: any) => {
+  const handleEditClick = (book: UpdateBookPayload) => {
     setSelectedBook(book);
     setModalMode("edit");
     setIsModalOpen(true);
   };
 
-  const handleSubmit = (data: any, mode: "create" | "edit") => {
-    if (mode === "create") {
-      console.log("Create Book:", data);
-    } else {
-      console.log("Update Book:", data);
+  const handleDeleteBook = (id: string) => {
+    if (window.confirm("Are you sure you want to delete this book?")) {
+      deleteBookMutation.mutate(id);
     }
+  };
+
+  const handleSubmit = (data: AddBookPayload, mode: "create" | "edit") => {
+    if (mode === "create") {
+      createBookMutation.mutate(data);
+    } else {
+      updateBookMutation.mutate({ ...data, _id: selectedBook._id });
+    }
+    setIsModalOpen(false); // close modal after submission
   };
 
   return (
@@ -63,7 +88,7 @@ const BooksTab = () => {
             />
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="">
             <table className="w-full text-sm text-left">
               <thead>
                 <tr className="text-gray-600 border-b">
@@ -95,13 +120,49 @@ const BooksTab = () => {
                           {book.availableCopies > 0 ? "Available" : "Borrowed"}
                         </span>
                       </td>
-                      <td className="py-4 pr-4">
-                        <button
-                          onClick={() => handleEditClick(book)}
-                          className="text-sm text-sec hover:underline"
+                      <td className="py-4 pr-4 text-right">
+                        <Menu
+                          as="div"
+                          className="relative inline-block text-left"
                         >
-                          Edit
-                        </button>
+                          <Menu.Button className="p-1 text-gray-500 hover:text-gray-700">
+                            <MoreVertical className="w-4 h-4" />
+                          </Menu.Button>
+                          <Menu.Items className="absolute right-0 mt-2 w-32 bg-white rounded shadow z-10">
+                            <Menu.Item>
+                              {({ active }) => (
+                                <button
+                                  onClick={() =>
+                                    handleEditClick({ ...book, id: book._id })
+                                  }
+                                  className={`w-full text-left px-4 py-2 text-sm ${
+                                    active ? "bg-gray-300" : ""
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <Edit className="w-4 h-4" />
+                                    Edit
+                                  </div>
+                                </button>
+                              )}
+                            </Menu.Item>
+                            <Menu.Item>
+                              {({ active }) => (
+                                <button
+                                  onClick={() => handleDeleteBook(book._id)}
+                                  className={`w-full text-left px-4 py-2 text-sm text-red-600 ${
+                                    active ? "bg-gray-300" : ""
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <Trash className="w-4 h-4" />
+                                    Delete
+                                  </div>
+                                </button>
+                              )}
+                            </Menu.Item>
+                          </Menu.Items>
+                        </Menu>
                       </td>
                     </tr>
                   ))
@@ -123,7 +184,7 @@ const BooksTab = () => {
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleSubmit}
         mode={modalMode}
-        initialData={selectedBook || undefined}
+        initialData={selectedBook}
       />
     </div>
   );

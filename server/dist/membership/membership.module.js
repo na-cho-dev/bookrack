@@ -13,6 +13,7 @@ const membership_controller_1 = require("./membership.controller");
 const mongoose_1 = require("@nestjs/mongoose");
 const membership_schema_1 = require("./schemas/membership.schema");
 const user_module_1 = require("../user/user.module");
+const organization_module_1 = require("../organization/organization.module");
 let MembershipModule = class MembershipModule {
 };
 exports.MembershipModule = MembershipModule;
@@ -23,6 +24,7 @@ exports.MembershipModule = MembershipModule = __decorate([
                 { name: membership_schema_1.Membership.name, schema: membership_schema_1.MembershipSchema },
             ]),
             (0, common_1.forwardRef)(() => user_module_1.UserModule),
+            (0, common_1.forwardRef)(() => organization_module_1.OrganizationModule),
         ],
         providers: [membership_service_1.MembershipService],
         controllers: [membership_controller_1.MembershipController],

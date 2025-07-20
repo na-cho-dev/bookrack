@@ -4,6 +4,7 @@ import { UserResponse } from 'src/user/interface/user.interface';
 export declare class MembershipController {
     private readonly membershipService;
     constructor(membershipService: MembershipService);
+    joinOrg(orgCode: string, user: UserResponse): Promise<MembershipDocument>;
     getAllMemberships(): Promise<MembershipDocument[]>;
     getUsersByOrganization(membership: MembershipDocument): Promise<(import("mongoose").Document<unknown, {}, MembershipDocument, {}> & import("./schemas/membership.schema").Membership & import("mongoose").Document<unknown, any, any, Record<string, any>> & Required<{
         _id: unknown;
@@ -12,4 +13,5 @@ export declare class MembershipController {
     })[]>;
     getUserOrgs(user: UserResponse): Promise<MembershipDocument[]>;
     updateMemberRole(adminMembership: MembershipDocument, membershipId: string, role: MembershipRole): Promise<MembershipDocument>;
+    leaveOrganization(user: UserResponse, membership: MembershipDocument): Promise<void>;
 }

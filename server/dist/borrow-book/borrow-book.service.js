@@ -45,10 +45,10 @@ let BorrowBookService = class BorrowBookService {
         const existingRecord = await this.borrowBookModel.findOne({
             user: userId,
             book: borrowBook.book,
-            status: 'borrowed',
+            status: { $in: ['pending', 'borrowed'] },
         });
         if (existingRecord) {
-            throw new common_1.BadRequestException('Borrow record already exists for this user and book');
+            throw new common_1.BadRequestException('You already have a pending or active borrow for this book');
         }
         const newBorrowRecord = new this.borrowBookModel({
             ...borrowBook,

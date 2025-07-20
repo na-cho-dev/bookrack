@@ -59,7 +59,7 @@ const Navbar = () => {
             <ul className="flex items-center">
               {!user ? (
                 // User not logged in
-                <li className="flex gap-8 text-sm md:text-base font-bold">
+                <li className="flex gap-5 text-sm md:text-base font-bold">
                   {currentPath === "/login" ? (
                     <Link to={"/register"} className="flex items-center gap-1">
                       <LogIn className="w-6 text-sec" />
@@ -128,7 +128,10 @@ const Navbar = () => {
                   Book<span className="text-sec">Rack</span>
                 </p>
               ) : (
-                currentMembership.organization.name ?? "Your Organization"
+                <p className="font-extrabold text-3xl font-exo text-tpri">
+                  Book<span className="text-sec">Rack</span>
+                </p>
+                // currentMembership.organization.name ?? "Your Organization"
               )}
             </p>
           </Link>

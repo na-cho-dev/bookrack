@@ -9,16 +9,25 @@ interface PublicRouteProps {
 const publicPaths = ["/login", "/register", "/forgot-password"];
 
 const PublicRoute = ({ children }: PublicRouteProps) => {
-  const { user, loadingUser } = useUserStore();
+  const { user, currentMembership, loadingUser } = useUserStore();
   const location = useLocation();
 
-  if (loadingUser) return null; // Prevent redirect during user loading
+  if (loadingUser) return null;
 
-  if (user && publicPaths.includes(location.pathname)) {
-    return <Navigate to="/select-org" replace />;
+  if (user && publicPaths.some((path) => location.pathname.startsWith(path))) {
+    if (!currentMembership) {
+      return <Navigate to="/select-org" replace />;
+    }
+
+    if (currentMembership.role === "admin") {
+      return <Navigate to="/dashboard/admin" replace />;
+    } else if (currentMembership.role === "user") {
+      return <Navigate to="/dashboard/member" replace />;
+    }
   }
 
   return children;
 };
+
 
 export default PublicRoute;

@@ -1,12 +1,12 @@
 import {
   BookOpen,
-  CheckCircle,
-  Clock,
-  Archive,
-  User,
   ChevronLeft,
   ChevronRight,
+  Clock,
+  HandHelping,
+  History,
   LayoutDashboard,
+  Settings2,
 } from "lucide-react";
 import type { SetURLSearchParams } from "react-router-dom";
 
@@ -17,7 +17,7 @@ interface Props {
   setSearchParams: SetURLSearchParams;
 }
 
-const AdminNavDrawer: React.FC<Props> = ({
+const MemberNavDrawer: React.FC<Props> = ({
   open,
   onToggle,
   activeTab,
@@ -25,11 +25,14 @@ const AdminNavDrawer: React.FC<Props> = ({
 }) => {
   const tabs = [
     { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { key: "books", label: "Books", icon: BookOpen },
-    { key: "available", label: "Available Books", icon: CheckCircle },
-    { key: "borrowed", label: "Borrowed Books", icon: Archive },
-    { key: "requests", label: "Borrow Requests", icon: Clock },
-    { key: "users", label: "Users", icon: User },
+    { key: "browse-books", label: "Books", icon: BookOpen },
+    { key: "borrowed-books", label: "Borrowed Books", icon: HandHelping },
+    { key: "pending-requests", label: "Pending Requests", icon: Clock },
+    { key: "borrow-history", label: "Borrow History", icon: History },
+  ];
+
+  const settingsTabs = [
+    { key: "settings", label: "Settings", icon: Settings2 },
   ];
 
   const handleTabChange = (key: string) => {
@@ -40,9 +43,9 @@ const AdminNavDrawer: React.FC<Props> = ({
     <>
       {/* Drawer */}
       <div
-        className={`fixed top-22 left-0 z-40 w-72 h-[calc(100vh-4rem)] border-r shadow-md overflow-hidden transition-all duration-300 ${
+        className={`fixed top-28 left-0 z-40 w-72 h-[calc(100vh-7rem)] border-r shadow-md overflow-hidden transition-all duration-300 ${
           open ? "translate-x-0" : "-translate-x-full"
-        }`}
+        } flex flex-col justify-between`}
       >
         <nav className="mt-10 w-full">
           {tabs.map(({ key, label, icon: IconComponent }) => (
@@ -54,6 +57,23 @@ const AdminNavDrawer: React.FC<Props> = ({
               }`}
             >
               {IconComponent && <IconComponent className="w-5" />}
+              {label}
+            </button>
+          ))}
+        </nav>
+
+        {/* Bottom settings section */}
+        <nav className="mb-4">
+          <hr className="border-t" />
+          {settingsTabs.map(({ key, label, icon: IconComponent }) => (
+            <button
+              key={key}
+              onClick={() => handleTabChange(key)}
+              className={`flex items-center gap-5 w-full p-5 ${
+                activeTab === key ? "bg-sec text-white" : "text-sec"
+              }`}
+            >
+              <IconComponent className="w-5" />
               {label}
             </button>
           ))}
@@ -78,4 +98,4 @@ const AdminNavDrawer: React.FC<Props> = ({
   );
 };
 
-export default AdminNavDrawer;
+export default MemberNavDrawer;

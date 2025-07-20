@@ -6,6 +6,7 @@ import {
   useBorrowedBooks,
   usePendingBorrowRequests,
 } from "../../hooks/useBook";
+import { Link } from "react-router-dom";
 
 const AdminDashboardTab = () => {
   const user = useUserStore((state) => state.user);
@@ -75,12 +76,12 @@ const AdminDashboardTab = () => {
             <h2 className="text-lg font-semibold text-gray-800">
               Recent Borrow Requests
             </h2>
-            <a
-              href="/admin/borrow-requests"
+            <Link
+              to="/dashboard/admin?tab=requests"
               className="text-sm text-sec hover:underline"
             >
               View all
-            </a>
+            </Link>
           </div>
 
           <div className="overflow-x-auto">

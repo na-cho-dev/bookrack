@@ -40,7 +40,7 @@ export class BookController {
   }
 
   @Get('all')
-  @MembershipRoles(MembershipRole.ADMIN)
+  // @MembershipRoles(MembershipRole.ADMIN)
   async getAllBooks(@Headers('x-organization-id') orgId: string) {
     const books = await this.bookService.getAllBooksByOrg(orgId);
     return {
@@ -50,7 +50,7 @@ export class BookController {
   }
 
   @Get('available')
-  @MembershipRoles(MembershipRole.ADMIN)
+  // @MembershipRoles(MembershipRole.ADMIN)
   async getAvailableBooks(@Headers('x-organization-id') orgId: string) {
     const books = await this.bookService.getAvailableBooksByOrg(orgId);
     return {

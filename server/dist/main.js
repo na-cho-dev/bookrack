@@ -38,6 +38,7 @@ async function bootstrap() {
         port: PORT,
         db: envConfig.getEnv('MONGODB_URI'),
         api: `${appUrl}/api-docs`,
+        health: `${appUrl}/api/health`,
     });
 }
 bootstrap();

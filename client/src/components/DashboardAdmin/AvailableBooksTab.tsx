@@ -1,8 +1,8 @@
 import { BookOpen, Eye } from "lucide-react";
 import { useState } from "react";
-import BookViewModal from "./modals/BookViewModal";
-import type { Book } from "../types/book.type";
-import { useAvailableBooks } from "../hooks/useBook";
+import BookViewModal from "../modals/BookViewModal";
+import type { Book } from "../../types/book.type";
+import { useAvailableBooks } from "../../hooks/useBook";
 
 const AvailableBooksTab = () => {
   const [viewModalOpen, setViewModalOpen] = useState(false);
