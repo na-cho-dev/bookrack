@@ -22,14 +22,14 @@ export const OrganizationSchema = SchemaFactory.createForClass(Organization);
 
 OrganizationSchema.set('toJSON', {
   transform: (doc, ret) => {
-    delete ret.__v;
+    delete (ret as any).__v;
     return ret;
   },
 });
 
 OrganizationSchema.set('toObject', {
   transform: (doc, ret) => {
-    delete ret.__v;
+    delete (ret as any).__v;
     return ret;
   },
 });

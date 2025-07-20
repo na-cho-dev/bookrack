@@ -38,14 +38,14 @@ export const BorrowBookSchema = SchemaFactory.createForClass(BorrowBook);
 
 BorrowBookSchema.set('toJSON', {
   transform: (doc, ret) => {
-    delete ret.__v;
+    delete (ret as any).__v;
     return ret;
   },
 });
 
 BorrowBookSchema.set('toObject', {
   transform: (doc, ret) => {
-    delete ret.__v;
+    delete (ret as any).__v;
     return ret;
   },
 });
