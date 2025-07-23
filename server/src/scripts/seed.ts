@@ -1,10 +1,9 @@
+import { configDotenv } from 'dotenv';
+configDotenv();
 import mongoose from 'mongoose';
-import { User, UserSchema } from '../user/schemas/user.schema';
-import {
-  Organization,
-  OrganizationSchema,
-} from '../organization/schemas/organization.shema';
-import { Book, BookSchema } from '../book/schemas/book.schema';
+import { UserSchema } from '../user/schemas/user.schema';
+import { OrganizationSchema } from '../organization/schemas/organization.shema';
+import { BookSchema } from '../book/schemas/book.schema';
 import {
   Membership,
   MembershipSchema,
@@ -13,9 +12,13 @@ import {
 const bcrypt = require('bcrypt');
 
 async function main() {
-  await mongoose.connect(
-    process.env.MONGODB_URI || 'mongodb://localhost:27017/bookrack',
-  );
+  const dbUrl = process.env.MONGODB_URI;
+  if (!dbUrl) throw new Error('MONGODB_URI environment variable is not set.');
+  console.log('Connecting to MongoDB:', dbUrl);
+  await mongoose.connect(dbUrl);
+
+  console.log('Connected to MongoDB: ', dbUrl);
+  console.log('Seeding data...');
 
   const UserModel = mongoose.model('User', UserSchema);
   const OrganizationModel = mongoose.model('Organization', OrganizationSchema);
