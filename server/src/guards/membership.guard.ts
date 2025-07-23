@@ -5,7 +5,8 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { MembershipService } from 'src/membership/membership.service';
+import { MembershipService } from '../membership/membership.service';
+import { Types } from 'mongoose';
 
 @Injectable()
 export class MembershipGuard implements CanActivate {
@@ -15,14 +16,15 @@ export class MembershipGuard implements CanActivate {
     const req = context.switchToHttp().getRequest();
     const user = req.user;
     const orgId = req.headers['x-organization-id'];
+    const orgObjectId = new Types.ObjectId(orgId);
 
     if (!orgId) {
       throw new BadRequestException('Organization ID is required.');
     }
 
     const membership = await this.membershipService.findOne({
-      user: String(user._id),
-      organization: String(orgId),
+      user: user._id,
+      organization: orgObjectId,
     });
 
     if (!membership)
@@ -31,7 +33,6 @@ export class MembershipGuard implements CanActivate {
       );
 
     req.membership = membership;
-
     // console.log('Membership Request:', req.membership);
 
     return true;

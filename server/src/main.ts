@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import * as cookieParser from 'cookie-parser';
 import { EnvConfig } from './common/config/env.config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -19,20 +18,41 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
 
+  // Info endpoint for '/'
+  app.getHttpAdapter().get('/', (req, res) => {
+    res.json({
+      name: 'BookRack API',
+      description: 'API for BookRack library management system',
+      version: '1.0',
+      docs: '/api-docs',
+      health: '/api/health',
+    });
+  });
+
   const logger = new Logger(AppModule.name);
   const PORT = envConfig.getEnv('PORT', '3330');
 
-  if (envConfig.getEnv('NODE_ENV') === 'development') {
-    const config = new DocumentBuilder()
-      .setTitle('BookRack API')
-      .setDescription('API documentation for the BookRack System')
-      .setVersion('1.0')
-      .addCookieAuth('Authentication')
-      .build();
+  // if (envConfig.getEnv('NODE_ENV') === 'development') {
+  //   const config = new DocumentBuilder()
+  //     .setTitle('BookRack API')
+  //     .setDescription('API documentation for the BookRack System')
+  //     .setVersion('1.0')
+  //     .addCookieAuth('Authentication')
+  //     .build();
 
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api-docs', app, document);
-  }
+  //   const document = SwaggerModule.createDocument(app, config);
+  //   SwaggerModule.setup('api-docs', app, document);
+  // }
+
+  const config = new DocumentBuilder()
+    .setTitle('BookRack API')
+    .setDescription('API documentation for the BookRack System')
+    .setVersion('1.0')
+    .addCookieAuth('Authentication')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api-docs', app, document);
 
   const isProd = envConfig.getEnv('NODE_ENV') === 'production';
   await app.listen(PORT, isProd ? '0.0.0.0' : 'localhost');
@@ -44,7 +64,7 @@ async function bootstrap() {
     env: envConfig.getEnv('NODE_ENV'),
     port: PORT,
     db: envConfig.getEnv('MONGODB_URI'),
-    api: `${appUrl}/api-docs`,
+    apiDocs: `${appUrl}/api-docs`,
     health: `${appUrl}/api/health`,
   });
 }

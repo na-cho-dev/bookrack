@@ -1,7 +1,51 @@
 import { useMutation } from "@tanstack/react-query";
-import { joinOrg, leaveOrg } from "../api/membership.api";
+import {
+  getOrgUsers,
+  joinOrg,
+  leaveOrg,
+  transferOwnership,
+  getUserMemberships,
+} from "../api/membership.api";
 import { useUserStore } from "../stores/useUserStore";
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+// import { queryClient } from "../utils/queryClient";
+
+export const useLoadMemberships = () => {
+  const setLoadingUser = useUserStore((state) => state.setLoadingUser);
+  const setMemberships = useUserStore((state) => state.setMemberships);
+
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["user-memberships"],
+    queryFn: getUserMemberships,
+    retry: false,
+  });
+
+  useEffect(() => {
+    setLoadingUser(isLoading);
+
+    if (!isLoading) {
+      if (data) {
+        setMemberships(data);
+      } else if (isError) {
+        setMemberships([]);
+      }
+    }
+  }, [data, isError, isLoading]);
+
+  return { isLoading, isError, data };
+};
+
+export const useOrganizationUsers = () => {
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["organization-users"],
+    queryFn: getOrgUsers,
+    retry: false,
+  });
+
+  return { isLoading, isError, data };
+};
 
 export const useLeaveOrg = () => {
   const resetCurrentMembership = useUserStore((s) => s.setCurrentMembership);
@@ -22,7 +66,11 @@ export const useLeaveOrg = () => {
       setMemberships(updatedMemberships);
       resetCurrentMembership(null);
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      // toast.error(`Failed to leave organization: ${error.message}`);
+      toast.error(
+        error?.response?.data?.message || "Failed to leave organization"
+      );
       console.error("Failed to leave organization:", error);
     },
   });
@@ -45,6 +93,22 @@ export const useJoinOrg = () => {
     onError: (error: any) => {
       toast.error(
         error?.response?.data?.message || "Failed to join organization"
+      );
+    },
+  });
+};
+
+export const useTransferOwnership = () => {
+  return useMutation({
+    mutationFn: async (newOwnerId: string) => {
+      return transferOwnership(newOwnerId);
+    },
+    onSuccess: async () => {
+      toast.success("Ownership transferred successfully!");
+    },
+    onError: (err: any) => {
+      toast.error(
+        err?.response?.data?.message || "Failed to transfer ownership"
       );
     },
   });

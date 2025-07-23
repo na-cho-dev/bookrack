@@ -4,7 +4,7 @@ import {
   Organization,
   OrganizationDocument,
 } from './schemas/organization.shema';
-import { FilterQuery, Model, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { customAlphabet } from 'nanoid';
 import { MembershipService } from 'src/membership/membership.service';
@@ -50,7 +50,7 @@ export class OrganizationService {
     const newOrg = new this.organizationModel(organizationDto);
 
     newOrg.code = await this.generateUniqueOrgCode(organizationDto.name);
-    newOrg.owner = organizationDto.owner;
+    newOrg.owner = new Types.ObjectId(organizationDto.owner);
 
     const savedOrganization = await newOrg.save();
 
@@ -76,7 +76,10 @@ export class OrganizationService {
     if (filters.owner) {
       query.owner = { $regex: filters.owner, $options: 'i' }; // Case-insensitive search
     }
-    const orgs = await this.organizationModel.find(query).sort({ owner: -1 });
+    const orgs = await this.organizationModel
+      .find(query)
+      .sort({ owner: -1 })
+      .populate('owner', 'email');
     if (!orgs || orgs.length === 0) {
       throw new NotFoundException(
         'No organizations found matching the criteria',
@@ -86,22 +89,25 @@ export class OrganizationService {
   }
 
   async getOrgById(id: string): Promise<OrganizationDocument | null> {
-    return this.organizationModel.findById(id);
+    return this.organizationModel.findById(id).populate('owner', 'email');
   }
 
   async getOrgByCode(code: string): Promise<OrganizationDocument | null> {
-    const org = await this.organizationModel.findOne({ code });
-    if (!org) {
-      throw new NotFoundException('Organization not found');
-    }
+    const org = await this.organizationModel
+      .findOne({ code })
+      .populate('owner', 'email');
+    if (!org) throw new NotFoundException('Organization not found');
+
     return org;
   }
 
   async getAllOrgs(): Promise<OrganizationDocument[]> {
-    const orgs = await this.organizationModel.find().sort({ createdAt: -1 });
-    if (!orgs || orgs.length === 0) {
+    const orgs = await this.organizationModel
+      .find()
+      .sort({ createdAt: -1 })
+      .populate('owner', 'email');
+    if (!orgs || orgs.length === 0)
       throw new NotFoundException('No organizations found');
-    }
 
     return orgs;
   }
@@ -110,22 +116,18 @@ export class OrganizationService {
     id: string,
     updateData: UpdateQuery<CreateOrganizationDto>,
   ): Promise<OrganizationDocument | null> {
-    const organization = await this.organizationModel.findByIdAndUpdate(
-      id,
-      updateData,
-      { new: true },
-    );
-    if (!organization) {
-      throw new NotFoundException('Organization not found');
-    }
+    const organization = await this.organizationModel
+      .findByIdAndUpdate(id, updateData, { new: true })
+      .populate('owner', 'email');
+    if (!organization) throw new NotFoundException('Organization not found');
+
     return organization;
   }
 
   async deleteOrganization(id: string): Promise<OrganizationDocument | null> {
     const organization = await this.organizationModel.findByIdAndDelete(id);
-    if (!organization) {
-      throw new NotFoundException('Organization not found');
-    }
+    if (!organization) throw new NotFoundException('Organization not found');
+
     return organization;
   }
 }

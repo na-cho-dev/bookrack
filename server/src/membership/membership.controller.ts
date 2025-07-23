@@ -13,6 +13,7 @@ import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
 import { MembershipGuard } from 'src/guards/membership.guard';
 import { MembershipRoleGuard } from 'src/guards/membership-role.guard';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { TransferOwnershipDto } from './dto/transfer-ownership.dto';
 import {
   MembershipDocument,
   MembershipRole,
@@ -56,7 +57,7 @@ export class MembershipController {
   @Get('user/all')
   @UseGuards(JWTAuthGuard)
   async getUserOrgs(@CurrentUser() user: UserResponse) {
-    const orgs = await this.membershipService.findAllByUserId(String(user._id));
+    const orgs = await this.membershipService.findAllByUserId(user._id);
     return orgs;
   }
 
@@ -75,6 +76,24 @@ export class MembershipController {
     );
   }
 
+  @Patch('organization/transfer-ownership')
+  @UseGuards(JWTAuthGuard, MembershipGuard, MembershipRoleGuard)
+  @MembershipRoles(MembershipRole.ADMIN)
+  async transferOwnership(
+    @CurrentUser() user: UserResponse,
+    @Membership() membership: MembershipDocument,
+    @Body() dto: TransferOwnershipDto,
+  ) {
+    const orgId = membership.organization._id.toString();
+    if (!dto.newOwnerId)
+      throw new ForbiddenException('New owner ID must be provided');
+    return await this.membershipService.transferOwnership(
+      orgId,
+      user._id,
+      dto.newOwnerId,
+    );
+  }
+
   @Delete('leave')
   @UseGuards(JWTAuthGuard, MembershipGuard)
   async leaveOrganization(
@@ -82,9 +101,6 @@ export class MembershipController {
     @Membership() membership: MembershipDocument,
   ) {
     const orgId = membership.organization._id.toString();
-    return this.membershipService.leaveOrganization(
-      String(user._id),
-      String(orgId),
-    );
+    return this.membershipService.leaveOrganization(user._id, orgId);
   }
 }

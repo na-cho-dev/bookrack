@@ -14,9 +14,9 @@ import {
   MembershipRole,
 } from './schemas/membership.schema';
 import { FilterQuery, Model, Types } from 'mongoose';
-import { UserService } from 'src/user/user.service';
-import { validateObjectId } from 'src/common/utils/validate-objectid.utils';
-import { OrganizationService } from 'src/organization/organization.service';
+import { UserService } from '../user/user.service';
+import { validateObjectId } from '../common/utils/validate-objectid.utils';
+import { OrganizationService } from '../organization/organization.service';
 
 @Injectable()
 export class MembershipService {
@@ -34,19 +34,21 @@ export class MembershipService {
     organizationId: string,
     role: MembershipRole,
   ): Promise<MembershipDocument> {
+    const objUserId = validateObjectId(userId);
+    const objOrganizationId = validateObjectId(organizationId);
+
     const existing = await this.membershipModel.findOne({
-      user: userId,
-      organization: organizationId,
+      user: objUserId,
+      organization: objOrganizationId,
     });
-    if (existing) {
+    if (existing)
       throw new ConflictException('User already part of this organization');
-    }
 
     const user = await this.userService.getUserById(userId);
 
     return this.membershipModel.create({
-      user: userId,
-      organization: organizationId,
+      user: objUserId,
+      organization: objOrganizationId,
       role,
     });
   }
@@ -55,18 +57,18 @@ export class MembershipService {
     userId: string,
     organizationCode: string,
   ): Promise<MembershipDocument> {
+    const objUserId = validateObjectId(userId);
     // Find the organization by code
     const org = await this.organizationService.findOne({
       code: organizationCode,
     });
-    if (!org) {
+    if (!org)
       throw new NotFoundException('Organization not found with provided code');
-    }
 
     // Prevent duplicate membership
     const existing = await this.membershipModel.findOne({
-      user: String(userId),
-      organization: String(org._id),
+      user: objUserId,
+      organization: org._id,
     });
 
     if (existing) {
@@ -77,19 +79,23 @@ export class MembershipService {
 
     // Create the membership (default role: user, status: pending or active)
     const membership = await this.membershipModel.create({
-      user: String(userId),
-      organization: String(org._id),
-      role: 'user',
+      user: objUserId,
+      organization: org._id,
+      role: MembershipRole.MEMBER,
       status: 'pending', // or 'pending' if you want admin approval
     });
 
-    if (!membership) {
-      throw new ConflictException('Failed to join organization');
-    }
+    if (!membership) throw new ConflictException('Failed to join organization');
 
     // Populate Membership with user and organization details
     await membership.populate('user', '-password -refreshToken');
-    await membership.populate('organization');
+    await membership.populate({
+      path: 'organization',
+      populate: {
+        path: 'owner',
+        select: 'email',
+      },
+    });
 
     return membership;
   }
@@ -100,7 +106,13 @@ export class MembershipService {
     const membership = await this.membershipModel
       .findOne(query)
       .populate('user', '-password -refreshToken')
-      .populate('organization');
+      .populate({
+        path: 'organization',
+        populate: {
+          path: 'owner',
+          select: 'email',
+        },
+      });
 
     if (!membership) return null;
 
@@ -108,36 +120,55 @@ export class MembershipService {
   }
 
   async findAllByUserId(userId: string): Promise<MembershipDocument[]> {
-    validateObjectId(userId);
+    const objUserId = validateObjectId(userId);
     const memberships = await this.membershipModel
-      .find({ user: userId })
+      .find({ user: objUserId })
       .populate('user', '-password -refreshToken')
-      .populate('organization');
+      .populate({
+        path: 'organization',
+        populate: {
+          path: 'owner',
+          select: 'email',
+        },
+      });
 
     if (!memberships || memberships.length === 0) return [];
 
     return memberships;
   }
 
-  async findUsersByOrganization(orgId: string) {
-    validateObjectId(orgId);
+  async findUsersByOrganization(orgId: string): Promise<MembershipDocument[]> {
+    const objOrgId = validateObjectId(orgId);
 
     return this.membershipModel
-      .find({ organization: orgId })
+      .find({ organization: objOrgId })
       .populate('user', '-password -refreshToken')
-      .populate('organization');
+      .populate({
+        path: 'organization',
+        populate: {
+          path: 'owner',
+          select: 'email',
+        },
+      });
   }
 
   async findByUserAndOrganization(
     userId: string,
     organizationId: string,
   ): Promise<MembershipDocument | null> {
-    validateObjectId(userId);
-    validateObjectId(organizationId);
+    const objUserId = validateObjectId(userId);
+    const objOrgId = validateObjectId(organizationId);
+
     const membership = await this.membershipModel
-      .findOne({ user: userId, organization: organizationId })
+      .findOne({ user: objUserId, organization: objOrgId })
       .populate('user', '-password -refreshToken')
-      .populate('organization');
+      .populate({
+        path: 'organization',
+        populate: {
+          path: 'owner',
+          select: 'email',
+        },
+      });
     if (!membership) {
       return null;
     }
@@ -161,7 +192,13 @@ export class MembershipService {
     const memberships = await this.membershipModel
       .find()
       .populate('user', '-password -refreshToken')
-      .populate('organization');
+      .populate({
+        path: 'organization',
+        populate: {
+          path: 'owner',
+          select: 'email',
+        },
+      });
     if (!memberships || memberships.length === 0) {
       return [];
     }
@@ -188,9 +225,8 @@ export class MembershipService {
       );
     }
 
-    if (String(membership._id) === String(adminMembership._id)) {
+    if (String(membership._id) === String(adminMembership._id))
       throw new ForbiddenException('You cannot update your own role');
-    }
 
     membership.role = role;
     await membership.save();
@@ -198,17 +234,90 @@ export class MembershipService {
     return membership;
   }
 
-  async leaveOrganization(userId: string, orgId: string): Promise<void> {
-    validateObjectId(userId);
-    validateObjectId(orgId);
+  async transferOwnership(
+    orgId: string,
+    currentAdminId: string,
+    newOwnerId: string,
+  ): Promise<MembershipDocument> {
+    const objOrgId = validateObjectId(orgId);
+    const objCurrentAdminId = validateObjectId(currentAdminId);
+    const objNewOwnerId = validateObjectId(newOwnerId);
 
-    const membership = await this.membershipModel.findOneAndDelete({
-      user: userId,
-      organization: orgId,
+    // Find organization
+    const org = await this.organizationService.getOrgById(orgId);
+    if (!org) throw new NotFoundException('Organization not found');
+
+    console.log('Owner String ID: ', String(org.owner));
+    console.log('Current Admin String ID: ', String(objCurrentAdminId));
+
+    if (String(org.owner._id) !== String(objCurrentAdminId)) {
+      throw new ForbiddenException(
+        'Only the current owner can transfer ownership',
+      );
+    }
+    if (String(objCurrentAdminId) === String(objNewOwnerId))
+      throw new BadRequestException('Cannot transfer ownership to yourself');
+
+    // Find new owner's membership in this org
+    const newOwnerMembership = await this.membershipModel.findOne({
+      user: objNewOwnerId,
+      organization: objOrgId,
+    });
+    if (!newOwnerMembership) {
+      throw new NotFoundException(
+        'New owner must be a member of the organization',
+      );
+    }
+
+    // Update organization owner
+    org.owner = objNewOwnerId;
+    await org.save();
+
+    // Update roles: new owner becomes admin, current admin can be demoted to member or staff
+    newOwnerMembership.role = MembershipRole.ADMIN;
+    await newOwnerMembership.save();
+
+    // Optionally, demote the old admin (current owner) to MEMBER
+    const oldAdminMembership = await this.membershipModel.findOne({
+      user: currentAdminId,
+      organization: objOrgId,
+    });
+    if (oldAdminMembership) {
+      oldAdminMembership.role = MembershipRole.MEMBER;
+      await oldAdminMembership.save();
+    }
+
+    return newOwnerMembership;
+  }
+
+  async leaveOrganization(userId: string, orgId: string): Promise<void> {
+    const objUserId = validateObjectId(userId);
+    const objOrgId = validateObjectId(orgId);
+
+    const membership = await this.membershipModel.findOne({
+      user: objUserId,
+      organization: objOrgId,
     });
 
-    if (!membership) {
-      throw new NotFoundException('Membership not found');
+    if (!membership) throw new NotFoundException('Membership not found');
+
+    if (membership.role === 'admin') {
+      const memberCount = await this.membershipModel.countDocuments({
+        organization: objOrgId,
+      });
+
+      if (memberCount > 1) {
+        throw new ForbiddenException(
+          'Admin cannot leave organization unless ownership is transferred to another user.',
+        );
+      } else {
+        await this.membershipModel.deleteOne({ _id: membership._id });
+        await this.organizationService.deleteOrganization(String(objOrgId));
+        return;
+      }
     }
+
+    // Not admin, just remove membership
+    await this.membershipModel.deleteOne({ _id: membership._id });
   }
 }

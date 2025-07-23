@@ -1,4 +1,5 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsMongoId, IsString } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class CreateOrganizationDto {
   @IsString()
@@ -7,7 +8,6 @@ export class CreateOrganizationDto {
   @IsString()
   description: string;
 
-  @IsString()
-  @IsEmail()
+  @IsMongoId()
   owner: string;
 }

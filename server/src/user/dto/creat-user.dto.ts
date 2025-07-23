@@ -5,7 +5,7 @@ import {
   IsString,
   IsStrongPassword,
 } from 'class-validator';
-import { Organization } from 'src/organization/schemas/organization.shema';
+import { Organization } from '../../organization/schemas/organization.shema';
 
 export class CreateUserDto {
   @ApiProperty({

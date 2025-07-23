@@ -1,5 +1,5 @@
-import { useCurrentUser } from "../../hooks/useCurrentUser";
-import { useLoadMemberships } from "../../hooks/useLoadMemberships";
+import { useCurrentUser } from "../../hooks/useUser";
+import { useLoadMemberships } from "../../hooks/useMembership";
 
 const AppInitializer = () => {
   useCurrentUser();

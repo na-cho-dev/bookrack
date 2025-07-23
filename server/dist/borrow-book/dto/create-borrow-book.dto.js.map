@@ -1,1 +1,0 @@
-{"version":3,"file":"create-borrow-book.dto.js","sourceRoot":"","sources":["../../../src/borrow-book/dto/create-borrow-book.dto.ts"],"names":[],"mappings":";;;;;;;;;;;;AAAA,6CAA8C;AAC9C,qDAAqE;AAErE,MAAa,mBAAmB;IAe9B,IAAI,CAAS;CAiBd;AAhCD,kDAgCC;AAjBC;IANC,IAAA,qBAAW,EAAC;QACX,WAAW,EAAE,mCAAmC;QAChD,OAAO,EAAE,0BAA0B;KACpC,CAAC;IACD,IAAA,0BAAQ,GAAE;IACV,IAAA,4BAAU,GAAE;;iDACA"}

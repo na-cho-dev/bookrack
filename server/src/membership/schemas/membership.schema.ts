@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { Organization } from 'src/organization/schemas/organization.shema';
-import { User } from 'src/user/schemas/user.schema';
+import { Organization } from '../../organization/schemas/organization.shema';
+import { User } from '../../user/schemas/user.schema';
 
 export type MembershipDocument = Membership & Document;
 export enum MembershipRole {
   ADMIN = 'admin',
   STAFF = 'staff',
-  USER = 'user',
+  MEMBER = 'member',
 }
 export type MembershipStatus = 'pending' | 'active' | 'rejected';
 

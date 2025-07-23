@@ -30,15 +30,9 @@ const SelectOrganization = () => {
       memberships.find((m) => m.organization._id === orgId) ?? null;
     setCurrentMembership(membership);
 
-    console.log("Membership Before: ", membership);
-
-    // queryClient.removeQueries({ queryKey: ["all-books"], exact: false });
-
-    console.log("Membership After: ", membership);
-
     if (membership?.role === "admin") {
       navigate("/dashboard/admin");
-    } else if (membership?.role === "user") {
+    } else if (membership?.role === "member") {
       navigate("/dashboard/member");
     }
   };

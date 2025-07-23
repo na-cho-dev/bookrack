@@ -89,9 +89,7 @@ export class AuthService {
     this.jwtCookieService.setAuthCookie(response, accessToken, 'access');
     this.jwtCookieService.setAuthCookie(response, refreshToken, 'refresh');
 
-    const memberships = await this.membershipService.findAllByUserId(
-      String(user._id),
-    );
+    const memberships = await this.membershipService.findAllByUserId(user._id);
 
     const userResponse: UserResponse = {
       _id: String(user._id),
@@ -123,13 +121,13 @@ export class AuthService {
 
     // Organization context -> validate membership
     const membership = await this.membershipService.findByUserAndOrganization(
-      String(user._id),
+      user._id,
       orgId,
     );
 
     if (!membership) {
       throw new ForbiddenException(
-        'Could not find membership for user in organization',
+        'Could not find membership for user in this organization',
       );
     }
 

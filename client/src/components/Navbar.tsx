@@ -122,7 +122,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center px-4 py-3">
           <Link to={"/"} className="flex items-center gap-3">
             <img src={ImageAssets.logo} alt="" width={40} />
-            <p className="font-extrabold text-3xl font-exo text-tpri">
+            <div className="font-extrabold text-3xl font-exo text-tpri">
               {currentPath === "/" ? (
                 <p className="font-extrabold text-3xl font-exo text-tpri">
                   Book<span className="text-sec">Rack</span>
@@ -133,7 +133,7 @@ const Navbar = () => {
                 </p>
                 // currentMembership.organization.name ?? "Your Organization"
               )}
-            </p>
+            </div>
           </Link>
           <ul className="flex items-center justify-center gap-7">
             <li className="text-base font-bold">

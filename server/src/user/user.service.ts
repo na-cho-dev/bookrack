@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
 import { CreateUserDto } from './dto/creat-user.dto';
 import { hash } from 'bcrypt';
 import { UserInput, UserResponse } from './interface/user.interface';
@@ -59,7 +59,7 @@ export class UserService {
     const organization = await this.organizationService.createOrganization({
       name: adminDto.organizationName,
       description: adminDto.organizationDescription,
-      owner: email,
+      owner: String(user._id),
     });
 
     // Create membership
@@ -117,7 +117,7 @@ export class UserService {
     await this.membershipService.createMembership(
       String(user._id),
       String(organization._id),
-      MembershipRole.USER,
+      MembershipRole.MEMBER,
     );
 
     const memberships = await this.membershipService.findAllByUserId(
@@ -161,9 +161,7 @@ export class UserService {
     const user = await this.userModel.findOneAndUpdate(query, updateData, {
       new: true,
     });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
+    if (!user) throw new NotFoundException('User not found');
 
     return user;
   }

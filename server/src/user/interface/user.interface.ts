@@ -1,12 +1,12 @@
-import { Membership } from 'src/membership/schemas/membership.schema';
-import { Organization } from 'src/organization/schemas/organization.shema';
+import { Membership } from '../../membership/schemas/membership.schema';
+import { Organization } from '../../organization/schemas/organization.shema';
 
 export interface BaseUserInput {
   _id?: string;
   email: string;
   name?: string;
   password?: string;
-  role: 'admin' | 'staff' | 'user';
+  role: 'admin' | 'staff' | 'member';
 }
 
 export interface AdminInput extends BaseUserInput {
@@ -16,7 +16,7 @@ export interface AdminInput extends BaseUserInput {
 }
 
 export interface UserInput extends BaseUserInput {
-  role: 'user' | 'staff';
+  role: 'member' | 'staff';
   organizationCode: string;
 }
 
@@ -24,7 +24,7 @@ export type UserCreationInput = AdminInput | UserInput;
 
 export interface MembershipResponse {
   organization: Organization;
-  role: 'admin' | 'staff' | 'user';
+  role: 'admin' | 'staff' | 'member';
 }
 
 export interface UserResponse {
