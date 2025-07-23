@@ -65,6 +65,32 @@ BookRack follows a modular, layered architecture:
 
 ---
 
+
+## 🧪 Demo/Test Accounts
+
+To make it easy to explore BookRack, the database seed script creates the following users by default. You can use these credentials to log in and test the app:
+
+### Admin Accounts
+
+| Name         | Email                | Password      |
+|--------------|----------------------|---------------|
+| Alice Admin  | alice@central.com    | Password123!  |
+| Bob Admin    | bob@tech.com         | Password123!  |
+| Carol Admin  | carol@kids.com       | Password123!  |
+
+### Member Accounts
+
+| Name          | Email                | Password      | Organization      |
+|---------------|----------------------|---------------|-------------------|
+| Dave Member   | dave@central.com     | Password123!  | Central Library   |
+| Eve Member    | eve@tech.com         | Password123!  | Tech Library      |
+| Frank Member  | frank@kids.com       | Password123!  | Kids Library      |
+| Grace Member  | grace@central.com    | Password123!  | Central Library   |
+| Heidi Member  | heidi@tech.com       | Password123!  | Tech Library      |
+
+All accounts use the password `Password123!`.
+
+---
 ## 🏁 Getting Started
 
 ### Prerequisites
