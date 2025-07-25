@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Listbox } from "@headlessui/react";
 import JoinOrgModal from "../components/modals/JoinOrgModal";
+import CreateOrgModal from "../components/modals/CreateOrgModal";
 // import { queryClient } from "../utils/queryClient";
 
 const SelectOrganization = () => {
@@ -19,9 +20,9 @@ const SelectOrganization = () => {
   const setCurrentMembership = useUserStore(
     (state) => state.setCurrentMembership
   );
-
   const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
+  const [isCreateOrgOpen, setIsCreateOrgOpen] = useState(false);
 
   const handleSelect = (orgId: string) => {
     setSelectedOrgId(orgId);
@@ -140,13 +141,20 @@ const SelectOrganization = () => {
 
             {/* Extra actions */}
             <div className="mt-6 flex flex-col gap-3">
-              <Link
+              {/* <Link
                 to="/create-org"
                 className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sec text-white rounded-lg hover:bg-sec-dark transition w-full"
               >
                 <PlusCircle className="w-4 h-4" />
                 Create Organization
-              </Link>
+              </Link> */}
+              <button
+                onClick={() => setIsCreateOrgOpen(true)}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sec text-white rounded-lg hover:bg-sec-dark transition w-full"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Create Organization
+              </button>
 
               <button
                 onClick={() => setIsJoinModalOpen(true)}
@@ -163,6 +171,11 @@ const SelectOrganization = () => {
         <JoinOrgModal
           open={isJoinModalOpen}
           onClose={() => setIsJoinModalOpen(false)}
+        />
+        {/* Create Org Modal */}
+        <CreateOrgModal
+          open={isCreateOrgOpen}
+          onClose={() => setIsCreateOrgOpen(false)}
         />
       </div>
     </div>

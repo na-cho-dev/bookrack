@@ -81,7 +81,7 @@ const Register = () => {
             ? handleSubmitUser(onUserSubmit)
             : handleSubmitAdmin(onAdminSubmit)
         }
-        className="bg-[#fff4df] p-10 rounded-xl shadow-lg max-w-md w-full space-y-5"
+        className="bg-[#fff4df] p-10 rounded-xl shadow-lg max-w-md w-full space-y-5 mt-36 mb-20"
       >
         <img
           src={ImageAssets.logo}
@@ -98,7 +98,7 @@ const Register = () => {
           <button
             type="button"
             onClick={() => setActiveTab("user")}
-            className={`w-1/2 py-2 rounded-lg transition text-sm font-medium ${
+            className={`w-1/2 py-2 rounded-lg transition text-xs font-medium ${
               isUser ? "bg-sec text-white shadow" : "text-gray-700"
             }`}
           >
@@ -107,7 +107,7 @@ const Register = () => {
           <button
             type="button"
             onClick={() => setActiveTab("admin")}
-            className={`w-1/2 py-2 rounded-l-lg transition text-sm font-medium ${
+            className={`w-1/2 py-2 rounded-lg transition text-xs font-medium ${
               !isUser ? "bg-sec text-white shadow" : "text-gray-700"
             }`}
           >

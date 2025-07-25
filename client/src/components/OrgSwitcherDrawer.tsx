@@ -1,10 +1,11 @@
-import { X, LogOut, LayoutDashboard, LogIn } from "lucide-react";
+import { X, LogOut, LayoutDashboard, LogIn, PlusCircle } from "lucide-react";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import { useUserStore } from "../stores/useUserStore";
 import { useNavigate } from "react-router-dom";
 import { useLeaveOrg } from "../hooks/useMembership";
 import JoinOrgModal from "./modals/JoinOrgModal";
+import CreateOrgModal from "./modals/CreateOrgModal";
 
 interface Props {
   open: boolean;
@@ -19,6 +20,7 @@ const OrgSwitcherDrawer: React.FC<Props> = ({ open, onClose, onLogout }) => {
   const navigate = useNavigate();
   const leaveOrgMutation = useLeaveOrg();
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
+  const [isCreateOrgOpen, setIsCreateOrgOpen] = useState(false);
 
   const handleLeaveOrganization = async () => {
     try {
@@ -118,16 +120,28 @@ const OrgSwitcherDrawer: React.FC<Props> = ({ open, onClose, onLogout }) => {
                   {/* Join button with icon */}
                   <button
                     onClick={() => setIsJoinModalOpen(true)}
-                    className="mt-5 flex items-center gap-2 text-sec font-bold"
+                    className="flex items-center gap-2 px-4 py-2 my-2 bg-sec text-white rounded hover:bg-sec-dark transition w-full"
                     title="Leave Organization"
                   >
                     <LogIn className="w-5 h-5" />
                     Join Organization
                   </button>
+                  {/* Create organization button */}
+                  <button
+                    // onClick={() => {
+                    //   navigate("/create-org");
+                    //   onClose();
+                    // }}
+                    onClick={() => setIsCreateOrgOpen(true)}
+                    className="flex items-center gap-2 px-4 py-2 my-2 bg-sec text-white rounded hover:bg-sec-dark transition w-full"
+                  >
+                    <PlusCircle className="w-4 h-4" />
+                    Create Organization
+                  </button>
                   {/* Leave button with icon */}
                   <button
                     onClick={handleLeaveOrganization}
-                    className="mt-5 flex items-center gap-2 text-red-600 font-bold"
+                    className="flex items-center gap-2 px-4 py-2 my-2 bg-sec text-white rounded hover:bg-sec-dark transition w-full"
                     title="Leave Organization"
                   >
                     <LogOut className="w-5 h-5" />
@@ -146,6 +160,11 @@ const OrgSwitcherDrawer: React.FC<Props> = ({ open, onClose, onLogout }) => {
                   <JoinOrgModal
                     open={isJoinModalOpen}
                     onClose={() => setIsJoinModalOpen(false)}
+                  />
+                  {/* Create Org Modal */}
+                  <CreateOrgModal
+                    open={isCreateOrgOpen}
+                    onClose={() => setIsCreateOrgOpen(false)}
                   />
                 </div>
               </Dialog.Panel>

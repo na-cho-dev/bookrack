@@ -8,7 +8,10 @@ import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
 import { CreateOrganizationDto } from './dto/create-organization.dto';
 import { customAlphabet } from 'nanoid';
 import { MembershipService } from 'src/membership/membership.service';
-import { MembershipDocument } from 'src/membership/schemas/membership.schema';
+import {
+  MembershipDocument,
+  MembershipRole,
+} from 'src/membership/schemas/membership.schema';
 import { SearchOrganizationDto } from './dto/search-organization.dto';
 
 @Injectable()
@@ -46,13 +49,22 @@ export class OrganizationService {
 
   async createOrganization(
     organizationDto: CreateOrganizationDto,
+    userId: string,
   ): Promise<OrganizationDocument> {
     const newOrg = new this.organizationModel(organizationDto);
 
-    newOrg.code = await this.generateUniqueOrgCode(organizationDto.name);
-    newOrg.owner = new Types.ObjectId(organizationDto.owner);
+    newOrg.owner = new Types.ObjectId(userId);
+    if (!newOrg.owner) throw new NotFoundException('Owner not found');
 
+    newOrg.code = await this.generateUniqueOrgCode(organizationDto.name);
     const savedOrganization = await newOrg.save();
+
+    // Create Membership to Orgganization
+    await this.membershipService.createMembership(
+      String(userId),
+      String(savedOrganization._id),
+      MembershipRole.ADMIN,
+    );
 
     return savedOrganization;
   }

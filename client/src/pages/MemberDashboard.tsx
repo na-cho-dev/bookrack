@@ -9,7 +9,7 @@ import BorrowHistoryTab from "../components/DashboardMember/BorrowHistoryTab";
 import SettingsTab from "../components/SettingsTab";
 
 const MemberDashboard = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "dashboard";
 

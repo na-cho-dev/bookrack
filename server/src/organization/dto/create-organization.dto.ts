@@ -8,6 +8,6 @@ export class CreateOrganizationDto {
   @IsString()
   description: string;
 
-  @IsMongoId()
-  owner: string;
+  // @IsMongoId()
+  // owner: string;
 }

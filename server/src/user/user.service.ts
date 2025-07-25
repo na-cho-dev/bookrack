@@ -55,19 +55,21 @@ export class UserService {
       });
     }
 
-    // Create organization
-    const organization = await this.organizationService.createOrganization({
-      name: adminDto.organizationName,
-      description: adminDto.organizationDescription,
-      owner: String(user._id),
-    });
+    // Create organization and membership
+    const organization = await this.organizationService.createOrganization(
+      {
+        name: adminDto.organizationName,
+        description: adminDto.organizationDescription,
+      },
+      String(user._id),
+    );
 
     // Create membership
-    await this.membershipService.createMembership(
-      String(user._id),
-      String(organization._id),
-      MembershipRole.ADMIN,
-    );
+    // await this.membershipService.createMembership(
+    //   String(user._id),
+    //   String(organization._id),
+    //   MembershipRole.ADMIN,
+    // );
 
     const memberships = await this.membershipService.findAllByUserId(
       String(user._id),

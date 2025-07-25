@@ -12,7 +12,6 @@ import {
 import { JWTAuthGuard } from 'src/guards/jwt-auth.guard';
 import { MembershipGuard } from 'src/guards/membership.guard';
 import { MembershipRoleGuard } from 'src/guards/membership-role.guard';
-import { UpdateRoleDto } from './dto/update-role.dto';
 import { TransferOwnershipDto } from './dto/transfer-ownership.dto';
 import {
   MembershipDocument,
@@ -23,7 +22,6 @@ import { MembershipService } from './membership.service';
 import { MembershipRoles } from 'src/decorators/membership-role.decorator';
 import { CurrentUser } from 'src/decorators/current-user.decorator';
 import { UserResponse } from 'src/user/interface/user.interface';
-import { log } from 'console';
 
 @Controller('membership')
 export class MembershipController {
@@ -36,29 +34,37 @@ export class MembershipController {
     @CurrentUser() user: UserResponse,
   ) {
     const userId = user._id;
-    return this.membershipService.joinOrganization(userId, orgCode);
+    const membership = await this.membershipService.joinOrganization(
+      userId,
+      orgCode,
+    );
+    return { message: 'Joined organization successfully', data: membership };
   }
 
   @Get()
   @UseGuards(JWTAuthGuard, MembershipGuard, MembershipRoleGuard)
   @MembershipRoles(MembershipRole.ADMIN)
-  getAllMemberships() {
-    return this.membershipService.findAllMemberships();
+  async getAllMemberships() {
+    const memberships = await this.membershipService.findAllMemberships();
+    return { message: 'Memberships retrieved successfully', data: memberships };
   }
 
   @Get('organization/users')
   @UseGuards(JWTAuthGuard, MembershipGuard, MembershipRoleGuard)
   @MembershipRoles(MembershipRole.ADMIN)
-  getUsersByOrganization(@Membership() membership: MembershipDocument) {
+  async getUsersByOrganization(@Membership() membership: MembershipDocument) {
     const orgId = membership.organization._id;
-    return this.membershipService.findUsersByOrganization(String(orgId));
+    const users = await this.membershipService.findUsersByOrganization(
+      String(orgId),
+    );
+    return { message: 'Users retrieved successfully', data: users };
   }
 
   @Get('user/all')
   @UseGuards(JWTAuthGuard)
   async getUserOrgs(@CurrentUser() user: UserResponse) {
     const orgs = await this.membershipService.findAllByUserId(user._id);
-    return orgs;
+    return { message: 'User memberships retrieved successfully', data: orgs };
   }
 
   @Patch(':id/role')
@@ -69,11 +75,15 @@ export class MembershipController {
     @Param('id') membershipId: string,
     @Body('role') role: MembershipRole,
   ) {
-    return this.membershipService.updateMemberRole(
+    const updatedMembership = await this.membershipService.updateMemberRole(
       adminMembership,
       membershipId,
       role,
     );
+    return {
+      message: 'Member role updated successfully',
+      data: updatedMembership,
+    };
   }
 
   @Patch('organization/transfer-ownership')
@@ -87,11 +97,15 @@ export class MembershipController {
     const orgId = membership.organization._id.toString();
     if (!dto.newOwnerId)
       throw new ForbiddenException('New owner ID must be provided');
-    return await this.membershipService.transferOwnership(
+    const updatedMembership = await this.membershipService.transferOwnership(
       orgId,
       user._id,
       dto.newOwnerId,
     );
+    return {
+      message: 'Ownership transferred successfully',
+      data: updatedMembership,
+    };
   }
 
   @Delete('leave')
@@ -101,6 +115,10 @@ export class MembershipController {
     @Membership() membership: MembershipDocument,
   ) {
     const orgId = membership.organization._id.toString();
-    return this.membershipService.leaveOrganization(user._id, orgId);
+    const result = await this.membershipService.leaveOrganization(
+      user._id,
+      orgId,
+    );
+    return { message: 'Left organization successfully', data: result };
   }
 }

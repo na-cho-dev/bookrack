@@ -34,6 +34,11 @@ export interface Organization {
   code: string;
 }
 
+export interface CreateOrganizationDto {
+  name: string;
+  description?: string;
+}
+
 export interface BasicUser {
   _id: string;
   email: string;
