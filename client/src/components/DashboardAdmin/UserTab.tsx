@@ -1,89 +1,84 @@
 import { UserCircle2, Mail, Shield } from "lucide-react";
-// import { useState } from "react";
-// import PendingUserRequestsModal from "./modals/PendingUserRequestsModal";
 import { useOrganizationUsers } from "../../hooks/useMembership";
 
 const UsersTab = () => {
-  // const [modalOpen, setModalOpen] = useState(false);
   const { data: users } = useOrganizationUsers();
-
-  // const handleAccept = (id: string) => {
-  //   console.log("Accept user:", id);
-  //   setPendingUsers((prev) => prev.filter((user) => user.id !== id));
-  // };
-
-  // const handleReject = (id: string) => {
-  //   console.log("Reject user:", id);
-  //   setPendingUsers((prev) => prev.filter((user) => user.id !== id));
-  // };
 
   return (
     <div className="flex justify-center items-center">
-      <div className="py-14 px-14 space-y-8 w-full">
+      <div className="py-8 px-6 sm:py-14 sm:px-14 space-y-8 w-full max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">Users</h1>
             <p className="text-sm text-gray-500">
               View and manage users in your organization.
             </p>
           </div>
-          <button
+          {/* <button
             // onClick={() => setModalOpen(true)}
             className="px-4 py-2 bg-sec text-white text-sm rounded-md hover:opacity-90"
           >
             View Pending Requests
-          </button>
+          </button> */}
         </div>
 
         {/* Users Table */}
-        <div className="bg-[#fffcf8] rounded-xl shadow border p-6">
-          <div className="flex justify-between items-center mb-4">
+        <div className="bg-[#fffcf8] rounded-xl shadow border p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
             <h2 className="text-lg font-semibold text-gray-800">User List</h2>
             <input
               type="text"
               placeholder="Search users..."
-              className="px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-sec"
+              className="px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-sec w-full sm:w-auto"
             />
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
+            <table className="w-full min-w-[36rem] text-sm text-left table-fixed">
               <thead>
                 <tr className="text-gray-600 border-b">
-                  <th className="py-2 pr-4">Name</th>
-                  <th className="py-2 pr-4">Email</th>
-                  <th className="py-2 pr-4">Role</th>
-                  <th className="py-2 pr-4">Actions</th>
+                  <th className="py-2 pr-4 w-1/4">Name</th>
+                  <th className="py-2 pr-4 w-1/4">Email</th>
+                  <th className="py-2 pr-4 w-1/5">Role</th>
+                  <th className="py-2 pr-4 w-1/6">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {users && users.length > 0 ? (
                   users.map((membership) => (
                     <tr key={membership._id} className="border-b text-gray-700">
-                      <td>
+                      <td className="py-4 pr-4 truncate max-w-[10rem]">
                         <span className="flex items-center gap-2">
                           <UserCircle2 className="w-5 h-5 text-gray-400" />
-                          {membership.user?.name || "Unknown"}
+                          <span className="truncate">
+                            {membership.user?.name || "Unknown"}
+                          </span>
                         </span>
                       </td>
-                      <td>
+                      <td className="py-4 pr-4 truncate max-w-[12rem]">
                         <span className="flex items-center gap-2">
                           <Mail className="w-4 h-4 text-gray-400" />
-                          {membership.user?.email || "Unknown"}
+                          <span className="truncate">
+                            {membership.user?.email || "Unknown"}
+                          </span>
                         </span>
                       </td>
-                      <td>
+                      <td className="py-4 pr-4 truncate max-w-[8rem]">
                         <span className="flex items-center gap-2">
                           <Shield className="w-4 h-4 text-gray-400" />
-                          {membership.role.charAt(0).toUpperCase() +
-                            membership.role.slice(1)}
+                          <span className="truncate">
+                            {membership.role.charAt(0).toUpperCase() +
+                              membership.role.slice(1)}
+                          </span>
                         </span>
                       </td>
-                      <td className="py-2 pr-4 flex gap-2">
-                        <button className="px-3 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200">
-                          Remove
-                        </button>
+                      <td className="py-4 pr-4 flex gap-2">
+                        {membership.role !== "admin" && (
+                          <button className="px-3 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200">
+                            Remove
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))

@@ -11,7 +11,7 @@ import SettingsTab from "../components/SettingsTab";
 import AdminBorrowHistoryTab from "../components/DashboardAdmin/AdminBorrowHistoryTab";
 
 const AdminDashboard = () => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || "dashboard";
 
@@ -27,7 +27,7 @@ const AdminDashboard = () => {
 
       <div
         className={`transition-all duration-300 w-screen ${
-          isDrawerOpen ? "ml-72" : "ml-0"
+          isDrawerOpen ? "md:ml-72" : "ml-0"
         }`}
       >
         <div>

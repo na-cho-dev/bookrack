@@ -25,7 +25,7 @@ const MemberDashboard = () => {
 
       <div
         className={`transition-all duration-300 w-screen ${
-          isDrawerOpen ? "ml-72" : "ml-0"
+          isDrawerOpen ? "md:ml-72" : "ml-0"
         }`}
       >
         <div>

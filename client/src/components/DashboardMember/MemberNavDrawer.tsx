@@ -43,15 +43,24 @@ const MemberNavDrawer: React.FC<Props> = ({
     <>
       {/* Drawer */}
       <div
-        className={`fixed top-28 left-0 z-40 w-72 h-[calc(100vh-7rem)] border-r shadow-md overflow-hidden transition-all duration-300 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        } flex flex-col justify-between`}
+        className={`
+          bg-bg fixed left-0 z-40
+          w-72
+          top-24 h-[calc(100vh-7rem)]
+          border-r shadow-md overflow-hidden transition-all duration-300
+          ${open ? "translate-x-0" : "-translate-x-full"}
+          flex flex-col justify-between
+        `}
+        style={{ maxWidth: "100vw" }}
       >
         <nav className="mt-10 w-full">
           {tabs.map(({ key, label, icon: IconComponent }) => (
             <button
               key={key}
-              onClick={() => handleTabChange(key)}
+              onClick={() => {
+                handleTabChange(key);
+                onToggle();
+              }}
               className={`flex justify-start items-center gap-5 w-full p-5 ${
                 activeTab === key ? "bg-pri text-white" : "text-sec"
               }`}
@@ -68,7 +77,10 @@ const MemberNavDrawer: React.FC<Props> = ({
           {settingsTabs.map(({ key, label, icon: IconComponent }) => (
             <button
               key={key}
-              onClick={() => handleTabChange(key)}
+              onClick={() => {
+                handleTabChange(key);
+                onToggle();
+              }}
               className={`flex items-center gap-5 w-full p-5 ${
                 activeTab === key ? "bg-sec text-white" : "text-sec"
               }`}

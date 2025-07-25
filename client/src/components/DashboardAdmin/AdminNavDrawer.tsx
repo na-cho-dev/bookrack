@@ -47,21 +47,30 @@ const AdminNavDrawer: React.FC<Props> = ({
     <>
       {/* Drawer */}
       <div
-        className={`bg-bg fixed top-28 left-0 z-40 w-72 h-[calc(100vh-7rem)] border-r shadow-md overflow-hidden transition-all duration-300 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        } flex flex-col justify-between`}
+        className={`
+          bg-bg fixed left-0 z-40
+          w-72
+          top-24 h-[calc(100vh-7rem)]
+          border-r shadow-md overflow-hidden transition-all duration-300
+          ${open ? "translate-x-0" : "-translate-x-full"}
+          flex flex-col justify-between
+        `}
+        style={{ maxWidth: "100vw" }}
       >
         <nav className="mt-10 w-full">
           {tabs.map(({ key, label, icon: IconComponent }) => (
             <button
               key={key}
-              onClick={() => handleTabChange(key)}
+              onClick={() => {
+                handleTabChange(key);
+                onToggle();
+              }}
               className={`flex justify-start items-center gap-5 w-full p-5 ${
                 activeTab === key ? "bg-sec text-white" : "text-sec"
               }`}
             >
               {IconComponent && <IconComponent className="w-5" />}
-              {label}
+              <span className="truncate">{label}</span>
             </button>
           ))}
         </nav>
@@ -72,7 +81,10 @@ const AdminNavDrawer: React.FC<Props> = ({
           {settingsTabs.map(({ key, label, icon: IconComponent }) => (
             <button
               key={key}
-              onClick={() => handleTabChange(key)}
+              onClick={() => {
+                handleTabChange(key);
+                onToggle();
+              }}
               className={`flex items-center gap-5 w-full p-5 ${
                 activeTab === key ? "bg-sec text-white" : "text-sec"
               }`}
@@ -88,7 +100,7 @@ const AdminNavDrawer: React.FC<Props> = ({
       <button
         onClick={onToggle}
         aria-label="Toggle Drawer"
-        className={`fixed top-22 z-50 p-1 border rounded-r-md shadow text-sec hover:bg-gray-50 transition-all duration-300 ${
+        className={`fixed top-21 z-50 p-1 border rounded-r-md shadow text-sec hover:bg-gray-50 transition-all duration-300 ${
           open ? "left-72" : "left-0"
         }`}
       >

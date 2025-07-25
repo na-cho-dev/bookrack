@@ -59,8 +59,8 @@ const BooksTab = () => {
 
   return (
     <div className="flex justify-center items-center">
-      <div className="py-14 px-14 space-y-8 w-full">
-        <div className="flex justify-between items-center">
+      <div className="py-8 px-6 sm:py-14 sm:px-6 space-y-8 w-full max-w-7xl mx-auto">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl font-bold text-gray-800">
               Books Management
@@ -78,37 +78,41 @@ const BooksTab = () => {
           </button>
         </div>
 
-        <div className="bg-[#fffcf8] rounded-xl shadow border p-6">
-          <div className="flex justify-between items-center mb-4">
+        <div className="bg-[#fffcf8] rounded-xl shadow border p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
             <h2 className="text-lg font-semibold text-gray-800">All Books</h2>
             <input
               type="text"
               placeholder="Search books..."
-              className="px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-sec"
+              className="px-3 py-2 border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-sec w-full sm:w-auto"
             />
           </div>
 
-          <div className="">
-            <table className="w-full text-sm text-left">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[40rem] text-sm text-left table-fixed">
               <thead>
                 <tr className="text-gray-600 border-b">
-                  <th className="py-2 pr-4">Title</th>
-                  <th className="py-2 pr-4">Author</th>
-                  <th className="py-2 pr-4">Genre</th>
-                  <th className="py-2 pr-4">Status</th>
-                  <th className="py-2 pr-4">Actions</th>
+                  <th className="py-2 pr-4 w-1/4">Title</th>
+                  <th className="py-2 pr-4 w-1/5">Author</th>
+                  <th className="py-2 pr-4 w-1/5">Genre</th>
+                  <th className="py-2 pr-4 w-1/6">Status</th>
+                  <th className="py-2 pr-4 w-1/6">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {books && books.length > 0 ? (
                   (books ?? []).map((book) => (
                     <tr key={book.isbn} className="border-b text-gray-700">
-                      <td className="py-4 pr-4 flex items-center gap-2">
+                      <td className="py-4 pr-4 flex items-center gap-2 truncate max-w-[10rem]">
                         <BookOpen className="w-4 h-4 text-gray-400" />
-                        {book.title}
+                        <span className="truncate">{book.title}</span>
                       </td>
-                      <td className="py-4 pr-4">{book.author}</td>
-                      <td className="py-4 pr-4">{book.genre}</td>
+                      <td className="py-4 pr-4 truncate max-w-[8rem]">
+                        {book.author}
+                      </td>
+                      <td className="py-4 pr-4 truncate max-w-[8rem]">
+                        {book.genre}
+                      </td>
                       <td className="py-4 pr-4">
                         <span
                           className={`${
@@ -168,7 +172,7 @@ const BooksTab = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="py-4 text-center text-gray-400">
+                    <td colSpan={5} className="py-4 text-center text-gray-400">
                       No Books Available
                     </td>
                   </tr>

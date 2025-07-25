@@ -19,7 +19,7 @@ const MemberDashboardTab = () => {
 
   return (
     <div className="flex justify-center items-center">
-      <div className="py-14 px-14 space-y-8 w-full">
+      <div className="py-8 px-6 sm:py-14 sm:px-6 space-y-8 w-full max-w-7xl mx-auto">
         {/* Welcome Header */}
         <div>
           <h1 className="text-2xl font-bold text-gray-800">
@@ -40,7 +40,6 @@ const MemberDashboardTab = () => {
               <p className="text-xl font-bold">{stats.availableBooks}</p>
             </div>
           </div>
-
           <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
             <Archive className="text-yellow-600 w-8 h-8" />
             <div>
@@ -48,7 +47,6 @@ const MemberDashboardTab = () => {
               <p className="text-xl font-bold">{stats.myBorrowedBooks}</p>
             </div>
           </div>
-
           <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
             <Clock className="text-red-500 w-8 h-8" />
             <div>
@@ -59,8 +57,8 @@ const MemberDashboardTab = () => {
         </div>
 
         {/* Borrowed Books Table */}
-        <div className="bg-[#fffcf8] rounded-xl shadow border p-6">
-          <div className="flex justify-between items-center mb-4">
+        <div className="bg-[#fffcf8] rounded-xl shadow border p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
             <h2 className="text-lg font-semibold text-gray-800">
               My Borrowed Books
             </h2>
@@ -73,19 +71,21 @@ const MemberDashboardTab = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
+            <table className="w-full min-w-[28rem] text-sm text-left table-fixed">
               <thead>
                 <tr className="text-gray-600 border-b">
-                  <th className="py-2 pr-4">Title</th>
-                  <th className="py-2 pr-4">Status</th>
-                  <th className="py-2 pr-4">Borrow Date</th>
+                  <th className="py-2 pr-4 w-1/2">Title</th>
+                  <th className="py-2 pr-4 w-1/4">Status</th>
+                  <th className="py-2 pr-4 w-1/4">Borrow Date</th>
                 </tr>
               </thead>
               <tbody>
                 {myBorrowedBooks && myBorrowedBooks.length > 0 ? (
                   myBorrowedBooks.map((book) => (
                     <tr key={book._id} className="border-b text-gray-700">
-                      <td className="py-4 pr-4">{book.book?.title ?? "N/A"}</td>
+                      <td className="py-4 pr-4 truncate max-w-[12rem]">
+                        {book.book?.title ?? "N/A"}
+                      </td>
                       <td className="py-4 pr-4">
                         <span
                           className={`px-2 py-1 text-xs rounded font-medium ${
@@ -99,7 +99,7 @@ const MemberDashboardTab = () => {
                           {book.status}
                         </span>
                       </td>
-                      <td className="py-4 pr-4">
+                      <td className="py-4 pr-4 truncate max-w-[8rem]">
                         {book.borrowDate
                           ? new Date(book.borrowDate).toLocaleString()
                           : "N/A"}

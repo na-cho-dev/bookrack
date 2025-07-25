@@ -92,7 +92,7 @@ const SettingsTab = () => {
   };
 
   return (
-    <div className="w-full px-6 py-10 mb-20">
+    <div className="w-full px-3 py-10 mb-20">
       <h1 className="text-2xl font-bold text-gray-800 mb-8">Settings</h1>
 
       <div className="space-y-10">
@@ -119,7 +119,9 @@ const SettingsTab = () => {
                 value={userName}
                 disabled={!editUser}
                 onChange={(e) => setUserName(e.target.value)}
-                className="w-full mt-1 px-4 py-2 border rounded-md text-sm bg-[#fffcf8] focus:outline-none focus:ring-sec"
+                className={`w-full mt-1 px-4 py-2 border rounded-md text-sm bg-[#fffcf8] focus:outline-none focus:ring-sec ${
+                  editUser ? "ring-2 ring-sec" : ""
+                }`}
               />
             </div>
             <div>
@@ -131,7 +133,9 @@ const SettingsTab = () => {
                 value={userEmail}
                 disabled={!editUser}
                 onChange={(e) => setUserEmail(e.target.value)}
-                className="w-full mt-1 px-4 py-2 border rounded-md text-sm bg-[#fffcf8] focus:outline-none focus:ring-sec"
+                className={`w-full mt-1 px-4 py-2 border rounded-md text-sm bg-[#fffcf8] focus:outline-none focus:ring-sec ${
+                  editUser ? "ring-2 ring-sec" : ""
+                }`}
               />
             </div>
             <div>
@@ -177,7 +181,9 @@ const SettingsTab = () => {
                 value={orgName}
                 disabled={!editOrg || !isAdmin}
                 onChange={(e) => setOrgName(e.target.value)}
-                className="w-full mt-1 px-4 py-2 border rounded-md text-sm bg-[#fffcf8] focus:outline-none focus:ring-sec"
+                className={`w-full mt-1 px-4 py-2 border rounded-md text-sm bg-[#fffcf8] focus:outline-none focus:ring-sec ${
+                  editOrg && isAdmin ? "ring-2 ring-sec" : ""
+                }`}
               />
             </div>
 
@@ -230,7 +236,9 @@ const SettingsTab = () => {
                 disabled={!editOrg || !isAdmin}
                 onChange={(e) => setOrgDesc(e.target.value)}
                 rows={3}
-                className="w-full mt-1 px-4 py-2 border rounded-md text-sm bg-[#fffcf8] focus:outline-none focus:ring-sec"
+                className={`w-full mt-1 px-4 py-2 border rounded-md text-sm bg-[#fffcf8] focus:outline-none focus:ring-sec ${
+                  editOrg && isAdmin ? "ring-2 ring-sec" : ""
+                }`}
               />
             </div>
           </div>

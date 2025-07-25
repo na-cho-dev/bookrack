@@ -25,7 +25,7 @@ const AdminDashboardTab = () => {
 
   return (
     <div className="flex justify-center items-center">
-      <div className="py-14 px-14 space-y-8 w-full">
+      <div className="py-14 px-6 space-y-8 w-full">
         {/* Welcome Header */}
         <div>
           <h1 className="text-2xl font-bold text-gray-800">
@@ -84,24 +84,26 @@ const AdminDashboardTab = () => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-sm text-left">
+            <table className="w-full min-w-[40rem] text-sm text-left table-fixed">
               <thead>
                 <tr className="text-gray-600 border-b">
-                  <th className="py-2 pr-4">User</th>
-                  <th className="py-2 pr-4">Book</th>
-                  <th className="py-2 pr-4">Status</th>
-                  <th className="py-2 pr-4">Requested At</th>
+                  <th className="py-2 pr-4 w-1/4">User</th>
+                  <th className="py-2 pr-4 w-1/4">Book</th>
+                  <th className="py-2 pr-4 w-1/6">Status</th>
+                  <th className="py-2 pr-4 w-1/4">Requested At</th>
                 </tr>
               </thead>
               <tbody>
                 {pendingRequests && pendingRequests.length > 0 ? (
                   pendingRequests.map((req) => (
                     <tr key={req._id} className="border-b text-gray-700">
-                      <td className="py-4 pr-4 flex items-center gap-2">
+                      <td className="py-4 pr-4 flex items-center gap-2 truncate max-w-[10rem]">
                         <User className="w-4 h-4 text-gray-400" />
-                        {req.user.name ?? "Unknown"}
+                        <span className="truncate">
+                          {req.user.name ?? "Unknown"}
+                        </span>
                       </td>
-                      <td className="py-4 pr-4">
+                      <td className="py-4 pr-4 truncate max-w-[10rem]">
                         {req.book?.title ?? "Unknown"}
                       </td>
                       <td className="py-4 pr-4">
@@ -117,7 +119,7 @@ const AdminDashboardTab = () => {
                           {req.status}
                         </span>
                       </td>
-                      <td className="py-4 pr-4">
+                      <td className="py-4 pr-4 truncate max-w-[8rem]">
                         {new Date(req.requestedAt).toLocaleDateString()}
                       </td>
                     </tr>
