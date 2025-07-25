@@ -44,9 +44,9 @@ const MemberNavDrawer: React.FC<Props> = ({
       {/* Drawer */}
       <div
         className={`
-          bg-bg fixed left-0 z-40
+          bg-bg fixed left-0 z-30
           w-72
-          top-24 h-[calc(100vh-7rem)]
+          top-24 h-[calc(100vh-6rem)]
           border-r shadow-md overflow-hidden transition-all duration-300
           ${open ? "translate-x-0" : "-translate-x-full"}
           flex flex-col justify-between

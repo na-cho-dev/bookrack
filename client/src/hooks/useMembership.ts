@@ -5,11 +5,16 @@ import {
   leaveOrg,
   transferOwnership,
   getUserMemberships,
+  removeUserFromOrganization,
+  getPendingUserRequests,
+  acceptUserRequest,
+  rejectUserRequest,
 } from "../api/membership.api";
 import { useUserStore } from "../stores/useUserStore";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { queryClient } from "../utils/queryClient";
 // import { queryClient } from "../utils/queryClient";
 
 /// =============== QUERY HOOKS =============== ///
@@ -48,6 +53,16 @@ export const useOrganizationUsers = () => {
   return { data, isError, isLoading, fetchStatus, isFetching };
 };
 
+export const usePendingUserRequests = () => {
+  const { data, isError, isLoading } = useQuery({
+    queryKey: ["pending-user-requests"],
+    queryFn: getPendingUserRequests,
+    retry: false,
+  });
+
+  return { data, isError, isLoading };
+};
+
 /// =============== MUTATION HOOKS =============== ///
 export const useLeaveOrg = () => {
   const resetCurrentMembership = useUserStore((s) => s.setCurrentMembership);
@@ -65,7 +80,7 @@ export const useLeaveOrg = () => {
         (mem) => mem.organization._id !== currentMembership.organization._id
       );
 
-      setMemberships(updatedMemberships);
+      setMemberships(updatedMemberships ?? null);
       resetCurrentMembership(null);
     },
     onError: (error: any) => {
@@ -111,6 +126,65 @@ export const useTransferOwnership = () => {
     onError: (err: any) => {
       toast.error(
         err?.response?.data?.message || "Failed to transfer ownership"
+      );
+    },
+  });
+};
+
+export const useRemoveUserFromOrg = () => {
+  const setMemberships = useUserStore((state) => state.setMemberships);
+  const memberships = useUserStore((state) => state.memberships);
+
+  return useMutation({
+    mutationFn: (userId: string) => removeUserFromOrganization(userId),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["organization-users"] });
+      queryClient.invalidateQueries({ queryKey: ["user-memberships"] });
+      // Update memberships by removing the user
+      const updatedMemberships = memberships?.filter(
+        (mem) => mem.user._id !== data.user._id
+      );
+      setMemberships(updatedMemberships ?? null);
+      toast.success(`Removed user: ${data.user.name}`);
+    },
+    onError: (error: any) => {
+      toast.error(
+        error?.response?.data?.message ||
+          "Failed to remove user from organization"
+      );
+    },
+  });
+};
+
+export const useAcceptUserRequest = () => {
+  return useMutation({
+    mutationFn: (userId: string) => acceptUserRequest(userId),
+    onSuccess: () => {
+      toast.success("User request accepted!");
+      queryClient.invalidateQueries({ queryKey: ["pending-user-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["organization-users"] });
+      queryClient.invalidateQueries({ queryKey: ["user-memberships"] });
+    },
+    onError: (error: any) => {
+      toast.error(
+        error?.response?.data?.message || "Failed to accept user request"
+      );
+    },
+  });
+};
+
+export const useRejectUserRequest = () => {
+  return useMutation({
+    mutationFn: (userId: string) => rejectUserRequest(userId),
+    onSuccess: () => {
+      toast.success("User request rejected!");
+      queryClient.invalidateQueries({ queryKey: ["pending-user-requests"] });
+      queryClient.invalidateQueries({ queryKey: ["organization-users"] });
+      queryClient.invalidateQueries({ queryKey: ["user-memberships"] });
+    },
+    onError: (error: any) => {
+      toast.error(
+        error?.response?.data?.message || "Failed to reject user request"
       );
     },
   });

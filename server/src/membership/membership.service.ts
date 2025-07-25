@@ -71,11 +71,13 @@ export class MembershipService {
       organization: org._id,
     });
 
-    if (existing) {
+    if (existing && existing.status === 'active')
+      throw new ConflictException('User already a member of this organization');
+
+    if (existing && existing.status === 'pending')
       throw new BadRequestException(
-        'You are already a member of this organization',
-      );
-    }
+      'You already have a pending membership request for this organization',
+    );
 
     // Create the membership (default role: user, status: pending or active)
     const membership = await this.membershipModel.create({
@@ -122,7 +124,7 @@ export class MembershipService {
   async findAllByUserId(userId: string): Promise<MembershipDocument[]> {
     const objUserId = validateObjectId(userId);
     const memberships = await this.membershipModel
-      .find({ user: objUserId })
+      .find({ user: objUserId, status: 'active' })
       .populate('user', '-password -refreshToken')
       .populate({
         path: 'organization',
@@ -141,7 +143,7 @@ export class MembershipService {
     const objOrgId = validateObjectId(orgId);
 
     return this.membershipModel
-      .find({ organization: objOrgId })
+      .find({ organization: objOrgId, status: 'active' })
       .populate('user', '-password -refreshToken')
       .populate({
         path: 'organization',
@@ -149,6 +151,19 @@ export class MembershipService {
           path: 'owner',
           select: 'email',
         },
+      });
+  }
+
+  async getPendingUsersByOrganization(
+    orgId: string,
+  ): Promise<MembershipDocument[]> {
+    const objOrgId = validateObjectId(orgId);
+    return this.membershipModel
+      .find({ organization: objOrgId, status: 'pending' })
+      .populate('user', '-password -refreshToken')
+      .populate({
+        path: 'organization',
+        populate: { path: 'owner', select: 'email' },
       });
   }
 
@@ -319,5 +334,110 @@ export class MembershipService {
 
     // Not admin, just remove membership
     await this.membershipModel.deleteOne({ _id: membership._id });
+  }
+
+  async removeUserFromOrganization(
+    userId: string,
+    orgId: string,
+  ): Promise<MembershipDocument | null> {
+    const objUserId = validateObjectId(userId);
+    const objOrgId = validateObjectId(orgId);
+
+    let membership = await this.membershipModel.findOne({
+      user: objUserId,
+      organization: objOrgId,
+    });
+
+    if (!membership) throw new NotFoundException('Membership not found');
+
+    // If the user is an admin, check if they are the only member
+    if (membership.role === MembershipRole.ADMIN) {
+      const memberCount = await this.membershipModel.countDocuments({
+        organization: objOrgId,
+      });
+
+      if (memberCount > 1) {
+        throw new ForbiddenException(
+          'Admin cannot be removed unless ownership is transferred to another user.',
+        );
+      } else {
+        // If they are the only member, delete the organization
+        await this.organizationService.deleteOrganization(String(objOrgId));
+      }
+    }
+
+    // Remove the membership
+    await this.membershipModel.deleteOne({ _id: membership._id });
+
+    // Populate user and organization before returning
+    membership = await membership.populate('user', '-password -refreshToken');
+    membership = await membership.populate({
+      path: 'organization',
+      populate: {
+        path: 'owner',
+        select: 'email',
+      },
+    });
+
+    return membership;
+  }
+
+  async acceptUserRequest(
+    userId: string,
+    orgId: string,
+  ): Promise<MembershipDocument | null> {
+    const objUserId = validateObjectId(userId);
+    const objOrgId = validateObjectId(orgId);
+
+    let membership = await this.membershipModel.findOne({
+      user: objUserId,
+      organization: objOrgId,
+      status: 'pending',
+    });
+
+    if (!membership)
+      throw new NotFoundException('Pending membership not found');
+
+    membership.status = 'active';
+    await membership.save();
+
+    membership = await membership.populate('user', '-password -refreshToken');
+    membership = await membership.populate({
+      path: 'organization',
+      populate: { path: 'owner', select: 'email' },
+    });
+
+    return membership;
+  }
+
+  async rejectUserRequest(
+    userId: string,
+    orgId: string,
+  ): Promise<MembershipDocument | null> {
+    const objUserId = validateObjectId(userId);
+    const objOrgId = validateObjectId(orgId);
+
+    let membership = await this.membershipModel.findOne({
+      user: objUserId,
+      organization: objOrgId,
+      status: 'pending',
+    });
+
+    if (!membership)
+      throw new NotFoundException('Pending membership not found');
+
+    membership.status = 'rejected';
+    await membership.save();
+
+    membership = await membership.populate('user', '-password -refreshToken');
+    membership = await membership.populate({
+      path: 'organization',
+      populate: { path: 'owner', select: 'email' },
+    });
+
+    // Delete the membership document
+    await this.membershipModel.deleteOne({ _id: membership._id });
+
+    return membership;
   }
 }

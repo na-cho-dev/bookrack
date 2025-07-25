@@ -1,10 +1,5 @@
 import { X, UserCircle2, Mail } from "lucide-react";
-
-type PendingUser = {
-  id: string;
-  name: string;
-  email: string;
-};
+import type { Membership } from "../../types/auth.type";
 
 const PendingUserRequestsModal = ({
   isOpen,
@@ -15,7 +10,7 @@ const PendingUserRequestsModal = ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  pendingUsers: PendingUser[];
+  pendingUsers: Membership[];
   onAccept: (id: string) => void;
   onReject: (id: string) => void;
 }) => {
@@ -39,30 +34,30 @@ const PendingUserRequestsModal = ({
           <p className="text-sm text-gray-500">No pending users.</p>
         ) : (
           <ul className="space-y-4">
-            {pendingUsers.map((user) => (
+            {pendingUsers.map((data) => (
               <li
-                key={user.id}
+                key={data.user._id}
                 className="flex justify-between items-center border-b pb-2"
               >
                 <div>
                   <div className="flex items-center gap-2 text-sm font-medium text-gray-800">
                     <UserCircle2 className="w-4 h-4 text-gray-400" />
-                    {user.name}
+                    {data.user.name}
                   </div>
                   <div className="flex items-center gap-2 text-xs text-gray-500 mt-1">
-                    <Mail className="w-3 h-3" />
-                    {user.email}
+                    <Mail className="w-4 h-4 text-gray-400" />
+                    {data.user.email}
                   </div>
                 </div>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => onAccept(user.id)}
+                    onClick={() => onAccept(data.user._id)}
                     className="px-3 py-1 text-xs rounded-md bg-green-100 text-green-700 hover:bg-green-200"
                   >
                     Accept
                   </button>
                   <button
-                    onClick={() => onReject(user.id)}
+                    onClick={() => onReject(data.user._id)}
                     className="px-3 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200"
                   >
                     Reject

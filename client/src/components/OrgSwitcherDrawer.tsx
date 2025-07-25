@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { useLeaveOrg } from "../hooks/useMembership";
 import JoinOrgModal from "./modals/JoinOrgModal";
 import CreateOrgModal from "./modals/CreateOrgModal";
+import { FaExclamationTriangle } from "react-icons/fa";
 
 interface Props {
   open: boolean;
@@ -19,6 +20,8 @@ const OrgSwitcherDrawer: React.FC<Props> = ({ open, onClose, onLogout }) => {
   const setCurrentMembership = useUserStore((s) => s.setCurrentMembership);
   const navigate = useNavigate();
   const leaveOrgMutation = useLeaveOrg();
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
   const [isCreateOrgOpen, setIsCreateOrgOpen] = useState(false);
 
@@ -69,20 +72,30 @@ const OrgSwitcherDrawer: React.FC<Props> = ({ open, onClose, onLogout }) => {
                 </div>
 
                 <div>
-                  <button
-                    onClick={() => {
-                      const route =
-                        currentMembership?.role === "admin"
-                          ? "/dashboard/admin"
-                          : "/dashboard/member";
-                      navigate(route);
-                      onClose();
-                    }}
-                    className="flex items-center justify-start gap-1 text-sec font-bold"
-                  >
-                    <LayoutDashboard className="w-6" />
-                    <span className="">Dashboard</span>
-                  </button>
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <button
+                      onClick={() => {
+                        const route =
+                          currentMembership?.role === "admin"
+                            ? "/dashboard/admin"
+                            : "/dashboard/member";
+                        navigate(route);
+                        onClose();
+                      }}
+                      className="flex items-center justify-start gap-1 text-sec font-bold"
+                    >
+                      <LayoutDashboard className="w-6 h-6" />
+                      <span className="">Dashboard</span>
+                    </button>
+                    {/* Create Organization Icon Button */}
+                    <button
+                      onClick={() => setIsCreateOrgOpen(true)}
+                      className="p-2 rounded-full bg-sec text-white transition"
+                      title="Create Organization"
+                    >
+                      <PlusCircle className="w-6 h-6" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Organizations list */}
@@ -121,40 +134,101 @@ const OrgSwitcherDrawer: React.FC<Props> = ({ open, onClose, onLogout }) => {
                   <button
                     onClick={() => setIsJoinModalOpen(true)}
                     className="flex items-center gap-2 px-4 py-2 my-2 bg-sec text-white rounded hover:bg-sec-dark transition w-full"
-                    title="Leave Organization"
+                    title="Join Organization"
                   >
                     <LogIn className="w-5 h-5" />
                     Join Organization
                   </button>
-                  {/* Create organization button */}
+
+                  {/* Leave button with icon - now warning style */}
                   <button
-                    // onClick={() => {
-                    //   navigate("/create-org");
-                    //   onClose();
-                    // }}
-                    onClick={() => setIsCreateOrgOpen(true)}
-                    className="flex items-center gap-2 px-4 py-2 my-2 bg-sec text-white rounded hover:bg-sec-dark transition w-full"
-                  >
-                    <PlusCircle className="w-4 h-4" />
-                    Create Organization
-                  </button>
-                  {/* Leave button with icon */}
-                  <button
-                    onClick={handleLeaveOrganization}
-                    className="flex items-center gap-2 px-4 py-2 my-2 bg-sec text-white rounded hover:bg-sec-dark transition w-full"
+                    onClick={() => setShowLeaveConfirm(true)}
+                    className="flex items-center gap-2 px-4 py-2 my-2 bg-red-100 text-red-700 rounded hover:bg-red-200 transition w-full border border-red-300 font-semibold"
                     title="Leave Organization"
                   >
                     <LogOut className="w-5 h-5" />
                     Leave Organization
                   </button>
+
                   {/* Logout button */}
                   <button
-                    onClick={onLogout}
-                    className="mt-5 flex items-center gap-2 text-red-600 font-bold"
+                    onClick={() => setShowLogoutConfirm(true)}
+                    className="mt-5 px-4 flex items-center gap-2 text-red-600 font-bold"
                   >
                     <LogOut className="w-5 h-5" />
                     Logout
                   </button>
+
+                  {/* Leave Organization Confirmation Modal */}
+                  {showLeaveConfirm && (
+                    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+                      <div className="bg-white rounded-xl shadow-lg p-6 mx-4 max-w-sm w-full border border-red-200">
+                        <h3 className="text-lg font-bold text-red-700 mb-2 flex items-center gap-2">
+                          <FaExclamationTriangle className="w-5 h-5" />
+                          Leave Organization?
+                        </h3>
+                        <p className="text-gray-700 mb-4">
+                          Are you sure you want to leave{" "}
+                          <span className="font-semibold text-sec">
+                            {currentMembership?.organization.name}
+                          </span>
+                          ? You will lose access to its dashboard and resources.
+                        </p>
+                        <div className="flex gap-3 justify-end">
+                          <button
+                            onClick={() => setShowLeaveConfirm(false)}
+                            className="px-4 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={async () => {
+                              setShowLeaveConfirm(false);
+                              await handleLeaveOrganization();
+                            }}
+                            className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700"
+                            disabled={leaveOrgMutation.isPending}
+                          >
+                            {leaveOrgMutation.isPending
+                              ? "Leaving..."
+                              : "Leave"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {showLogoutConfirm && (
+                    <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+                      <div className="bg-white rounded-xl shadow-lg p-6 mx-4 max-w-sm w-full border border-red-200">
+                        <h3 className="text-lg font-bold text-red-700 mb-2 flex items-center gap-2">
+                          <FaExclamationTriangle className="w-5 h-5" />
+                          Logout?
+                        </h3>
+                        <p className="text-gray-700 mb-4">
+                          Are you sure you want to logout? You will need to sign
+                          in again to access your organizations.
+                        </p>
+                        <div className="flex gap-3 justify-end">
+                          <button
+                            onClick={() => setShowLogoutConfirm(false)}
+                            className="px-4 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={() => {
+                              setShowLogoutConfirm(false);
+                              onLogout();
+                            }}
+                            className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700"
+                          >
+                            Logout
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Join Org Modal */}
                   <JoinOrgModal

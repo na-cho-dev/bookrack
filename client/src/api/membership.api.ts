@@ -39,3 +39,25 @@ export const transferOwnership = async (
   );
   return response.data.data;
 };
+
+export const removeUserFromOrganization = async (
+  userId: string
+): Promise<Membership> => {
+  const response = await axiosInstance.delete(`/membership/remove/${userId}`);
+  return response.data.data;
+};
+
+export const getPendingUserRequests = async (): Promise<Membership[]> => {
+  const res = await axiosInstance.get("/membership/pending-requests");
+  return res.data.data;
+};
+
+export const acceptUserRequest = async (userId: string) => {
+  const res = await axiosInstance.post(`/membership/accept/${userId}`);
+  return res.data.data;
+};
+
+export const rejectUserRequest = async (userId: string) => {
+  const res = await axiosInstance.post(`/membership/reject/${userId}`);
+  return res.data.data;
+};

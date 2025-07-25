@@ -27,9 +27,9 @@ export class MembershipGuard implements CanActivate {
       organization: orgObjectId,
     });
 
-    if (!membership)
+    if (!membership || membership.status !== 'active')
       throw new ForbiddenException(
-        'User is not a member of this organization.',
+        'User is not an active member of this organization.',
       );
 
     req.membership = membership;

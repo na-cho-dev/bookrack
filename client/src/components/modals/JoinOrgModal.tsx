@@ -1,7 +1,6 @@
-// components/JoinOrgModal.tsx
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
-import { Loader } from "lucide-react";
+import { Loader, LogIn } from "lucide-react";
 import { useJoinOrg } from "../../hooks/useMembership";
 
 type Props = {
@@ -12,15 +11,24 @@ type Props = {
 const JoinOrgModal = ({ open, onClose }: Props) => {
   const [orgCode, setOrgCode] = useState("");
   const { mutate: joinOrg, isPending } = useJoinOrg();
+  const [error, setError] = useState<string | null>(null);
 
   const handleJoin = () => {
-    if (!orgCode) return;
-    // console.log("Org Code: ", orgCode);
-
+    if (!orgCode) {
+      setError("Organization code is required.");
+      return;
+    }
+    setError(null);
     joinOrg(orgCode, {
       onSuccess: () => {
         setOrgCode("");
         onClose();
+      },
+      onError: (err: any) => {
+        setError(
+          err?.response?.data?.message ||
+            "Failed to join organization. Please check the code and try again."
+        );
       },
     });
   };
@@ -42,7 +50,8 @@ const JoinOrgModal = ({ open, onClose }: Props) => {
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
           <Dialog.Panel className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
-            <Dialog.Title className="text-lg font-semibold text-gray-700 mb-2">
+            <Dialog.Title className="text-lg font-semibold text-gray-700 mb-2 flex items-center gap-2">
+              <LogIn className="w-5 h-5" />
               Join Organization
             </Dialog.Title>
 
@@ -55,10 +64,14 @@ const JoinOrgModal = ({ open, onClose }: Props) => {
               value={orgCode}
               onChange={(e) => setOrgCode(e.target.value)}
               placeholder="Organization Code"
-              className="w-full border border-gray-300 rounded-md px-4 py-2 mb-4 focus:ring-2 focus:ring-sec focus:outline-none"
+              className="w-full border border-gray-300 rounded-md px-4 py-2 mb-2 focus:ring-2 focus:ring-sec focus:outline-none"
+              disabled={isPending}
+              autoFocus
             />
 
-            <div className="flex justify-end gap-2">
+            {error && <div className="text-red-600 text-sm mb-2">{error}</div>}
+
+            <div className="flex justify-end gap-2 mt-2">
               <button
                 onClick={onClose}
                 disabled={isPending}

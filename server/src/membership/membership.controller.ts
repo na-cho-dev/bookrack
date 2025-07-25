@@ -60,6 +60,19 @@ export class MembershipController {
     return { message: 'Users retrieved successfully', data: users };
   }
 
+  @Get('pending-requests')
+  @UseGuards(JWTAuthGuard, MembershipGuard, MembershipRoleGuard)
+  @MembershipRoles(MembershipRole.ADMIN)
+  async getPendingUserRequests(@Membership() membership: MembershipDocument) {
+    const orgId = membership.organization._id;
+    const pendingUsers =
+      await this.membershipService.getPendingUsersByOrganization(String(orgId));
+    return {
+      message: 'Pending users retrieved successfully',
+      data: pendingUsers,
+    };
+  }
+
   @Get('user/all')
   @UseGuards(JWTAuthGuard)
   async getUserOrgs(@CurrentUser() user: UserResponse) {
@@ -120,5 +133,51 @@ export class MembershipController {
       orgId,
     );
     return { message: 'Left organization successfully', data: result };
+  }
+
+  @Delete('remove/:userId')
+  @UseGuards(JWTAuthGuard, MembershipGuard, MembershipRoleGuard)
+  @MembershipRoles(MembershipRole.ADMIN)
+  async removeUserFromOrganization(
+    @Membership() membership: MembershipDocument,
+    @Param('userId') userId: string,
+  ) {
+    const orgId = membership.organization._id.toString();
+    const deletedMembership =
+      await this.membershipService.removeUserFromOrganization(userId, orgId);
+    return {
+      message: 'User removed from organization successfully',
+      data: deletedMembership,
+    };
+  }
+
+  @Post('accept/:userId')
+  @UseGuards(JWTAuthGuard, MembershipGuard, MembershipRoleGuard)
+  @MembershipRoles(MembershipRole.ADMIN)
+  async acceptUserRequest(
+    @Membership() membership: MembershipDocument,
+    @Param('userId') userId: string,
+  ) {
+    const orgId = membership.organization._id;
+    const accepted = await this.membershipService.acceptUserRequest(
+      userId,
+      String(orgId),
+    );
+    return { message: 'User accepted', data: accepted };
+  }
+
+  @Post('reject/:userId')
+  @UseGuards(JWTAuthGuard, MembershipGuard, MembershipRoleGuard)
+  @MembershipRoles(MembershipRole.ADMIN)
+  async rejectUserRequest(
+    @Membership() membership: MembershipDocument,
+    @Param('userId') userId: string,
+  ) {
+    const orgId = membership.organization._id;
+    const rejected = await this.membershipService.rejectUserRequest(
+      userId,
+      String(orgId),
+    );
+    return { message: 'User rejected', data: rejected };
   }
 }

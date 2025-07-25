@@ -1,8 +1,29 @@
 import { UserCircle2, Mail, Shield } from "lucide-react";
-import { useOrganizationUsers } from "../../hooks/useMembership";
+import {
+  useAcceptUserRequest,
+  useOrganizationUsers,
+  usePendingUserRequests,
+  useRejectUserRequest,
+  useRemoveUserFromOrg,
+} from "../../hooks/useMembership";
+import PendingUserRequestsModal from "../modals/PendingUserRequestsModal";
+import { useState } from "react";
 
 const UsersTab = () => {
   const { data: users } = useOrganizationUsers();
+  const removeUserMutation = useRemoveUserFromOrg();
+  const [modalOpen, setModalOpen] = useState(false);
+  const { data: pendingUsers = [] } = usePendingUserRequests();
+  const acceptUserMutation = useAcceptUserRequest();
+  const rejectUserMutation = useRejectUserRequest();
+
+  const handleAccept = (userId: string) => {
+    acceptUserMutation.mutate(userId);
+  };
+
+  const handleReject = (userId: string) => {
+    rejectUserMutation.mutate(userId);
+  };
 
   return (
     <div className="flex justify-center items-center">
@@ -15,12 +36,12 @@ const UsersTab = () => {
               View and manage users in your organization.
             </p>
           </div>
-          {/* <button
-            // onClick={() => setModalOpen(true)}
+          <button
+            onClick={() => setModalOpen(true)}
             className="px-4 py-2 bg-sec text-white text-sm rounded-md hover:opacity-90"
           >
             View Pending Requests
-          </button> */}
+          </button>
         </div>
 
         {/* Users Table */}
@@ -75,7 +96,13 @@ const UsersTab = () => {
                       </td>
                       <td className="py-4 pr-4 flex gap-2">
                         {membership.role !== "admin" && (
-                          <button className="px-3 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200">
+                          <button
+                            className="px-3 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200"
+                            onClick={() =>
+                              removeUserMutation.mutate(membership.user._id)
+                            }
+                            disabled={removeUserMutation.isPending}
+                          >
                             Remove
                           </button>
                         )}
@@ -95,13 +122,13 @@ const UsersTab = () => {
         </div>
       </div>
 
-      {/* <PendingUserRequestsModal
+      <PendingUserRequestsModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
         pendingUsers={pendingUsers}
         onAccept={handleAccept}
         onReject={handleReject}
-      /> */}
+      />
     </div>
   );
 };
