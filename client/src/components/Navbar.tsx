@@ -82,7 +82,15 @@ const Navbar = () => {
                 // User logged in
                 <div className="flex justify-center items-center gap-5">
                   {currentPath === "/select-org" ? (
-                    ""
+                    <li>
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-1 text-sec font-bold"
+                      >
+                        <LogOut className="w-6" />
+                        <span className="hidden md:inline">Logout</span>
+                      </button>
+                    </li>
                   ) : (
                     <li>
                       <Link
@@ -94,15 +102,6 @@ const Navbar = () => {
                       </Link>
                     </li>
                   )}
-                  <li>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center gap-1 text-sec font-bold"
-                    >
-                      <LogOut className="w-6" />
-                      <span className="hidden md:inline">Logout</span>
-                    </button>
-                  </li>
                 </div>
               )}
             </ul>

@@ -8,6 +8,7 @@ import {
   ChevronRight,
   LayoutDashboard,
   Settings2,
+  History,
 } from "lucide-react";
 import type { SetURLSearchParams } from "react-router-dom";
 
@@ -30,6 +31,7 @@ const AdminNavDrawer: React.FC<Props> = ({
     { key: "available", label: "Available Books", icon: CheckCircle },
     { key: "borrowed", label: "Borrowed Books", icon: Archive },
     { key: "requests", label: "Borrow Requests", icon: Clock },
+    { key: "history", label: "Borrow History", icon: History },
     { key: "users", label: "Users", icon: User },
   ];
 

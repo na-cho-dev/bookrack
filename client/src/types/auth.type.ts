@@ -57,11 +57,14 @@ export interface UserState {
   memberships: Membership[] | null;
   currentMembership: Membership | null;
   loadingUser: boolean;
+  isInitialLoadComplete: boolean;
 
   setUser: (user: User | null) => void;
   setMemberships: (memberships: Membership[] | null) => void;
   setCurrentMembership: (membership: Membership | null) => void;
   setLoadingUser: (loading: boolean) => void;
+  setInitialLoadComplete: () => void;
+  resetInitialLoad: () => void;
 }
 
 export const isScopedUser = (user: User): user is OrgScopedUser => {

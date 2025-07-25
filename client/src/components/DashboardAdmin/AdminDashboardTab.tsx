@@ -3,8 +3,7 @@ import { useUserStore } from "../../stores/useUserStore";
 import {
   useAllBooks,
   useAvailableBooks,
-  useBorrowedBooks,
-  usePendingBorrowRequests,
+  useBorrowRequests,
 } from "../../hooks/useBook";
 import { Link } from "react-router-dom";
 
@@ -14,8 +13,8 @@ const AdminDashboardTab = () => {
 
   const { data: allBooks } = useAllBooks();
   const { data: availableBooks } = useAvailableBooks();
-  const { data: borrowedBooks } = useBorrowedBooks();
-  const { data: pendingRequests } = usePendingBorrowRequests();
+  const { data: borrowedBooks } = useBorrowRequests("borrowed");
+  const { data: pendingRequests } = useBorrowRequests("pending");
 
   const stats = {
     totalBooks: allBooks?.length ?? 0,
@@ -119,7 +118,7 @@ const AdminDashboardTab = () => {
                         </span>
                       </td>
                       <td className="py-4 pr-4">
-                        {new Date(req.borrowDate).toLocaleDateString()}
+                        {new Date(req.requestedAt).toLocaleDateString()}
                       </td>
                     </tr>
                   ))

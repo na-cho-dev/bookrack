@@ -6,6 +6,7 @@ import { User } from 'src/user/schemas/user.schema';
 export type BorrowBookDocument = BorrowBook & Document;
 export type BorrowBookStatus =
   | 'pending'
+  | 'canceled'
   | 'borrowed'
   | 'pending-return'
   | 'returned';
@@ -19,7 +20,7 @@ export class BorrowBook {
   book: Book;
 
   @Prop()
-  requestAt?: Date;
+  requestedAt?: Date;
 
   @Prop()
   borrowDate?: Date;

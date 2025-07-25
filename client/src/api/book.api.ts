@@ -4,7 +4,7 @@ import axiosInstance from "./axios";
 export const fetchAllBooks = async (): Promise<Book[]> => {
   try {
     const response = await axiosInstance.get("/books/all");
-    return response.data.books ?? [];
+    return response.data.data ?? [];
   } catch (err: any) {
     if (err.response?.status === 404) return [];
     throw err;
@@ -14,7 +14,7 @@ export const fetchAllBooks = async (): Promise<Book[]> => {
 export const fetchAvailableBooks = async (): Promise<Book[]> => {
   try {
     const response = await axiosInstance.get("/books/available");
-    return response.data.books ?? [];
+    return response.data.data ?? [];
   } catch (err: any) {
     if (err.response?.status === 404) return [];
     throw err;
@@ -26,7 +26,7 @@ export const addBook = async (
 ): Promise<Book | null> => {
   try {
     const response = await axiosInstance.post("/books/add", bookData);
-    return response.data.book ?? null;
+    return response.data.data ?? null;
   } catch (err: any) {
     if (err.response?.status === 404) return null;
     throw err;
@@ -41,7 +41,7 @@ export const updateBook = async (
       `/books/${bookData._id}`,
       bookData
     );
-    return response.data.book ?? null;
+    return response.data.data ?? null;
   } catch (err: any) {
     if (err.response?.status === 404) return null;
     throw err;
@@ -51,7 +51,7 @@ export const updateBook = async (
 export const deleteBook = async (_id: string): Promise<Book | null> => {
   try {
     const response = await axiosInstance.delete(`/books/${_id}`);
-    return response.data.book ?? null;
+    return response.data.data ?? null;
   } catch (err: any) {
     if (err.response?.status === 404) return null;
     throw err;

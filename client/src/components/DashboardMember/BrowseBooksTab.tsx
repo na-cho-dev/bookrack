@@ -1,10 +1,11 @@
 import { BookOpen } from "lucide-react";
-import { useAvailableBooks } from "../../hooks/useBook";
+import { useAvailableBooks, useCreateBorrowRequest } from "../../hooks/useBook";
 import { useState } from "react";
 
 const BrowseBooksTab = () => {
   const { data: books } = useAvailableBooks();
   const [search, setSearch] = useState("");
+  const createBorrowRequestMutation = useCreateBorrowRequest();
 
   const filteredBooks = books?.filter((book) =>
     book.title.toLowerCase().includes(search.toLowerCase())
@@ -63,8 +64,7 @@ const BrowseBooksTab = () => {
                       <button
                         className="text-sm text-sec hover:underline"
                         onClick={() => {
-                          // TODO: trigger borrow modal or request mutation
-                          console.log("Request book:", book.title);
+                          createBorrowRequestMutation.mutate(book._id);
                         }}
                       >
                         Request

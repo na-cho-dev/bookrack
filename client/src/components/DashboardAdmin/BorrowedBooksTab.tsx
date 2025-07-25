@@ -1,8 +1,13 @@
-import { BookOpen, User2, CalendarCheck } from "lucide-react";
-import { useBorrowedBooks } from "../../hooks/useBook";
+import { Clock, CheckCircle } from "lucide-react";
+import { useBorrowRequests, useApproveReturnBook } from "../../hooks/useBook";
 
 const BorrowedBooksTab = () => {
-  const { data: borrowedBooks } = useBorrowedBooks();
+  const { data: borrowedBooks } = useBorrowRequests([
+    "borrowed",
+    "pending-return",
+  ]);
+  const { mutate: approveReturn, variables: approvingId } =
+    useApproveReturnBook();
 
   return (
     <div className="flex justify-center items-center">
@@ -35,45 +40,61 @@ const BorrowedBooksTab = () => {
               <thead>
                 <tr className="text-gray-600 border-b">
                   <th className="py-2 pr-4">Book</th>
-                  <th className="py-2 pr-4">Borrowed By</th>
-                  <th className="py-2 pr-4">Borrowed On</th>
-                  <th className="py-2 pr-4">Due Date</th>
+                  <th className="py-2 pr-4">User</th>
+                  <th className="py-2 pr-4">Status</th>
+                  <th className="py-2 pr-4">Borrowed</th>
+                  <th className="py-2 pr-4">Due</th>
+                  <th className="py-2 pr-4">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {borrowedBooks && borrowedBooks.length > 0 ? (
-                  borrowedBooks.map((book) => (
-                    <tr key={book._id} className="border-b text-gray-700">
-                      <td className="py-4 pr-4">
-                        <div className="flex items-center gap-2">
-                          <BookOpen className="w-4 h-4 text-gray-400" />
-                          {book.book.title}
-                        </div>
+                {borrowedBooks.length ? (
+                  borrowedBooks.map((item) => (
+                    <tr key={item._id} className="border-b text-gray-700">
+                      <td className="py-4 pr-4">{item.book.title}</td>
+                      <td className="py-4 pr-4">{item.user?.name}</td>
+                      <td className="py-4 pr-4 capitalize">
+                        {item.status === "pending-return" ? (
+                          <span className="flex items-center gap-1 text-yellow-700 text-xs font-medium bg-yellow-100 px-2 py-2 rounded w-fit">
+                            <Clock className="w-3 h-3" /> Pending Return
+                          </span>
+                        ) : item.status === "borrowed" ? (
+                          <span className="flex items-center gap-1 text-green-700 text-xs font-medium bg-green-100 px-2 py-2 rounded w-fit">
+                            <CheckCircle className="w-3 h-3" /> Borrowed
+                          </span>
+                        ) : (
+                          <span className="capitalize">{item.status}</span>
+                        )}
                       </td>
                       <td className="py-4 pr-4">
-                        <div className="flex items-center gap-2">
-                          <User2 className="w-4 h-4 text-gray-400" />
-                          {book.user.name}
-                        </div>
+                        {item.borrowDate
+                          ? new Date(item.borrowDate).toLocaleDateString()
+                          : "—"}
                       </td>
                       <td className="py-4 pr-4">
-                        <div className="flex items-center gap-2">
-                          <CalendarCheck className="w-4 h-4 text-gray-400" />
-                          {new Date(book.borrowDate).toLocaleString()}
-                        </div>
+                        {item.dueDate
+                          ? new Date(item.dueDate).toLocaleDateString()
+                          : "—"}
                       </td>
                       <td className="py-4 pr-4">
-                        <div className="flex items-center gap-2">
-                          <CalendarCheck className="w-4 h-4 text-gray-400" />
-                          {new Date(book.dueDate).toLocaleString()}
-                        </div>
+                        {item.status === "pending-return" && (
+                          <button
+                            className={`px-3 py-2 rounded bg-green-600 text-white text-xs font-semibold hover:bg-green-700 transition disabled:opacity-60`}
+                            disabled={approvingId === item._id}
+                            onClick={() => approveReturn(item._id)}
+                          >
+                            {approvingId === item._id
+                              ? "Approving..."
+                              : "Approve Return"}
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={4} className="py-4 text-center text-gray-400">
-                      No Books Borrowed Yet
+                    <td colSpan={6} className="py-4 text-center text-gray-500">
+                      No borrowed books found.
                     </td>
                   </tr>
                 )}

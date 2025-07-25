@@ -1,17 +1,20 @@
-import { CheckCircle, Archive } from "lucide-react";
+import { CheckCircle, Archive, Clock } from "lucide-react";
 import { useUserStore } from "../../stores/useUserStore";
-import { useAvailableBooks, useBorrowedBooks } from "../../hooks/useBook";
+import { useAvailableBooks, useUserBorrowRequests } from "../../hooks/useBook";
+import { Link } from "react-router-dom";
 
 const MemberDashboardTab = () => {
   const user = useUserStore((state) => state.user);
   const currentMembership = useUserStore((s) => s.currentMembership);
 
   const { data: availableBooks } = useAvailableBooks();
-  const { data: myBorrowedBooks } = useBorrowedBooks();
+  const { data: myBorrowedBooks } = useUserBorrowRequests("borrowed");
+  const { data: pendingRequests } = useUserBorrowRequests("pending");
 
   const stats = {
     availableBooks: availableBooks?.length ?? 0,
     myBorrowedBooks: myBorrowedBooks?.length ?? 0,
+    pendingRequests: pendingRequests?.length ?? 0,
   };
 
   return (
@@ -45,6 +48,14 @@ const MemberDashboardTab = () => {
               <p className="text-xl font-bold">{stats.myBorrowedBooks}</p>
             </div>
           </div>
+
+          <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
+            <Clock className="text-red-500 w-8 h-8" />
+            <div>
+              <p className="text-sm text-gray-500">My Pending Requests</p>
+              <p className="text-xl font-bold">{stats.pendingRequests}</p>
+            </div>
+          </div>
         </div>
 
         {/* Borrowed Books Table */}
@@ -53,12 +64,12 @@ const MemberDashboardTab = () => {
             <h2 className="text-lg font-semibold text-gray-800">
               My Borrowed Books
             </h2>
-            <a
-              href="/dashboard/member/borrowed"
+            <Link
+              to="/dashboard/member?tab=borrowed-books"
               className="text-sm text-sec hover:underline"
             >
               View all
-            </a>
+            </Link>
           </div>
 
           <div className="overflow-x-auto">
@@ -89,7 +100,9 @@ const MemberDashboardTab = () => {
                         </span>
                       </td>
                       <td className="py-4 pr-4">
-                        {new Date(book.borrowDate).toLocaleDateString()}
+                        {book.borrowDate
+                          ? new Date(book.borrowDate).toLocaleString()
+                          : "N/A"}
                       </td>
                     </tr>
                   ))

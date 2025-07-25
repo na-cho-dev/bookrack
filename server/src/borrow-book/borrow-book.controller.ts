@@ -49,18 +49,81 @@ export class BorrowBookController {
   }
 
   @Get()
+  @MembershipRoles(MembershipRole.ADMIN)
   async getBorrowRecordsByStatus(
     @Headers('x-organization-id') orgId: string,
     @Query('status') status?: string,
   ) {
+    const statuses = status ? status.split(',') : undefined;
     const borrowRecords = await this.borrowBookService.getBorrowRecordsByStatus(
       orgId,
-      status,
+      statuses,
     );
 
     return {
       message: 'Borrow records retrieved successfully',
-      borrowRecords,
+      data: borrowRecords,
+    };
+  }
+
+  @Get(':id')
+  async getBorrowRecordsById(@Param('id') id: string) {
+    const borrowRecord = await this.borrowBookService.getBorrowRecordById(id);
+    return {
+      message: 'Borrow record retrieved successfully',
+      data: borrowRecord,
+    };
+  }
+
+  @Get('user/:userId/status')
+  async getUserBorrowRecordsByStatus(
+    @Param('userId') userId: string,
+    @Headers('x-organization-id') orgId: string,
+    @Query('status') status?: string,
+  ) {
+    const statuses = status ? status.split(',') : undefined;
+    const borrowRecords =
+      await this.borrowBookService.getUserBorrowRecordsByStatus(
+        userId,
+        orgId,
+        statuses,
+      );
+    return {
+      message: 'Borrow records retrieved successfully',
+      data: borrowRecords,
+    };
+  }
+
+  @Get('user/:userId/overdue')
+  async getUserOverdueBooks(@Param('userId') userId: string) {
+    const overdueBooks =
+      await this.borrowBookService.getUserOverdueBooks(userId);
+    return {
+      message: 'User overdue books retrieved successfully',
+      data: overdueBooks,
+    };
+  }
+
+  @Get('overdue')
+  @MembershipRoles(MembershipRole.ADMIN)
+  async getOverdueBooks() {
+    const overdueBooks = await this.borrowBookService.getOverdueBooks();
+    return {
+      message: 'Overdue books retrieved successfully',
+      data: overdueBooks,
+    };
+  }
+
+  @Put(':id')
+  async updateBorrowRecordById(
+    @Param('id') id: string,
+    @Body() updateData: UpdateBorrowBookDto,
+  ) {
+    const updatedBorrowRecord =
+      await this.borrowBookService.updateBorrowRecordById(id, updateData);
+    return {
+      message: 'Borrow record updated successfully',
+      data: updatedBorrowRecord,
     };
   }
 
@@ -76,7 +139,7 @@ export class BorrowBookController {
 
     return {
       message: 'Borrow request has been approved successfully',
-      borrowedBookRequest,
+      data: borrowedBookRequest,
     };
   }
 
@@ -89,11 +152,12 @@ export class BorrowBookController {
 
     return {
       message: 'Book returned successfully',
-      returnedBook,
+      data: returnedBook,
     };
   }
 
   @Patch('return/:id/approve')
+  @MembershipRoles(MembershipRole.ADMIN)
   async approveBookReturn(
     @Param('id') id: string,
     @Headers('x-organization-id') orgId: string,
@@ -105,58 +169,23 @@ export class BorrowBookController {
 
     return {
       message: 'Book return has been approved successfully',
-      returnedBook,
+      data: returnedBook,
     };
   }
 
-  @Get('user/:userId')
-  async getBorrowRecordsByUserId(@Param('userId') userId: string) {
-    const borrowRecords =
-      await this.borrowBookService.getBorrowRecordsByUserId(userId);
-    return {
-      message: 'Borrow records retrieved successfully',
-      borrowRecords,
-    };
-  }
-
-  @Get('user/:userId/overdue')
-  async getUserOverdueBooks(@Param('userId') userId: string) {
-    const overdueBooks =
-      await this.borrowBookService.getUserOverdueBooks(userId);
-    return {
-      message: 'User overdue books retrieved successfully',
-      overdueBooks,
-    };
-  }
-
-  @Get('overdue')
-  async getOverdueBooks() {
-    const overdueBooks = await this.borrowBookService.getOverdueBooks();
-    return {
-      message: 'Overdue books retrieved successfully',
-      overdueBooks,
-    };
-  }
-
-  @Get(':id')
-  async getBorrowRecordsById(@Param('id') id: string) {
-    const borrowRecord = await this.borrowBookService.getBorrowRecordById(id);
-    return {
-      message: 'Borrow record retrieved successfully',
-      borrowRecord,
-    };
-  }
-
-  @Put(':id')
-  async updateBorrowRecordById(
+  @Patch(':id/cancel')
+  async cancelBorrowRequest(
     @Param('id') id: string,
-    @Body() updateData: UpdateBorrowBookDto,
+    @Headers('x-organization-id') orgId: string,
   ) {
-    const updatedBorrowRecord =
-      await this.borrowBookService.updateBorrowRecordById(id, updateData);
+    const canceledRecord = await this.borrowBookService.cancelBorrowRequest(
+      id,
+      orgId,
+    );
+
     return {
-      message: 'Borrow record updated successfully',
-      updatedBorrowRecord,
+      message: 'Borrow request canceled successfully',
+      data: canceledRecord,
     };
   }
 
@@ -166,7 +195,7 @@ export class BorrowBookController {
       await this.borrowBookService.deleteBorrowRecordById(id);
     return {
       message: 'Borrow record deleted successfully',
-      deletedBorrowRecord,
+      data: deletedBorrowRecord,
     };
   }
 }

@@ -35,27 +35,25 @@ export class BookController {
     const book = await this.bookService.addBook(bookDto, orgId);
     return {
       message: 'Book added successfully',
-      book,
+      data: book,
     };
   }
 
   @Get('all')
-  // @MembershipRoles(MembershipRole.ADMIN)
   async getAllBooks(@Headers('x-organization-id') orgId: string) {
     const books = await this.bookService.getAllBooksByOrg(orgId);
     return {
       message: 'Books retrieved successfully',
-      books,
+      data: books,
     };
   }
 
   @Get('available')
-  // @MembershipRoles(MembershipRole.ADMIN)
   async getAvailableBooks(@Headers('x-organization-id') orgId: string) {
     const books = await this.bookService.getAvailableBooksByOrg(orgId);
     return {
       message: 'Books retrieved successfully',
-      books,
+      data: books,
     };
   }
 
@@ -67,7 +65,7 @@ export class BookController {
     const book = await this.bookService.getBookById(id, orgId);
     return {
       message: 'Book retrieved successfully',
-      book,
+      data: book,
     };
   }
 
@@ -77,7 +75,7 @@ export class BookController {
     const updatedBook = await this.bookService.updateBookById(id, bookDto);
     return {
       message: 'Book updated successfully',
-      book: updatedBook,
+      data: updatedBook,
     };
   }
 
@@ -87,7 +85,7 @@ export class BookController {
     const deletedBook = await this.bookService.deleteBookById(id);
     return {
       message: 'Book deleted successfully',
-      book: deletedBook,
+      data: deletedBook,
     };
   }
 }

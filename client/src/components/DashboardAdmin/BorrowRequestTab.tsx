@@ -1,8 +1,12 @@
 import { User, BookOpen, Clock3 } from "lucide-react";
-import { usePendingBorrowRequests } from "../../hooks/useBook";
+import {
+  useApproveBorrowRequest,
+  useBorrowRequests,
+} from "../../hooks/useBook";
 
 const BorrowRequestsTab = () => {
-  const { data: borrowRequests } = usePendingBorrowRequests();
+  const { data: borrowRequests } = useBorrowRequests("pending");
+  const approveMutation = useApproveBorrowRequest();
 
   return (
     <div className="flex justify-center items-center">
@@ -61,16 +65,19 @@ const BorrowRequestsTab = () => {
                       <td className="py-4 pr-4">
                         <div className="flex items-center gap-2">
                           <Clock3 className="w-4 h-4 text-gray-400" />
-                          {new Date(book.borrowDate).toLocaleString()}
+                          {new Date(book.requestedAt).toLocaleString()}
                         </div>
                       </td>
                       <td className="py-4 pr-4 space-x-2">
-                        <button className="px-3 py-1 text-xs rounded-md bg-green-100 text-green-700 hover:bg-green-200">
+                        <button
+                          className="px-3 py-1 text-xs rounded-md bg-green-100 text-green-700 hover:bg-green-200"
+                          onClick={() => approveMutation.mutate(book._id)}
+                        >
                           Approve
                         </button>
-                        <button className="px-3 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200">
+                        {/* <button className="px-3 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200">
                           Reject
-                        </button>
+                        </button> */}
                       </td>
                     </tr>
                   ))

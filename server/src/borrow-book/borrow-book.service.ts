@@ -87,6 +87,23 @@ export class BorrowBookService {
     return populatedRecord;
   }
 
+  async cancelBorrowRequest(id: string, orgId: string): Promise<BorrowBook> {
+    validateObjectId(id);
+
+    const borrowRecord = await this.borrowBookModel.findById(id);
+
+    if (!borrowRecord || borrowRecord.status === 'returned')
+      throw new BadRequestException('Book is already returned or not found');
+
+    await this.validateBookOrganization(String(borrowRecord.book), orgId);
+
+    borrowRecord.status = 'canceled';
+    const savedBorrowRecord = await borrowRecord.save();
+    const populatedRecord = await savedBorrowRecord.populate('user book');
+
+    return populatedRecord;
+  }
+
   async approveBorrowRequest(
     id: string,
     updateData: UpdateBorrowBookDto,
@@ -168,15 +185,26 @@ export class BorrowBookService {
 
   async getBorrowRecordsByStatus(
     orgId: string,
-    status?: string,
+    statuses?: string[],
   ): Promise<BorrowBook[]> {
-    if (status && !['pending', 'borrowed', 'returned'].includes(status))
+    if (
+      statuses &&
+      !statuses.every((status) =>
+        [
+          'pending',
+          'canceled',
+          'borrowed',
+          'pending-return',
+          'returned',
+        ].includes(status),
+      )
+    )
       throw new BadRequestException(
-        'Invalid status. Allowed values are: pending, borrowed, returned',
+        'Invalid status. Allowed values are: pending, canceled, borrowed, pending-return, returned',
       );
 
     const query: any = {};
-    if (status) query.status = status;
+    if (statuses) query.status = { $in: statuses };
 
     const borrowRecords = await this.borrowBookModel
       .find(query)
@@ -197,16 +225,48 @@ export class BorrowBookService {
     return filtered;
   }
 
-  async getBorrowRecordsByUserId(userId: string): Promise<BorrowBook[]> {
+  async getUserBorrowRecordsByStatus(
+    userId: string,
+    orgId: string,
+    statuses?: string[],
+  ): Promise<BorrowBook[]> {
     validateObjectId(userId);
+    if (
+      statuses &&
+      !statuses.every((status) =>
+        [
+          'pending',
+          'canceled',
+          'borrowed',
+          'pending-return',
+          'returned',
+        ].includes(status),
+      )
+    )
+      throw new BadRequestException(
+        'Invalid status. Allowed values are: pending, canceled, borrowed, pending-return, returned',
+      );
+
+    const query: any = { user: userId };
+    if (statuses) query.status = { $in: statuses };
+
     const borrowRecords = await this.borrowBookModel
-      .find({ user: userId })
-      .populate('user book');
-    if (borrowRecords.length === 0) {
-      throw new NotFoundException('No borrow records found for this user');
+      .find(query)
+      .populate([{ path: 'book' }, { path: 'user', select: 'name email' }]);
+
+    // Filter by organization
+    const filtered = borrowRecords.filter((record) => {
+      const book = record.book as BookDocument;
+      return book && book.organization.toString() === orgId;
+    });
+
+    if (!filtered.length) {
+      throw new NotFoundException(
+        'No borrow records found for this user in this organization',
+      );
     }
 
-    return borrowRecords;
+    return filtered;
   }
 
   async getBorrowRecordById(id: string): Promise<BorrowBook> {

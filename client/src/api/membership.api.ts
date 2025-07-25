@@ -7,8 +7,13 @@ export const getUserMemberships = async (): Promise<Membership[]> => {
 };
 
 export const getOrgUsers = async (): Promise<Membership[]> => {
-  const response = await axiosInstance.get("/membership/organization/users");
-  return response.data;
+  try {
+    const response = await axiosInstance.get("/membership/organization/users");
+    return response.data;
+  } catch (err: any) {
+    if (err.response?.status === 403) return [];
+    throw err;
+  }
 };
 
 export const leaveOrg = async (): Promise<void> => {

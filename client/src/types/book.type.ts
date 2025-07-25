@@ -48,13 +48,20 @@ export interface AddBookPayload {
 export interface UpdateBookPayload extends Partial<AddBookPayload> {
   id: string;
 }
-export type BorrowStatus = "borrowed" | "pending" | "returned";
+export type BorrowStatus =
+  | "pending"
+  | "canceled"
+  | "borrowed"
+  | "pending-return"
+  | "returned";
 
 export type BorrowRecord = {
   _id: string;
   user: User;
   book: Book;
-  borrowDate: string;
-  dueDate: string;
+  requestedAt: Date;
   status: BorrowStatus;
+  dueDate?: Date;
+  borrowDate?: Date;
+  returnDate?: Date;
 };

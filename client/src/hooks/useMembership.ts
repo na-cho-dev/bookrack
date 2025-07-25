@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 // import { queryClient } from "../utils/queryClient";
 
+/// =============== QUERY HOOKS =============== ///
 export const useLoadMemberships = () => {
   const setLoadingUser = useUserStore((state) => state.setLoadingUser);
   const setMemberships = useUserStore((state) => state.setMemberships);
@@ -38,15 +39,16 @@ export const useLoadMemberships = () => {
 };
 
 export const useOrganizationUsers = () => {
-  const { data, isError, isLoading } = useQuery({
+  const { data, isError, isLoading, fetchStatus, isFetching } = useQuery({
     queryKey: ["organization-users"],
     queryFn: getOrgUsers,
     retry: false,
   });
 
-  return { isLoading, isError, data };
+  return { data, isError, isLoading, fetchStatus, isFetching };
 };
 
+/// =============== MUTATION HOOKS =============== ///
 export const useLeaveOrg = () => {
   const resetCurrentMembership = useUserStore((s) => s.setCurrentMembership);
   const memberships = useUserStore((s) => s.memberships ?? []);

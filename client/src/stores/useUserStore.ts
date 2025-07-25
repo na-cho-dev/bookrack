@@ -9,6 +9,7 @@ export const useUserStore = create<UserState>()(
       memberships: null,
       loadingUser: true,
       currentMembership: null,
+      isInitialLoadComplete: false,
 
       setUser: (user: User | null) => set({ user }),
       setMemberships: (memberships: Membership[] | null) =>
@@ -16,6 +17,8 @@ export const useUserStore = create<UserState>()(
       setLoadingUser: (loading: boolean) => set({ loadingUser: loading }),
       setCurrentMembership: (membership: Membership | null) =>
         set({ currentMembership: membership }),
+      setInitialLoadComplete: () => set({ isInitialLoadComplete: true }),
+      resetInitialLoad: () => set({ isInitialLoadComplete: false }),
     }),
     {
       name: "org-storage",

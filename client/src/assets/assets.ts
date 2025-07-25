@@ -5,6 +5,9 @@ import libImgOne from "./about_img1.jpg";
 import libImgTwo from "./about_img2.jpg";
 import libImgThree from "./about_img3.jpg";
 import libImgFour from "./about_img4.webp";
+import quoteImg1 from "./woman-8568693_1280.jpg";
+import featuredHighlightBgImg1 from "./spacejoy-9M66C_w_ToM-unsplash.jpg";
+import visionImg1 from "./books-2253569_1280.jpg";
 import {
   ThumbsUp,
   ShieldCheck,
@@ -25,6 +28,9 @@ export const ImageAssets = {
   libImgTwo,
   libImgThree,
   libImgFour,
+  quoteImg1,
+  featuredHighlightBgImg1,
+  visionImg1,
 };
 
 export const features: Array<{
@@ -103,5 +109,55 @@ export const faqs = [
     question: "Is my library data secure?",
     answer:
       "Absolutely. We prioritize your data security with encrypted storage and regular backups.",
+  },
+];
+
+export const testimonials = [
+  {
+    quote:
+      "BookRack transformed our community library! Managing books and tracking borrows is now a breeze.",
+    author: "Jane Doe, Community Librarian",
+    role: "Small Town Library",
+  },
+  {
+    quote:
+      "The search and filter tools are fantastic. Our students can find books quickly and easily.",
+    author: "John Smith, School Administrator",
+    role: "High School Library",
+  },
+  {
+    quote:
+      "I love how intuitive BookRack is. It’s perfect for our book club’s shared collection.",
+    author: "Emily Brown, Book Club Organizer",
+    role: "Local Book Club",
+  },
+];
+
+export const stats = [
+  { icon: BookOpen, value: "10,000+", label: "Books Tracked" },
+  { icon: Library, value: "500+", label: "Libraries Served" },
+  { icon: Users, value: "1,000+", label: "Active Users" },
+];
+
+export const steps = [
+  {
+    title: "Sign Up",
+    desc: "Create an account for your library or community in minutes.",
+    icon: "📝",
+  },
+  {
+    title: "Add Books",
+    desc: "Easily catalog your collection with our intuitive interface.",
+    icon: "📚",
+  },
+  {
+    title: "Manage Borrows",
+    desc: "Track borrowing and returns with automated notifications.",
+    icon: "🔄",
+  },
+  {
+    title: "Engage Readers",
+    desc: "Use search and filter tools to help users find their next read.",
+    icon: "🔍",
   },
 ];

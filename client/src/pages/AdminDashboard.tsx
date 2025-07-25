@@ -8,6 +8,7 @@ import BorrowedBooksTab from "../components/DashboardAdmin/BorrowedBooksTab";
 import BorrowRequestsTab from "../components/DashboardAdmin/BorrowRequestTab";
 import UsersTab from "../components/DashboardAdmin/UserTab";
 import SettingsTab from "../components/SettingsTab";
+import AdminBorrowHistoryTab from "../components/DashboardAdmin/AdminBorrowHistoryTab";
 
 const AdminDashboard = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
@@ -35,6 +36,7 @@ const AdminDashboard = () => {
           {activeTab === "available" && <AvailableBooksTab />}
           {activeTab === "borrowed" && <BorrowedBooksTab />}
           {activeTab === "requests" && <BorrowRequestsTab />}
+          {activeTab === "history" && <AdminBorrowHistoryTab />}
           {activeTab === "users" && <UsersTab />}
           {activeTab === "settings" && <SettingsTab />}
         </div>
