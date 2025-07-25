@@ -1,4 +1,4 @@
-import { LayoutDashboard, LogIn, LogOut, PanelLeftOpen } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeftOpen } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ImageAssets } from "../assets/assets";
 import { useUserStore } from "../stores/useUserStore";
@@ -60,7 +60,7 @@ const Navbar = () => {
               {!user ? (
                 // User not logged in
                 <li className="flex gap-5 text-sm md:text-base font-bold">
-                  {currentPath === "/login" ? (
+                  {/* {currentPath === "/login" ? (
                     <Link to={"/register"} className="flex items-center gap-1">
                       <LogIn className="w-6 text-sec" />
                       <span>Register</span>
@@ -70,7 +70,7 @@ const Navbar = () => {
                       <LogIn className="w-6 text-sec" />
                       <span>Login</span>
                     </Link>
-                  )}
+                  )} */}
                   <Link
                     to={"/register"}
                     className="group bg-sec text-white px-4 py-3 rounded-md hover:bg-pri transition flex items-center gap-2 transform hover:shadow-lg"

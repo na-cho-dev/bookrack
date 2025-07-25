@@ -47,7 +47,7 @@ const AdminNavDrawer: React.FC<Props> = ({
     <>
       {/* Drawer */}
       <div
-        className={`fixed top-28 left-0 z-40 w-72 h-[calc(100vh-7rem)] border-r shadow-md overflow-hidden transition-all duration-300 ${
+        className={`bg-bg fixed top-28 left-0 z-40 w-72 h-[calc(100vh-7rem)] border-r shadow-md overflow-hidden transition-all duration-300 ${
           open ? "translate-x-0" : "-translate-x-full"
         } flex flex-col justify-between`}
       >
