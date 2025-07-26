@@ -126,9 +126,19 @@ export class AuthService {
     );
 
     if (!membership) {
-      throw new ForbiddenException(
-        'Could not find membership for user in this organization',
+      // User is not a member of this org anymore, return basic info
+      const memberships = await this.membershipService.findAllByUserId(
+        user._id,
       );
+      return {
+        message: 'Logged in successfully (basic)',
+        user: {
+          _id: user._id,
+          email: user.email,
+          name: user.name,
+          memberships,
+        },
+      };
     }
 
     return {
