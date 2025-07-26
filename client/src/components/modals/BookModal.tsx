@@ -1,6 +1,5 @@
-// components/BookModal.tsx
-import { X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useState, useEffect } from "react";
 import type { AddBookPayload } from "../../types/book.type";
 
 type Props = {
@@ -63,58 +62,74 @@ const BookModal = ({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative m-5">
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+    <Transition appear show={isOpen} as={Fragment}>
+      <Dialog as="div" onClose={onClose} className="relative z-50">
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
         >
-          <X size={18} />
-        </button>
+          <div className="fixed inset-0 bg-black bg-opacity-30" />
+        </Transition.Child>
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Dialog.Panel className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg relative">
+            <Dialog.Title className="text-xl font-semibold mb-4 text-gray-800">
+              {mode === "edit" ? "Edit Book" : "Add New Book"}
+            </Dialog.Title>
 
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">
-          {mode === "edit" ? "Edit Book" : "Add New Book"}
-        </h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {[
+                { label: "Title", name: "title" },
+                { label: "Author", name: "author" },
+                { label: "ISBN", name: "isbn" },
+                { label: "Published Year", name: "publishedYear" },
+                { label: "Total Copies", name: "totalCopies" },
+                { label: "Available Copies", name: "availableCopies" },
+                { label: "Genre", name: "genre" },
+              ].map((field) => (
+                <div key={field.name}>
+                  <label className="text-sm text-gray-600">{field.label}</label>
+                  <input
+                    type={
+                      field.name.includes("Year") ||
+                      field.name.includes("Copies")
+                        ? "number"
+                        : "text"
+                    }
+                    name={field.name}
+                    value={form[field.name as keyof AddBookPayload]}
+                    onChange={handleChange}
+                    className="w-full border rounded-md px-3 py-2 mt-1 text-sm focus:ring-sec focus:outline-none"
+                    required
+                  />
+                </div>
+              ))}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {[
-            { label: "Title", name: "title" },
-            { label: "Author", name: "author" },
-            { label: "ISBN", name: "isbn" },
-            { label: "Published Year", name: "publishedYear" },
-            { label: "Total Copies", name: "totalCopies" },
-            { label: "Available Copies", name: "availableCopies" },
-            { label: "Genre", name: "genre" },
-          ].map((field) => (
-            <div key={field.name}>
-              <label className="text-sm text-gray-600">{field.label}</label>
-              <input
-                type={
-                  field.name.includes("Year") || field.name.includes("Copies")
-                    ? "number"
-                    : "text"
-                }
-                name={field.name}
-                value={form[field.name as keyof AddBookPayload]}
-                onChange={handleChange}
-                className="w-full border rounded-md px-3 py-2 mt-1 text-sm focus:ring-sec focus:outline-none"
-                required
-              />
-            </div>
-          ))}
-
-          <button
-            type="submit"
-            className="bg-sec text-white px-4 py-2 rounded-md shadow hover:bg-opacity-90 text-sm"
-          >
-            {mode === "edit" ? "Update Book" : "Add Book"}
-          </button>
-        </form>
-      </div>
-    </div>
+              <div className="flex gap-2 justify-end">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2 rounded-md text-gray-600 hover:bg-gray-100 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-sec text-white px-4 py-2 rounded-md shadow hover:bg-opacity-90 text-sm"
+                >
+                  {mode === "edit" ? "Update Book" : "Add Book"}
+                </button>
+              </div>
+            </form>
+          </Dialog.Panel>
+        </div>
+      </Dialog>
+    </Transition>
   );
 };
 
