@@ -101,9 +101,9 @@ const MemberNavDrawer: React.FC<Props> = ({
         }`}
       >
         {open ? (
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-6 h-6 flex-shrink-0" />
         ) : (
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-6 h-6 flex-shrink-0" />
         )}
       </button>
     </>

@@ -1,4 +1,4 @@
-import { X, UserCircle2, Mail } from "lucide-react";
+import { X, UserCircle2, Mail, Loader } from "lucide-react";
 import type { Membership } from "../../types/auth.type";
 
 const PendingUserRequestsModal = ({
@@ -7,12 +7,16 @@ const PendingUserRequestsModal = ({
   pendingUsers,
   onAccept,
   onReject,
+  isAccepting,
+  isRejecting,
 }: {
   isOpen: boolean;
   onClose: () => void;
   pendingUsers: Membership[];
   onAccept: (id: string) => void;
   onReject: (id: string) => void;
+  isAccepting?: boolean;
+  isRejecting?: boolean;
 }) => {
   if (!isOpen) return null;
 
@@ -52,14 +56,18 @@ const PendingUserRequestsModal = ({
                 <div className="flex gap-2">
                   <button
                     onClick={() => onAccept(data.user._id)}
-                    className="px-3 py-1 text-xs rounded-md bg-green-100 text-green-700 hover:bg-green-200"
+                    className="px-3 py-1 text-xs rounded-md bg-green-100 text-green-700 hover:bg-green-200 flex items-center gap-1"
+                    disabled={isAccepting}
                   >
+                    {isAccepting && <Loader className="w-3 h-3 animate-spin" />}
                     Accept
                   </button>
                   <button
                     onClick={() => onReject(data.user._id)}
-                    className="px-3 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200"
+                    className="px-3 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200 flex items-center gap-1"
+                    disabled={isRejecting}
                   >
+                    {isRejecting && <Loader className="w-3 h-3 animate-spin" />}
                     Reject
                   </button>
                 </div>

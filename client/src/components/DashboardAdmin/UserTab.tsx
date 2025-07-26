@@ -1,4 +1,4 @@
-import { UserCircle2, Mail, Shield } from "lucide-react";
+import { UserCircle2, Mail, Shield, Loader } from "lucide-react";
 import {
   useAcceptUserRequest,
   useOrganizationUsers,
@@ -16,6 +16,7 @@ const UsersTab = () => {
   const { data: pendingUsers = [] } = usePendingUserRequests();
   const acceptUserMutation = useAcceptUserRequest();
   const rejectUserMutation = useRejectUserRequest();
+  const [removingUserId, setRemovingUserId] = useState<string | null>(null);
 
   const handleAccept = (userId: string) => {
     acceptUserMutation.mutate(userId);
@@ -23,6 +24,13 @@ const UsersTab = () => {
 
   const handleReject = (userId: string) => {
     rejectUserMutation.mutate(userId);
+  };
+
+  const handleRemoveUser = (userId: string) => {
+    setRemovingUserId(userId);
+    removeUserMutation.mutate(userId, {
+      onSettled: () => setRemovingUserId(null),
+    });
   };
 
   return (
@@ -97,12 +105,19 @@ const UsersTab = () => {
                       <td className="py-4 pr-4 flex gap-2">
                         {membership.role !== "admin" && (
                           <button
-                            className="px-3 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200"
+                            className="px-3 py-1 text-xs rounded-md bg-red-100 text-red-700 hover:bg-red-200 flex items-center gap-1"
                             onClick={() =>
-                              removeUserMutation.mutate(membership.user._id)
+                              handleRemoveUser(membership.user._id)
                             }
-                            disabled={removeUserMutation.isPending}
+                            disabled={
+                              removeUserMutation.isPending &&
+                              removingUserId === membership.user._id
+                            }
                           >
+                            {removeUserMutation.isPending &&
+                              removingUserId === membership.user._id && (
+                                <Loader className="w-3 h-3 animate-spin" />
+                              )}
                             Remove
                           </button>
                         )}
@@ -128,6 +143,8 @@ const UsersTab = () => {
         pendingUsers={pendingUsers}
         onAccept={handleAccept}
         onReject={handleReject}
+        isAccepting={acceptUserMutation.isPending}
+        isRejecting={rejectUserMutation.isPending}
       />
     </div>
   );

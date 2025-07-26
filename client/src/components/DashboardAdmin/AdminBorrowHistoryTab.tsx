@@ -37,13 +37,13 @@ const AdminBorrowHistoryTab = () => {
                 {history?.length ? (
                   history.map((item) => (
                     <tr key={item._id} className="border-b text-gray-700">
-                      <td className="py-4 pr-4 flex items-center gap-2 truncate max-w-[10rem]">
-                        <BookOpen className="w-4 h-4 text-gray-400" />
+                      <td className="py-4 pr-4 flex items-center gap-2 truncate max-w-[10rem] text-sm leading-none">
+                        <BookOpen className="w-5 h-5 text-gray-400 flex-shrink-0" />
                         <span className="truncate">{item.book.title}</span>
                       </td>
-                      <td className="py-4 pr-4 truncate max-w-[8rem]">
+                      <td className="py-4 pr-4 truncate max-w-[8rem] text-sm leading-none">
                         <div className="flex items-center gap-2">
-                          <User className="w-4 h-4 text-gray-400" />
+                          <User className="w-5 h-5 text-gray-400 flex-shrink-0" />
                           <span className="truncate">{item.user.name}</span>
                         </div>
                       </td>

@@ -1,4 +1,4 @@
-import { Clock, CheckCircle } from "lucide-react";
+import { Clock, CheckCircle, Loader, BookOpen } from "lucide-react";
 import { useBorrowRequests, useApproveReturnBook } from "../../hooks/useBook";
 
 const BorrowedBooksTab = () => {
@@ -51,7 +51,8 @@ const BorrowedBooksTab = () => {
                 {borrowedBooks.length ? (
                   borrowedBooks.map((item) => (
                     <tr key={item._id} className="border-b text-gray-700">
-                      <td className="py-4 pr-4 truncate max-w-[10rem]">
+                      <td className="py-4 pr-4 flex items-center gap-2 truncate max-w-[10rem]">
+                        <BookOpen className="w-4 h-4 text-gray-400 flex-shrink-0" />
                         {item.book.title}
                       </td>
                       <td className="py-4 pr-4 truncate max-w-[8rem]">
@@ -87,9 +88,14 @@ const BorrowedBooksTab = () => {
                             disabled={approvingId === item._id}
                             onClick={() => approveReturn(item._id)}
                           >
-                            {approvingId === item._id
-                              ? "Approving..."
-                              : "Approve Return"}
+                            {approvingId === item._id ? (
+                              <div className="flex items-center justify-center gap-1">
+                                <Loader className="w-3 h-3 animate-spin" />{" "}
+                                <p>Approving</p>
+                              </div>
+                            ) : (
+                              "Approve Return"
+                            )}
                           </button>
                         )}
                       </td>

@@ -94,17 +94,17 @@ export const useLeaveOrg = () => {
 };
 
 export const useJoinOrg = () => {
-  const setCurrentMembership = useUserStore(
-    (state) => state.setCurrentMembership
-  );
-  const setMemberships = useUserStore((state) => state.setMemberships);
-  const memberships = useUserStore((state) => state.memberships);
+  // const setCurrentMembership = useUserStore(
+  //   (state) => state.setCurrentMembership
+  // );
+  // const setMemberships = useUserStore((state) => state.setMemberships);
+  // const memberships = useUserStore((state) => state.memberships);
 
   return useMutation({
     mutationFn: joinOrg,
     onSuccess: (data) => {
-      setMemberships([...(memberships ?? []), data]);
-      setCurrentMembership(data);
+      // setMemberships([...(memberships ?? []), data]);
+      // setCurrentMembership(data);
       toast.success(`Joined organization: ${data.organization.name}`);
     },
     onError: (error: any) => {

@@ -1,12 +1,21 @@
-import { Clock, X } from "lucide-react";
+import { BookOpen, Clock, Loader, X } from "lucide-react";
 import {
   useCancelBorrowRequest,
   useUserBorrowRequests,
 } from "../../hooks/useBook";
+import { useState } from "react";
 
 const PendingRequestsTab = () => {
   const { data: pendingRequests } = useUserBorrowRequests("pending");
   const cancelBorrowRequest = useCancelBorrowRequest();
+  const [cancelRequestId, setCAncelRequestId] = useState<string | null>(null);
+
+  const handleCancel = (bookId: string) => {
+    setCAncelRequestId(bookId);
+    cancelBorrowRequest.mutate(bookId, {
+      onSettled: () => setCAncelRequestId(null),
+    });
+  };
 
   return (
     <div className="py-8 px-6 sm:py-14 sm:px-6 w-full max-w-4xl mx-auto space-y-8">
@@ -26,7 +35,8 @@ const PendingRequestsTab = () => {
               {pendingRequests?.length ? (
                 pendingRequests.map((req) => (
                   <tr key={req._id} className="border-b text-gray-700">
-                    <td className="py-4 pr-4 truncate max-w-[10rem]">
+                    <td className="py-4 pr-4 flex items-center gap-2 truncate max-w-[10rem]">
+                      <BookOpen className="w-4 h-4 text-gray-400 flex-shrink-0" />
                       {req.book?.title}
                     </td>
                     <td className="py-4 pr-4 truncate max-w-[8rem]">
@@ -36,18 +46,31 @@ const PendingRequestsTab = () => {
                     </td>
                     <td className="py-4 pr-4 capitalize">
                       <span className="flex items-center gap-1 text-yellow-700 text-xs font-medium bg-yellow-100 px-2 py-1 rounded w-fit">
-                        <Clock className="w-3 h-3" />
+                        <Clock className="w-3 h-3 flex-shrink-0" />
                         {req.status}
                       </span>
                     </td>
                     <td className="py-4 pr-4">
                       <button
                         className="text-xs text-red-600 hover:underline flex items-center gap-1"
-                        onClick={() => cancelBorrowRequest.mutate(req._id)}
-                        disabled={cancelBorrowRequest.isPending}
+                        onClick={() => handleCancel(req._id)}
+                        disabled={
+                          cancelBorrowRequest.isPending &&
+                          cancelRequestId === req._id
+                        }
                       >
-                        <X className="w-4 h-4" />
-                        Cancel
+                        {cancelBorrowRequest.isPending &&
+                        cancelRequestId === req._id ? (
+                          <div className="flex items-center justify-center gap-1">
+                            <Loader className="w-3 h-3 animate-spin" />{" "}
+                            <p>Cancel</p>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center gap-1">
+                            <X className="w-4 h-4" />
+                            <p>Cancel</p>
+                          </div>
+                        )}
                       </button>
                     </td>
                   </tr>

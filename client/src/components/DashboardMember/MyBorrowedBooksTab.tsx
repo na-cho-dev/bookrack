@@ -1,4 +1,4 @@
-import { BookOpen } from "lucide-react";
+import { BookOpen, Loader } from "lucide-react";
 import { useUserBorrowRequests, useReturnBook } from "../../hooks/useBook";
 
 const MyBorrowedBooksTab = () => {
@@ -26,7 +26,7 @@ const MyBorrowedBooksTab = () => {
                 borrowedBooks.map((item) => (
                   <tr key={item._id} className="border-b text-gray-700">
                     <td className="py-4 pr-4 flex items-center gap-2 truncate max-w-[10rem]">
-                      <BookOpen className="w-4 h-4 text-gray-400" />
+                      <BookOpen className="w-4 h-4 text-gray-400 flex-shrink-0" />
                       <span className="truncate">{item.book.title}</span>
                     </td>
                     <td className="py-4 pr-4 capitalize">
@@ -61,7 +61,14 @@ const MyBorrowedBooksTab = () => {
                           disabled={returningId === item._id}
                           onClick={() => returnBook(item._id)}
                         >
-                          {returningId === item._id ? "Returning..." : "Return"}
+                          {returningId === item._id ? (
+                            <div className="flex items-center justify-center gap-1">
+                              <Loader className="w-3 h-3 animate-spin" />{" "}
+                              <p>Returning</p>
+                            </div>
+                          ) : (
+                            "Return"
+                          )}
                         </button>
                       ) : item.status === "pending-return" ? (
                         <span className="text-yellow-500 text-xs">

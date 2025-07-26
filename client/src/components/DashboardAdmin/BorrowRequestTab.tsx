@@ -1,12 +1,21 @@
-import { User, BookOpen, Clock3 } from "lucide-react";
+import { User, BookOpen, Clock3, Loader } from "lucide-react";
 import {
   useApproveBorrowRequest,
   useBorrowRequests,
 } from "../../hooks/useBook";
+import { useState } from "react";
 
 const BorrowRequestsTab = () => {
   const { data: borrowRequests } = useBorrowRequests("pending");
   const approveMutation = useApproveBorrowRequest();
+  const [approvingId, setApprovingId] = useState<string | null>(null);
+
+  const handleApprove = (id: string) => {
+    setApprovingId(id);
+    approveMutation.mutate(id, {
+      onSettled: () => setApprovingId(null),
+    });
+  };
 
   return (
     <div className="flex justify-center items-center">
@@ -52,13 +61,13 @@ const BorrowRequestsTab = () => {
                     <tr key={book._id} className="border-b text-gray-700">
                       <td className="py-4 pr-4 truncate max-w-[10rem]">
                         <div className="flex items-center gap-2">
-                          <User className="w-4 h-4 text-gray-400" />
+                          <User className="w-4 h-4 text-gray-400 flex-shrink-0" />
                           <span className="truncate">{book.user.name}</span>
                         </div>
                       </td>
                       <td className="py-4 pr-4 truncate max-w-[10rem]">
                         <div className="flex items-center gap-2">
-                          <BookOpen className="w-4 h-4 text-gray-400" />
+                          <BookOpen className="w-4 h-4 text-gray-400 flex-shrink-0" />
                           <span className="truncate">{book.book.title}</span>
                         </div>
                       </td>
@@ -72,9 +81,17 @@ const BorrowRequestsTab = () => {
                       </td>
                       <td className="py-4 pr-4 space-x-2">
                         <button
-                          className="px-3 py-1 text-xs rounded-md bg-green-100 text-green-700 hover:bg-green-200"
-                          onClick={() => approveMutation.mutate(book._id)}
+                          className="px-3 py-1 text-xs rounded-md bg-green-100 text-green-700 hover:bg-green-200 flex items-center gap-1"
+                          onClick={() => handleApprove(book._id)}
+                          disabled={
+                            approveMutation.isPending &&
+                            approvingId === book._id
+                          }
                         >
+                          {approveMutation.isPending &&
+                            approvingId === book._id && (
+                              <Loader className="w-3 h-3 animate-spin" />
+                            )}
                           Approve
                         </button>
                       </td>

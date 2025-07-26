@@ -1,15 +1,23 @@
-import { BookOpen } from "lucide-react";
+import { BookOpen, Loader } from "lucide-react";
 import { useAvailableBooks, useCreateBorrowRequest } from "../../hooks/useBook";
 import { useState } from "react";
 
 const BrowseBooksTab = () => {
   const { data: books } = useAvailableBooks();
   const [search, setSearch] = useState("");
+  const [requestingBookId, setRequestingBookId] = useState<string | null>(null);
   const createBorrowRequestMutation = useCreateBorrowRequest();
 
   const filteredBooks = books?.filter((book) =>
     book.title.toLowerCase().includes(search.toLowerCase())
   );
+
+  const handleRequest = (bookId: string) => {
+    setRequestingBookId(bookId);
+    createBorrowRequestMutation.mutate(bookId, {
+      onSettled: () => setRequestingBookId(null),
+    });
+  };
 
   return (
     <div className="py-8 px-6 sm:py-14 sm:px-6 w-full max-w-7xl mx-auto space-y-8">
@@ -50,7 +58,7 @@ const BrowseBooksTab = () => {
                 filteredBooks.map((book) => (
                   <tr key={book._id} className="border-b text-gray-700">
                     <td className="py-4 pr-4 flex items-center gap-2 truncate max-w-[10rem]">
-                      <BookOpen className="w-4 h-4 text-gray-400" />
+                      <BookOpen className="w-4 h-4 text-gray-400 flex-shrink-0" />
                       <span className="truncate">{book.title}</span>
                     </td>
                     <td className="py-4 pr-4 truncate max-w-[8rem]">
@@ -67,11 +75,19 @@ const BrowseBooksTab = () => {
                     <td className="py-4 pr-4">
                       <button
                         className="text-sm text-sec hover:underline"
-                        onClick={() => {
-                          createBorrowRequestMutation.mutate(book._id);
-                        }}
+                        disabled={
+                          createBorrowRequestMutation.isPending &&
+                          requestingBookId === book._id
+                        }
+                        onClick={() => handleRequest(book._id)}
                       >
-                        Request
+                        <div className="flex items-center justify-center gap-1">
+                          {createBorrowRequestMutation.isPending &&
+                          requestingBookId === book._id ? (
+                            <Loader className="w-3 h-3 animate-spin" />
+                          ) : null}
+                          <p>Request</p>
+                        </div>
                       </button>
                     </td>
                   </tr>

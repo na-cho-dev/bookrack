@@ -34,21 +34,21 @@ const MemberDashboardTab = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
-            <CheckCircle className="text-green-500 w-8 h-8" />
+            <CheckCircle className="text-green-500 w-8 h-8 flex-shrink-0" />
             <div>
               <p className="text-sm text-gray-500">Available Books</p>
               <p className="text-xl font-bold">{stats.availableBooks}</p>
             </div>
           </div>
           <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
-            <Archive className="text-yellow-600 w-8 h-8" />
+            <Archive className="text-yellow-600 w-8 h-8 flex-shrink-0" />
             <div>
               <p className="text-sm text-gray-500">My Borrowed Books</p>
               <p className="text-xl font-bold">{stats.myBorrowedBooks}</p>
             </div>
           </div>
           <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
-            <Clock className="text-red-500 w-8 h-8" />
+            <Clock className="text-red-500 w-8 h-8 flex-shrink-0" />
             <div>
               <p className="text-sm text-gray-500">My Pending Requests</p>
               <p className="text-xl font-bold">{stats.pendingRequests}</p>

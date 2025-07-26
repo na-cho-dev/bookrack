@@ -104,7 +104,7 @@ const BooksTab = () => {
                   (books ?? []).map((book) => (
                     <tr key={book.isbn} className="border-b text-gray-700">
                       <td className="py-4 pr-4 flex items-center gap-2 truncate max-w-[10rem]">
-                        <BookOpen className="w-4 h-4 text-gray-400" />
+                        <BookOpen className="w-4 h-4 text-gray-400 flex-shrink-0" />
                         <span className="truncate">{book.title}</span>
                       </td>
                       <td className="py-4 pr-4 truncate max-w-[8rem]">
