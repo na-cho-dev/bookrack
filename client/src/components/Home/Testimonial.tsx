@@ -51,7 +51,7 @@ const Testimonials = () => {
           {testimonials.map((testimonial, index) => (
             <motion.div
               key={index}
-              className="bg-white px-6 py-10 rounded-xl shadow-lg flex flex-col items-center"
+              className="bg-[#fff9ed] px-6 py-10 rounded-xl shadow-lg flex flex-col items-center"
               initial="hidden"
               animate={controls}
               variants={{
