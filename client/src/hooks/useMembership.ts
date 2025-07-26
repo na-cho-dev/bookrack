@@ -105,7 +105,9 @@ export const useJoinOrg = () => {
     onSuccess: (data) => {
       // setMemberships([...(memberships ?? []), data]);
       // setCurrentMembership(data);
-      toast.success(`Joined organization: ${data.organization.name}`);
+      toast.success(
+        `Request to join ${data.organization.name} has been sent successfully!`
+      );
     },
     onError: (error: any) => {
       toast.error(

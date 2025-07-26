@@ -64,6 +64,7 @@ export class OrganizationService {
       String(userId),
       String(savedOrganization._id),
       MembershipRole.ADMIN,
+      'active', // Default status when creating an organization
     );
 
     return savedOrganization;
@@ -80,13 +81,13 @@ export class OrganizationService {
   ): Promise<OrganizationDocument[]> {
     const query: FilterQuery<Organization> = {};
     if (filters.name) {
-      query.name = { $regex: filters.name, $options: 'i' }; // Case-insensitive search
+      query.name = { $regex: filters.name, $options: 'i' };
     }
     if (filters.code) {
-      query.code = { $regex: filters.code, $options: 'i' }; // Case-insensitive search
+      query.code = { $regex: filters.code, $options: 'i' };
     }
     if (filters.owner) {
-      query.owner = { $regex: filters.owner, $options: 'i' }; // Case-insensitive search
+      query.owner = { $regex: filters.owner, $options: 'i' };
     }
     const orgs = await this.organizationModel
       .find(query)

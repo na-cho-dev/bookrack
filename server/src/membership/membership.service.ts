@@ -33,6 +33,7 @@ export class MembershipService {
     userId: string,
     organizationId: string,
     role: MembershipRole,
+    status?: string,
   ): Promise<MembershipDocument> {
     const objUserId = validateObjectId(userId);
     const objOrganizationId = validateObjectId(organizationId);
@@ -50,6 +51,7 @@ export class MembershipService {
       user: objUserId,
       organization: objOrganizationId,
       role,
+      status,
     });
   }
 
@@ -76,8 +78,8 @@ export class MembershipService {
 
     if (existing && existing.status === 'pending')
       throw new BadRequestException(
-      'You already have a pending membership request for this organization',
-    );
+        'You already have a pending membership request for this organization',
+      );
 
     // Create the membership (default role: user, status: pending or active)
     const membership = await this.membershipModel.create({
