@@ -1,4 +1,4 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
 import { useState } from "react";
 import {
@@ -62,13 +62,21 @@ const SelectOrganization = () => {
               You're not part of any organization yet.
             </p>
             <div className="flex flex-col gap-3">
-              <Link
+              {/* <Link
                 to="/create-org"
                 className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sec text-white rounded-lg hover:bg-sec-dark transition w-full"
               >
                 <PlusCircle className="w-4 h-4" />
                 Create Organization
-              </Link>
+              </Link> */}
+
+              <button
+                onClick={() => setIsCreateOrgOpen(true)}
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sec text-white rounded-lg hover:bg-sec-dark transition w-full"
+              >
+                <PlusCircle className="w-4 h-4" />
+                Create Organization
+              </button>
 
               <button
                 onClick={() => setIsJoinModalOpen(true)}
