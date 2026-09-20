@@ -4,114 +4,72 @@ import {
   Clock,
   Archive,
   User,
-  ChevronLeft,
-  ChevronRight,
   LayoutDashboard,
   Settings2,
   History,
+  X,
 } from "lucide-react";
 import type { SetURLSearchParams } from "react-router-dom";
-
 interface Props {
   open: boolean;
   onToggle: () => void;
   activeTab: string;
   setSearchParams: SetURLSearchParams;
 }
-
-const AdminNavDrawer: React.FC<Props> = ({
+const AdminNavDrawer = ({
   open,
   onToggle,
   activeTab,
   setSearchParams,
-}) => {
+}: Props) => {
   const tabs = [
-    { key: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { key: "books", label: "Books", icon: BookOpen },
-    { key: "available", label: "Available Books", icon: CheckCircle },
-    { key: "borrowed", label: "Borrowed Books", icon: Archive },
-    { key: "requests", label: "Borrow Requests", icon: Clock },
-    { key: "history", label: "Borrow History", icon: History },
-    { key: "users", label: "Users", icon: User },
+    { key: "dashboard", label: "Overview", icon: LayoutDashboard },
+    { key: "books", label: "Collection", icon: BookOpen },
+    { key: "available", label: "Available now", icon: CheckCircle },
+    { key: "borrowed", label: "On loan", icon: Archive },
+    { key: "requests", label: "Borrow requests", icon: Clock },
+    { key: "history", label: "Loan history", icon: History },
+    { key: "users", label: "Members", icon: User },
   ];
-
-  const settingsTabs = [
-    { key: "settings", label: "Settings", icon: Settings2 },
-  ];
-
-  const handleTabChange = (key: string) => {
+  const choose = (key: string) => {
     setSearchParams({ tab: key });
+    if (window.innerWidth < 760) onToggle();
   };
-
   return (
-    <>
-      {/* Drawer */}
-      <div
-        className={`
-          bg-bg fixed left-0 z-40
-          w-72
-          top-24 h-[calc(100vh-6rem)]
-          border-r shadow-md overflow-hidden transition-all duration-300
-          ${open ? "translate-x-0" : "-translate-x-full"}
-          flex flex-col justify-between
-        `}
-        style={{ maxWidth: "100vw" }}
-      >
-        <nav className="mt-10 w-full">
-          {tabs.map(({ key, label, icon: IconComponent }) => (
-            <button
-              key={key}
-              onClick={() => {
-                handleTabChange(key);
-                onToggle();
-              }}
-              className={`flex justify-start items-center gap-5 w-full p-5 ${
-                activeTab === key ? "bg-sec text-white" : "text-sec"
-              }`}
-            >
-              {IconComponent && <IconComponent className="w-5" />}
-              <span className="truncate">{label}</span>
-            </button>
-          ))}
-        </nav>
-
-        {/* Bottom settings section */}
-        <nav className="mb-4">
-          <hr className="border-t" />
-          {settingsTabs.map(({ key, label, icon: IconComponent }) => (
-            <button
-              key={key}
-              onClick={() => {
-                handleTabChange(key);
-                onToggle();
-              }}
-              className={`flex items-center gap-5 w-full p-5 ${
-                activeTab === key ? "bg-sec text-white" : "text-sec"
-              }`}
-            >
-              <IconComponent className="w-5" />
-              {label}
-            </button>
-          ))}
-        </nav>
+    <aside className={`app-sidebar ${open ? "open" : ""}`}>
+      <div className="side-heading flex justify-between items-center">
+        LIBRARY ADMIN{" "}
+        <button
+          className="md:hidden"
+          onClick={onToggle}
+          aria-label="Close navigation"
+        >
+          <X size={16} />
+        </button>
       </div>
-
-      {/* Toggle Button */}
-      <button
-        onClick={onToggle}
-        aria-label="Toggle Drawer"
-        className={`fixed top-21 z-50 p-1 border rounded-r-md shadow text-sec hover:bg-gray-50 transition-all duration-300 ${
-          open ? "left-72" : "left-0"
-        }`}
-      >
-        {open ? (
-          <ChevronLeft className="w-6 h-6" />
-        ) : (
-          <ChevronRight className="w-6 h-6" />
-        )}
-      </button>
-    </>
+      <nav>
+        {tabs.map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            onClick={() => choose(key)}
+            className={`side-item ${activeTab === key ? "active" : ""}`}
+          >
+            <Icon size={17} />
+            {label}
+          </button>
+        ))}
+      </nav>
+      <div className="side-spacer" />
+      <nav>
+        <button
+          onClick={() => choose("settings")}
+          className={`side-item ${activeTab === "settings" ? "active" : ""}`}
+        >
+          <Settings2 size={17} />
+          Settings
+        </button>
+      </nav>
+    </aside>
   );
 };
-
 export default AdminNavDrawer;

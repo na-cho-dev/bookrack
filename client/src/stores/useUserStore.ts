@@ -23,7 +23,6 @@ export const useUserStore = create<UserState>()(
     {
       name: "org-storage",
       partialize: (state) => ({ currentMembership: state.currentMembership }),
-    }
-  )
+    },
+  ),
 );
-

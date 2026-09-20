@@ -12,14 +12,14 @@ export const loginUser = async (data: LoginPayload): Promise<User> => {
 };
 
 export const registerUser = async (
-  data: RegisterUserPayload
+  data: RegisterUserPayload,
 ): Promise<User> => {
   const response = await axiosInstance.post("/auth/user/register", data);
   return response.data.user;
 };
 
 export const registerAdmin = async (
-  data: RegisterAdminPayload
+  data: RegisterAdminPayload,
 ): Promise<User> => {
   const response = await axiosInstance.post("/auth/admin/register", data);
   return response.data.user;

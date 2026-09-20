@@ -39,28 +39,28 @@ const AdminDashboardTab = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
+          <div className="app-panel p-5 flex gap-4 items-center">
             <BookOpen className="text-sec w-8 h-8" />
             <div>
               <p className="text-sm text-gray-500">Total Books</p>
               <p className="text-xl font-bold">{stats.totalBooks}</p>
             </div>
           </div>
-          <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
+          <div className="app-panel p-5 flex gap-4 items-center">
             <CheckCircle className="text-green-500 w-8 h-8" />
             <div>
               <p className="text-sm text-gray-500">Available</p>
               <p className="text-xl font-bold">{stats.availableBooks}</p>
             </div>
           </div>
-          <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
+          <div className="app-panel p-5 flex gap-4 items-center">
             <Archive className="text-yellow-600 w-8 h-8" />
             <div>
               <p className="text-sm text-gray-500">Borrowed</p>
               <p className="text-xl font-bold">{stats.borrowedBooks}</p>
             </div>
           </div>
-          <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
+          <div className="app-panel p-5 flex gap-4 items-center">
             <Clock className="text-red-500 w-8 h-8" />
             <div>
               <p className="text-sm text-gray-500">Pending Requests</p>
@@ -70,7 +70,7 @@ const AdminDashboardTab = () => {
         </div>
 
         {/* Recent Borrow Requests */}
-        <div className="bg-[#fffcf8] rounded-xl shadow border p-6">
+        <div className="app-panel p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-lg font-semibold text-gray-800">
               Recent Borrow Requests
@@ -112,8 +112,8 @@ const AdminDashboardTab = () => {
                             req.status === "pending"
                               ? "bg-yellow-100 text-yellow-700"
                               : req.status === "borrowed"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-red-100 text-red-700"
+                                ? "bg-green-100 text-green-700"
+                                : "bg-red-100 text-red-700"
                           }`}
                         >
                           {req.status}

@@ -2,7 +2,7 @@ import type { BorrowRecord } from "../types/book.type";
 import axiosInstance from "./axios";
 
 export const createBorrowRequest = async (
-  book: string
+  book: string,
 ): Promise<BorrowRecord> => {
   const response = await axiosInstance.post("/borrow-books/create", {
     book,
@@ -12,7 +12,7 @@ export const createBorrowRequest = async (
 };
 
 export const getBorrowRequests = async (
-  status?: string
+  status?: string,
 ): Promise<BorrowRecord[]> => {
   try {
     const response = await axiosInstance.get("/borrow-books", {
@@ -27,14 +27,14 @@ export const getBorrowRequests = async (
 
 export const getUserBorrowRecordsByStatus = async (
   userId: string,
-  status?: string
+  status?: string,
 ): Promise<BorrowRecord[]> => {
   try {
     const response = await axiosInstance.get(
       `/borrow-books/user/${userId}/status`,
       {
         params: { status },
-      }
+      },
     );
 
     return response.data.data ?? [];
@@ -45,7 +45,7 @@ export const getUserBorrowRecordsByStatus = async (
 };
 
 export const cancelBorrowRequest = async (
-  id: string
+  id: string,
 ): Promise<BorrowRecord | null> => {
   try {
     const response = await axiosInstance.patch(`/borrow-books/${id}/cancel`);
@@ -57,14 +57,14 @@ export const cancelBorrowRequest = async (
 };
 
 export const approveBorrowRequest = async (
-  bookId: string
+  bookId: string,
 ): Promise<BorrowRecord[]> => {
   try {
     const response = await axiosInstance.patch(
       `/borrow-books/${bookId}/approve`,
       {
         bookId,
-      }
+      },
     );
     return response.data.data ?? [];
   } catch (err: any) {
@@ -79,10 +79,10 @@ export const returnBookRequest = async (id: string): Promise<BorrowRecord> => {
 };
 
 export const approveReturnRequest = async (
-  id: string
+  id: string,
 ): Promise<BorrowRecord> => {
   const response = await axiosInstance.patch(
-    `/borrow-books/return/${id}/approve`
+    `/borrow-books/return/${id}/approve`,
   );
   return response.data.data;
 };

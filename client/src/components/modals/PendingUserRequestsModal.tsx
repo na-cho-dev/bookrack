@@ -36,7 +36,7 @@ const PendingUserRequestsModal = ({
         </Transition.Child>
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="w-full max-w-lg rounded-xl bg-white p-6 shadow-lg relative">
+          <Dialog.Panel className="modal-panel w-full max-w-lg p-6 relative">
             <Dialog.Title className="text-xl font-semibold text-gray-800 mb-6">
               Pending Join Requests
             </Dialog.Title>

@@ -62,7 +62,7 @@ const OrgSwitcherDrawer: React.FC<Props> = ({ open, onClose, onLogout }) => {
               leaveFrom="translate-x-0"
               leaveTo="translate-x-full"
             >
-              <Dialog.Panel className="absolute right-0 top-0 h-full w-72 bg-[#fff4df] shadow-xl p-5 flex flex-col space-y-5">
+              <Dialog.Panel className="org-drawer absolute right-0 top-0 h-full w-72 p-5 flex flex-col space-y-5">
                 {/* Header */}
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-lg font-semibold">Organizations</h2>

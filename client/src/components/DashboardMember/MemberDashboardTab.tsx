@@ -33,21 +33,21 @@ const MemberDashboardTab = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
+          <div className="app-panel p-5 flex gap-4 items-center">
             <CheckCircle className="text-green-500 w-8 h-8 flex-shrink-0" />
             <div>
               <p className="text-sm text-gray-500">Available Books</p>
               <p className="text-xl font-bold">{stats.availableBooks}</p>
             </div>
           </div>
-          <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
+          <div className="app-panel p-5 flex gap-4 items-center">
             <Archive className="text-yellow-600 w-8 h-8 flex-shrink-0" />
             <div>
               <p className="text-sm text-gray-500">My Borrowed Books</p>
               <p className="text-xl font-bold">{stats.myBorrowedBooks}</p>
             </div>
           </div>
-          <div className="bg-[#fffcf8] p-5 rounded-xl shadow border flex gap-4 items-center">
+          <div className="app-panel p-5 flex gap-4 items-center">
             <Clock className="text-red-500 w-8 h-8 flex-shrink-0" />
             <div>
               <p className="text-sm text-gray-500">My Pending Requests</p>
@@ -57,7 +57,7 @@ const MemberDashboardTab = () => {
         </div>
 
         {/* Borrowed Books Table */}
-        <div className="bg-[#fffcf8] rounded-xl shadow border p-4 sm:p-6">
+        <div className="app-panel p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
             <h2 className="text-lg font-semibold text-gray-800">
               My Borrowed Books
@@ -92,8 +92,8 @@ const MemberDashboardTab = () => {
                             book.status === "borrowed"
                               ? "bg-green-100 text-green-700"
                               : book.status === "returned"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-yellow-100 text-yellow-700"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-yellow-100 text-yellow-700"
                           }`}
                         >
                           {book.status}

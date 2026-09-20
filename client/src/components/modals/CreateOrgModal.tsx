@@ -28,13 +28,13 @@ const CreateOrgModal = ({
           setTimeout(() => {
             const memberships = useUserStore.getState().memberships;
             const newMembership = memberships?.find(
-              (member: Membership) => member.organization._id === org._id
+              (member: Membership) => member.organization._id === org._id,
             );
             if (newMembership) setCurrentMembership(newMembership);
           }, 300);
           onClose();
         },
-      }
+      },
     );
   };
 
@@ -53,7 +53,7 @@ const CreateOrgModal = ({
           <div className="fixed inset-0 bg-black bg-opacity-30" />
         </Transition.Child>
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
+          <Dialog.Panel className="modal-panel w-full max-w-md p-6">
             <Dialog.Title className="text-lg font-semibold text-gray-700 mb-2">
               Create Organization
             </Dialog.Title>

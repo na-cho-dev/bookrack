@@ -19,8 +19,25 @@ const PendingRequestsTab = () => {
 
   return (
     <div className="py-8 px-6 sm:py-14 sm:px-6 w-full max-w-4xl mx-auto space-y-8">
-      <h1 className="text-2xl font-bold text-gray-800">Pending Requests</h1>
-      <div className="bg-[#fffcf8] rounded-xl shadow border p-4 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h1>Pending requests</h1>
+          <p className="text-sm text-gray-500">
+            Follow the status of the titles you’ve asked to borrow.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-tsec">
+          <Clock size={17} />
+          <span>{pendingRequests?.length ?? 0} awaiting review</span>
+        </div>
+      </div>
+      <div className="app-panel p-4 sm:p-6">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-semibold">Requests in progress</h2>
+          <span className="text-xs text-gray-500">
+            Cancel a request any time
+          </span>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[28rem] text-sm text-left table-fixed">
             <thead>
@@ -78,7 +95,7 @@ const PendingRequestsTab = () => {
               ) : (
                 <tr>
                   <td colSpan={4} className="text-center text-gray-400 py-4">
-                    No requests found.
+                    No requests are waiting for review.
                   </td>
                 </tr>
               )}

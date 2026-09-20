@@ -20,13 +20,13 @@ const SettingsTab = () => {
   const [newOwnerId, setNewOwnerId] = useState("");
   const [userName, setUserName] = useState(currentMembership?.user.name || "");
   const [userEmail, setUserEmail] = useState(
-    currentMembership?.user.email || ""
+    currentMembership?.user.email || "",
   );
   const [orgName, setOrgName] = useState(
-    currentMembership?.organization.name || ""
+    currentMembership?.organization.name || "",
   );
   const [orgDesc, setOrgDesc] = useState(
-    currentMembership?.organization.description || ""
+    currentMembership?.organization.description || "",
   );
   const currentOwnerId = currentMembership?.organization?.owner?._id;
   const orgUsers = useOrganizationUsers();
@@ -97,7 +97,7 @@ const SettingsTab = () => {
 
       <div className="space-y-10">
         {/* User Profile */}
-        <div className="bg-[#fffcf8] border shadow rounded-xl p-6 space-y-6 relative">
+        <div className="app-panel p-6 space-y-6 relative">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-700">
               User Profile
@@ -153,7 +153,7 @@ const SettingsTab = () => {
         </div>
 
         {/* Organization Info */}
-        <div className="bg-[#fffcf8] border shadow rounded-xl p-6 space-y-6 relative">
+        <div className="app-panel p-6 space-y-6 relative">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold text-gray-700">
               Organization Info
@@ -246,7 +246,7 @@ const SettingsTab = () => {
 
         {/* Transfer Ownership Section */}
         {currentMembership?.role === "admin" && (
-          <div className="bg-[#fffcf8] border shadow rounded-xl p-6 space-y-6 relative">
+          <div className="app-panel p-6 space-y-6 relative">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-gray-700">
                 Transfer Organization Ownership

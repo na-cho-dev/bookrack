@@ -22,7 +22,7 @@ export const fetchAvailableBooks = async (): Promise<Book[]> => {
 };
 
 export const addBook = async (
-  bookData: Partial<Book>
+  bookData: Partial<Book>,
 ): Promise<Book | null> => {
   try {
     const response = await axiosInstance.post("/books/add", bookData);
@@ -34,12 +34,12 @@ export const addBook = async (
 };
 
 export const updateBook = async (
-  bookData: Partial<Book>
+  bookData: Partial<Book>,
 ): Promise<Book | null> => {
   try {
     const response = await axiosInstance.put(
       `/books/${bookData._id}`,
-      bookData
+      bookData,
     );
     return response.data.data ?? null;
   } catch (err: any) {

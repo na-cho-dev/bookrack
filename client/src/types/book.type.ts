@@ -1,28 +1,5 @@
 import type { Organization, User } from "./auth.type";
 
-// export interface BookState {
-//   error: string | null;
-//   loadingAllBooks: boolean;
-//   loadingAvailableBooks: boolean;
-//   loadingBorrowedBooks: boolean;
-//   loadingPendingBorrowRequests: boolean;
-
-//   allBooks: Book[];
-//   availableBooks: Book[];
-//   borrowedBooks: BorrowRecord[];
-//   pendingBorrowRequests: BorrowRecord[];
-
-//   setLoadingAllBooks: (val: boolean) => void;
-//   setLoadingAvailableBooks: (val: boolean) => void;
-//   setLoadingBorrowedBooks: (val: boolean) => void;
-//   setLoadingPendingBorrowRequests: (val: boolean) => void;
-
-//   setAllBooks: (books: Book[]) => void;
-//   setAvailableBooks: (availableBooks: Book[]) => void;
-//   setBorrowedBooks: (borrowedBooks: BorrowRecord[]) => void;
-//   setPendingBorrowRequests: (pendingRequests: BorrowRecord[]) => void;
-// }
-
 export interface Book {
   _id: string;
   isbn: string;
@@ -49,11 +26,7 @@ export interface UpdateBookPayload extends Partial<AddBookPayload> {
   id: string;
 }
 export type BorrowStatus =
-  | "pending"
-  | "canceled"
-  | "borrowed"
-  | "pending-return"
-  | "returned";
+  "pending" | "canceled" | "borrowed" | "pending-return" | "returned";
 
 export type BorrowRecord = {
   _id: string;

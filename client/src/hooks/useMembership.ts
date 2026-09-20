@@ -77,7 +77,7 @@ export const useLeaveOrg = () => {
 
       // Remove the current org from memberships
       const updatedMemberships = memberships.filter(
-        (mem) => mem.organization._id !== currentMembership.organization._id
+        (mem) => mem.organization._id !== currentMembership.organization._id,
       );
 
       setMemberships(updatedMemberships ?? null);
@@ -86,7 +86,7 @@ export const useLeaveOrg = () => {
     onError: (error: any) => {
       // toast.error(`Failed to leave organization: ${error.message}`);
       toast.error(
-        error?.response?.data?.message || "Failed to leave organization"
+        error?.response?.data?.message || "Failed to leave organization",
       );
       console.error("Failed to leave organization:", error);
     },
@@ -106,12 +106,12 @@ export const useJoinOrg = () => {
       // setMemberships([...(memberships ?? []), data]);
       // setCurrentMembership(data);
       toast.success(
-        `Request to join ${data.organization.name} has been sent successfully!`
+        `Request to join ${data.organization.name} has been sent successfully!`,
       );
     },
     onError: (error: any) => {
       toast.error(
-        error?.response?.data?.message || "Failed to join organization"
+        error?.response?.data?.message || "Failed to join organization",
       );
     },
   });
@@ -127,7 +127,7 @@ export const useTransferOwnership = () => {
     },
     onError: (err: any) => {
       toast.error(
-        err?.response?.data?.message || "Failed to transfer ownership"
+        err?.response?.data?.message || "Failed to transfer ownership",
       );
     },
   });
@@ -144,7 +144,7 @@ export const useRemoveUserFromOrg = () => {
       queryClient.invalidateQueries({ queryKey: ["user-memberships"] });
       // Update memberships by removing the user
       const updatedMemberships = memberships?.filter(
-        (mem) => mem.user._id !== data.user._id
+        (mem) => mem.user._id !== data.user._id,
       );
       setMemberships(updatedMemberships ?? null);
       toast.success(`Removed user: ${data.user.name}`);
@@ -152,7 +152,7 @@ export const useRemoveUserFromOrg = () => {
     onError: (error: any) => {
       toast.error(
         error?.response?.data?.message ||
-          "Failed to remove user from organization"
+          "Failed to remove user from organization",
       );
     },
   });
@@ -169,7 +169,7 @@ export const useAcceptUserRequest = () => {
     },
     onError: (error: any) => {
       toast.error(
-        error?.response?.data?.message || "Failed to accept user request"
+        error?.response?.data?.message || "Failed to accept user request",
       );
     },
   });
@@ -186,7 +186,7 @@ export const useRejectUserRequest = () => {
     },
     onError: (error: any) => {
       toast.error(
-        error?.response?.data?.message || "Failed to reject user request"
+        error?.response?.data?.message || "Failed to reject user request",
       );
     },
   });

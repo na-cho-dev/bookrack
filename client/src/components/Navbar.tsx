@@ -1,158 +1,129 @@
-import { LayoutDashboard, LogOut, PanelLeftOpen } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, X } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ImageAssets } from "../assets/assets";
 import { useUserStore } from "../stores/useUserStore";
 import { logoutUser } from "../api/auth.api";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
-import OrgSwitcherDrawer from "./OrgSwitcherDrawer";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useUserStore((s) => s.user);
-  const currentMembership = useUserStore((s) => s.currentMembership);
+  const membership = useUserStore((s) => s.currentMembership);
+  const memberships = useUserStore((s) => s.memberships ?? []);
+  const setCurrentMembership = useUserStore((s) => s.setCurrentMembership);
   const setUser = useUserStore((s) => s.setUser);
   const setLoadingUser = useUserStore((s) => s.setLoadingUser);
-
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  const currentPath = location.pathname;
-
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const handler = () => setScrolled(window.scrollY > 8);
+    handler();
+    window.addEventListener("scroll", handler);
+    return () => window.removeEventListener("scroll", handler);
   }, []);
-
-  const handleLogout = async () => {
+  const logout = async () => {
     setUser(null);
     setLoadingUser(false);
     try {
       await logoutUser();
-    } catch {}
+    } catch {
+      /* Local logout still completes if the request fails. */
+    }
     localStorage.removeItem("activeOrgId");
     toast.success("Logged out successfully");
     navigate("/login", { replace: true });
   };
-
-  if (!user || !currentMembership) {
-    return (
-      <nav
-        className={`fixed left-0 right-0 top-0 w-full py-4 shadow z-50 transition-colors ${
-          isScrolled ? "bg-[#fff4df]/90 backdrop-blur" : "bg-transparent"
-        }`}
-      >
-        <div className="container mx-auto max-w-[1200px]">
-          <div className="flex justify-between items-center px-4 py-3">
-            <Link to={"/"} className="flex items-center gap-3">
-              <img
-                src={ImageAssets.logo}
-                alt=""
-                className="w-8 md:w-10 lg:w-12"
-              />{" "}
-              <p className="font-extrabold text-2xl md:text-3xl font-exo text-tpri">
-                Book<span className="text-sec">Rack</span>
-              </p>
-            </Link>
-            <ul className="flex items-center">
-              {!user ? (
-                // User not logged in
-                <li className="flex gap-5 text-sm md:text-base font-bold">
-                  {/* {currentPath === "/login" ? (
-                    <Link to={"/register"} className="flex items-center gap-1">
-                      <LogIn className="w-6 text-sec" />
-                      <span>Register</span>
-                    </Link>
-                  ) : (
-                    <Link to={"/login"} className="flex items-center gap-1">
-                      <LogIn className="w-6 text-sec" />
-                      <span>Login</span>
-                    </Link>
-                  )} */}
-                  <Link
-                    to={"/register"}
-                    className="group bg-sec text-white px-4 py-3 rounded-md hover:bg-pri transition flex items-center gap-2 transform hover:shadow-lg"
-                  >
-                    <p>Get Started</p>
-                  </Link>
-                </li>
-              ) : (
-                // User logged in
-                <div className="flex justify-center items-center gap-5">
-                  {currentPath === "/select-org" ? (
-                    <li>
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center gap-1 text-sec font-bold"
-                      >
-                        <LogOut className="w-6" />
-                        <span className="hidden md:inline">Logout</span>
-                      </button>
-                    </li>
-                  ) : (
-                    <li>
-                      <Link
-                        to="/dashboard/admin"
-                        className="flex items-center justify-center gap-1 text-sec font-bold"
-                      >
-                        <LayoutDashboard className="w-6" />
-                        <span className="hidden md:inline">Dashboard</span>
-                      </Link>
-                    </li>
-                  )}
-                </div>
-              )}
-            </ul>
-          </div>
-        </div>
-      </nav>
+  const dashboard =
+    membership?.role === "admin" ? "/dashboard/admin" : "/dashboard/member";
+  const switchOrganization = (id: string) => {
+    const nextMembership = memberships.find(
+      (item) => item.organization._id === id,
     );
-  }
-
+    if (!nextMembership) return;
+    setCurrentMembership(nextMembership);
+    setOpen(false);
+    navigate(
+      nextMembership.role === "admin"
+        ? "/dashboard/admin"
+        : "/dashboard/member",
+    );
+  };
+  if (location.pathname === "/login" || location.pathname === "/register")
+    return null;
   return (
-    <nav
-      className={`fixed left-0 right-0 top-0 w-full py-4 shadow z-50 transition-colors ${
-        isScrolled ? "bg-[#fff4df]/90 backdrop-blur" : "bg-transparent"
-      }`}
-    >
-      <div className="container mx-auto max-w-[1200px]">
-        <div className="flex justify-between items-center px-4 py-3">
-          <Link to={"/"} className="flex items-center gap-3">
-            <img src={ImageAssets.logo} alt="" width={40} />
-            <div className="font-extrabold text-3xl font-exo text-tpri">
-              {currentPath === "/" ? (
-                <p className="font-extrabold text-3xl font-exo text-tpri">
-                  Book<span className="text-sec">Rack</span>
-                </p>
-              ) : (
-                <p className="font-extrabold text-3xl font-exo text-tpri">
-                  Book<span className="text-sec">Rack</span>
-                </p>
-                // currentMembership.organization.name ?? "Your Organization"
-              )}
-            </div>
-          </Link>
-          <ul className="flex items-center justify-center gap-7">
-            <li className="text-base font-bold">
-              <button
-                onClick={() => setDrawerOpen(true)}
-                className="p-2 rounded-md transition"
+    <nav className={`site-nav ${scrolled ? "scrolled" : ""}`}>
+      <div className="nav-inner">
+        <Link to="/" className="nav-logo">
+          <img src={ImageAssets.logo} alt="" />
+          <span>BookRack</span>
+        </Link>
+        <div className="nav-actions">
+          {!user ? (
+            <>
+              <Link className="nav-login" to="/login">
+                Sign in
+              </Link>
+              <Link className="nav-cta" to="/register">
+                Create account
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                className="nav-dashboard"
+                to={membership ? dashboard : "/select-org"}
               >
-                <PanelLeftOpen className="w-7 h-7 text-sec" />
+                <LayoutDashboard size={17} />
+                <span className="hidden sm:inline">Workspace</span>
+              </Link>
+              <button
+                aria-label="Open account menu"
+                aria-expanded={open}
+                className="nav-menu"
+                onClick={() => setOpen(!open)}
+              >
+                {open ? <X size={19} /> : <Menu size={19} />}
               </button>
-            </li>
-            <OrgSwitcherDrawer
-              open={drawerOpen}
-              onClose={() => setDrawerOpen(false)}
-              onLogout={handleLogout}
-            />
-          </ul>
+            </>
+          )}
         </div>
       </div>
+      {open && (
+        <div className="nav-drawer">
+          <Link
+            onClick={() => setOpen(false)}
+            to={membership ? dashboard : "/select-org"}
+          >
+            <LayoutDashboard size={17} />{" "}
+            {membership ? "Open workspace" : "Choose organization"}
+          </Link>
+          {memberships.length > 0 && (
+            <div className="org-menu-list">
+              <p>SWITCH ORGANIZATION</p>
+              {memberships.map((item) => (
+                <button
+                  key={item._id}
+                  onClick={() => switchOrganization(item.organization._id)}
+                  className={
+                    item.organization._id === membership?.organization._id
+                      ? "active-org"
+                      : ""
+                  }
+                >
+                  <span>{item.organization.name}</span>
+                  <small>{item.role}</small>
+                </button>
+              ))}
+            </div>
+          )}
+          <button onClick={logout}>
+            <LogOut size={17} /> Sign out
+          </button>
+        </div>
+      )}
     </nav>
   );
 };
-
 export default Navbar;

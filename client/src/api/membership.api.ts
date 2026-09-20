@@ -29,19 +29,19 @@ export const joinOrg = async (orgCode: string): Promise<Membership> => {
 };
 
 export const transferOwnership = async (
-  newOwnerId: string
+  newOwnerId: string,
 ): Promise<Membership> => {
   const response = await axiosInstance.patch(
     `/membership/organization/transfer-ownership`,
     {
       newOwnerId,
-    }
+    },
   );
   return response.data.data;
 };
 
 export const removeUserFromOrganization = async (
-  userId: string
+  userId: string,
 ): Promise<Membership> => {
   const response = await axiosInstance.delete(`/membership/remove/${userId}`);
   return response.data.data;

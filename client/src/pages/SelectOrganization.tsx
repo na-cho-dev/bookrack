@@ -11,14 +11,13 @@ import {
 import { Listbox } from "@headlessui/react";
 import JoinOrgModal from "../components/modals/JoinOrgModal";
 import CreateOrgModal from "../components/modals/CreateOrgModal";
-// import { queryClient } from "../utils/queryClient";
 
 const SelectOrganization = () => {
   const navigate = useNavigate();
   const memberships = useUserStore((state) => state.memberships ?? []);
   const user = useUserStore((state) => state.user);
   const setCurrentMembership = useUserStore(
-    (state) => state.setCurrentMembership
+    (state) => state.setCurrentMembership,
   );
   const [selectedOrgId, setSelectedOrgId] = useState<string | null>(null);
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false);
@@ -39,8 +38,8 @@ const SelectOrganization = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-[#fff4df] p-8 rounded-2xl shadow-lg border border-gray-100">
+    <main className="org-page">
+      <div className="org-card w-full max-w-md p-8">
         {/* Header */}
         <div className="text-center mb-6">
           {user?.name ? (
@@ -62,14 +61,6 @@ const SelectOrganization = () => {
               You're not part of any organization yet.
             </p>
             <div className="flex flex-col gap-3">
-              {/* <Link
-                to="/create-org"
-                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sec text-white rounded-lg hover:bg-sec-dark transition w-full"
-              >
-                <PlusCircle className="w-4 h-4" />
-                Create Organization
-              </Link> */}
-
               <button
                 onClick={() => setIsCreateOrgOpen(true)}
                 className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sec text-white rounded-lg hover:bg-sec-dark transition w-full"
@@ -97,7 +88,7 @@ const SelectOrganization = () => {
                     <span className="block truncate">
                       {selectedOrgId
                         ? memberships.find(
-                            (m) => m.organization._id === selectedOrgId
+                            (m) => m.organization._id === selectedOrgId,
                           )?.organization.name
                         : "Select an organization"}
                     </span>
@@ -149,13 +140,6 @@ const SelectOrganization = () => {
 
             {/* Extra actions */}
             <div className="mt-6 flex flex-col gap-3">
-              {/* <Link
-                to="/create-org"
-                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sec text-white rounded-lg hover:bg-sec-dark transition w-full"
-              >
-                <PlusCircle className="w-4 h-4" />
-                Create Organization
-              </Link> */}
               <button
                 onClick={() => setIsCreateOrgOpen(true)}
                 className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-sec text-white rounded-lg hover:bg-sec-dark transition w-full"
@@ -186,7 +170,7 @@ const SelectOrganization = () => {
           onClose={() => setIsCreateOrgOpen(false)}
         />
       </div>
-    </div>
+    </main>
   );
 };
 

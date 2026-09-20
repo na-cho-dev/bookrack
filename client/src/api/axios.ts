@@ -65,9 +65,8 @@ axiosInstance.interceptors.response.use(
 
       try {
         await axiosInstance.get("/auth/refresh");
-        const { data: refreshedUser } = await axiosInstance.get(
-          "/auth/current-user"
-        );
+        const { data: refreshedUser } =
+          await axiosInstance.get("/auth/current-user");
         useUserStore.getState().setUser(refreshedUser);
         processQueue(null);
         return axiosInstance(originalRequest);
@@ -81,7 +80,7 @@ axiosInstance.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export default axiosInstance;

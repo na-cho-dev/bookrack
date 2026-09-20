@@ -57,7 +57,7 @@ const BookModal = ({
         totalCopies: Number(form.totalCopies),
         availableCopies: Number(form.availableCopies),
       },
-      mode
+      mode,
     );
     onClose();
   };
@@ -77,7 +77,7 @@ const BookModal = ({
           <div className="fixed inset-0 bg-black bg-opacity-30" />
         </Transition.Child>
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg relative">
+          <Dialog.Panel className="modal-panel w-full max-w-md p-6 relative">
             <Dialog.Title className="text-xl font-semibold mb-4 text-gray-800">
               {mode === "edit" ? "Edit Book" : "Add New Book"}
             </Dialog.Title>

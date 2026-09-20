@@ -12,7 +12,7 @@ export const useCurrentUser = () => {
   const setLoadingUser = useUserStore((state) => state.setLoadingUser);
   const setMemberships = useUserStore((state) => state.setMemberships);
   const setCurrentMembership = useUserStore(
-    (state) => state.setCurrentMembership
+    (state) => state.setCurrentMembership,
   );
 
   const { data, isError, isLoading } = useQuery({
@@ -60,7 +60,7 @@ export const useUpdateUser = () => {
     },
     onError: (error: any) => {
       toast.error(
-        error?.response?.data?.message || "Failed to update user. Try again."
+        error?.response?.data?.message || "Failed to update user. Try again.",
       );
     },
   });

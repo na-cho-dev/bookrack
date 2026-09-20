@@ -16,7 +16,7 @@ const AdminBorrowHistoryTab = () => {
           </div>
         </div>
 
-        <div className="bg-[#fffcf8] rounded-xl shadow border p-4 sm:p-6">
+        <div className="app-panel p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
             <h2 className="text-lg font-semibold text-gray-800">History</h2>
             {/* Optionally add a search input here */}

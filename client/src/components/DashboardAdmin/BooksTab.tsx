@@ -2,7 +2,6 @@ import { BookOpen, Plus, MoreVertical, Edit, Trash } from "lucide-react";
 import { Menu } from "@headlessui/react";
 import { useState } from "react";
 import BookModal from "../modals/BookModal";
-// import { useUserStore } from "../stores/useUserStore";
 import {
   useAllBooks,
   useCreateBook,
@@ -16,7 +15,6 @@ const BooksTab = () => {
   const [modalMode, setModalMode] = useState<"create" | "edit">("create");
   const [selectedBook, setSelectedBook] = useState<any | null>(null);
 
-  // const currentMembership = useUserStore((s) => s.currentMembership);
   const { data: books } = useAllBooks();
   const createBookMutation = useCreateBook();
   const updateBookMutation = useUpdateBook();
@@ -78,7 +76,7 @@ const BooksTab = () => {
           </button>
         </div>
 
-        <div className="bg-[#fffcf8] rounded-xl shadow border p-4 sm:p-6">
+        <div className="app-panel p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4">
             <h2 className="text-lg font-semibold text-gray-800">All Books</h2>
             <input

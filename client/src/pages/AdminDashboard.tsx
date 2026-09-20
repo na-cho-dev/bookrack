@@ -9,6 +9,7 @@ import BorrowRequestsTab from "../components/DashboardAdmin/BorrowRequestTab";
 import UsersTab from "../components/DashboardAdmin/UserTab";
 import SettingsTab from "../components/SettingsTab";
 import AdminBorrowHistoryTab from "../components/DashboardAdmin/AdminBorrowHistoryTab";
+import { Menu } from "lucide-react";
 
 const AdminDashboard = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -16,32 +17,37 @@ const AdminDashboard = () => {
   const activeTab = searchParams.get("tab") || "dashboard";
 
   return (
-    <div className="flex items-start justify-center px-4 mt-[6.5rem] container mx-auto max-w-[1200px]">
-      {/* Drawer Toggle Button */}
-      <AdminNavDrawer
-        open={isDrawerOpen}
-        onToggle={() => setIsDrawerOpen(!isDrawerOpen)}
-        activeTab={activeTab}
-        setSearchParams={setSearchParams}
-      />
+    <main className="app-page">
+      <div className="app-shell">
+        {/* Drawer Toggle Button */}
+        <AdminNavDrawer
+          open={isDrawerOpen}
+          onToggle={() => setIsDrawerOpen(!isDrawerOpen)}
+          activeTab={activeTab}
+          setSearchParams={setSearchParams}
+        />
 
-      <div
-        className={`transition-all duration-300 w-screen ${
-          isDrawerOpen ? "md:ml-72" : "ml-0"
-        }`}
-      >
-        <div>
-          {activeTab === "dashboard" && <AdminDashboardTab />}
-          {activeTab === "books" && <BooksTab />}
-          {activeTab === "available" && <AvailableBooksTab />}
-          {activeTab === "borrowed" && <BorrowedBooksTab />}
-          {activeTab === "requests" && <BorrowRequestsTab />}
-          {activeTab === "history" && <AdminBorrowHistoryTab />}
-          {activeTab === "users" && <UsersTab />}
-          {activeTab === "settings" && <SettingsTab />}
+        <div className="app-content">
+          <button
+            className="md:hidden mb-5 p-2 border bg-white"
+            onClick={() => setIsDrawerOpen(!isDrawerOpen)}
+            aria-label="Open navigation"
+          >
+            <Menu size={20} />
+          </button>
+          <div>
+            {activeTab === "dashboard" && <AdminDashboardTab />}
+            {activeTab === "books" && <BooksTab />}
+            {activeTab === "available" && <AvailableBooksTab />}
+            {activeTab === "borrowed" && <BorrowedBooksTab />}
+            {activeTab === "requests" && <BorrowRequestsTab />}
+            {activeTab === "history" && <AdminBorrowHistoryTab />}
+            {activeTab === "users" && <UsersTab />}
+            {activeTab === "settings" && <SettingsTab />}
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

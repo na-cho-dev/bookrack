@@ -27,7 +27,7 @@ const JoinOrgModal = ({ open, onClose }: Props) => {
       onError: (err: any) => {
         setError(
           err?.response?.data?.message ||
-            "Failed to join organization. Please check the code and try again."
+            "Failed to join organization. Please check the code and try again.",
         );
       },
     });
@@ -49,7 +49,7 @@ const JoinOrgModal = ({ open, onClose }: Props) => {
         </Transition.Child>
 
         <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg">
+          <Dialog.Panel className="modal-panel w-full max-w-md p-6">
             <Dialog.Title className="text-lg font-semibold text-gray-700 mb-2 flex items-center gap-2">
               <LogIn className="w-5 h-5" />
               Join Organization

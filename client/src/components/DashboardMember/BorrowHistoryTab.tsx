@@ -1,4 +1,4 @@
-import { BookOpen } from "lucide-react";
+import { BookOpen, History } from "lucide-react";
 import { useUserBorrowRequests } from "../../hooks/useBook";
 
 const BorrowHistoryTab = () => {
@@ -6,9 +6,26 @@ const BorrowHistoryTab = () => {
 
   return (
     <div className="py-8 px-6 sm:py-14 sm:px-6 w-full max-w-4xl mx-auto space-y-8">
-      <h1 className="text-2xl font-bold text-gray-800">Borrow History</h1>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div>
+          <h1>Reading history</h1>
+          <p className="text-sm text-gray-500">
+            A complete record of your borrowing activity in this organization.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-tsec">
+          <History size={17} />
+          <span>{history?.length ?? 0} recorded loans</span>
+        </div>
+      </div>
 
-      <div className="bg-[#fffcf8] rounded-xl shadow border p-4 sm:p-6">
+      <div className="app-panel p-4 sm:p-6">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-semibold">Loan timeline</h2>
+          <span className="text-xs text-gray-500">
+            Most recent activity first
+          </span>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full min-w-[28rem] text-sm text-left table-fixed">
             <thead>
@@ -43,7 +60,7 @@ const BorrowHistoryTab = () => {
               ) : (
                 <tr>
                   <td colSpan={4} className="text-center text-gray-400 py-4">
-                    No borrow history available.
+                    Your completed borrowing history will appear here.
                   </td>
                 </tr>
               )}

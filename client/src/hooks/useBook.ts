@@ -101,7 +101,7 @@ export const useCreateBook = () => {
     },
     onError: (error: any) => {
       toast.error(
-        error?.response?.data?.message || "Failed to add book. Try again."
+        error?.response?.data?.message || "Failed to add book. Try again.",
       );
     },
   });
@@ -123,7 +123,7 @@ export const useUpdateBook = () => {
     },
     onError: (error: any) => {
       toast.error(
-        error?.response?.data?.message || "Failed to update book. Try again."
+        error?.response?.data?.message || "Failed to update book. Try again.",
       );
     },
   });
@@ -154,7 +154,7 @@ export const useCreateBorrowRequest = () => {
     onError: (error: any) => {
       toast.error(
         error?.response?.data?.message ||
-          "Failed to create borrow request. Try again."
+          "Failed to create borrow request. Try again.",
       );
     },
   });
@@ -173,7 +173,7 @@ export const useCancelBorrowRequest = () => {
     onError: (error: any) => {
       toast.error(
         error?.response?.data?.message ||
-          "Failed to cancel borrow request. Try again."
+          "Failed to cancel borrow request. Try again.",
       );
     },
   });
@@ -192,7 +192,7 @@ export const useApproveBorrowRequest = () => {
     onError: (error: any) => {
       toast.error(
         error?.response?.data?.message ||
-          "Failed to approve borrow request. Try again."
+          "Failed to approve borrow request. Try again.",
       );
     },
   });
@@ -208,7 +208,8 @@ export const useReturnBook = () => {
     },
     onError: (error: any) => {
       toast.error(
-        error?.response?.data?.message || "Failed to request return. Try again."
+        error?.response?.data?.message ||
+          "Failed to request return. Try again.",
       );
     },
   });
@@ -226,7 +227,7 @@ export const useApproveReturnBook = () => {
     onError: (error: any) => {
       toast.error(
         error?.response?.data?.message ||
-          "Failed to approve book return. Try again."
+          "Failed to approve book return. Try again.",
       );
     },
   });
