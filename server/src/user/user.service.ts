@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, UpdateQuery } from 'mongoose';
 import { CreateUserDto } from './dto/creat-user.dto';
 import { hash } from 'bcrypt';
 import { UserInput, UserResponse } from './interface/user.interface';
@@ -45,18 +45,23 @@ export class UserService {
   async createAdmin(adminDto: CreateAdminDto): Promise<UserResponse> {
     const email = adminDto.email.toLowerCase();
 
-    // Find or create user
-    let user = await this.userModel.findOne({ email });
-    if (!user) {
-      user = await this.userModel.create({
-        email,
-        name: adminDto.name,
-        password: await hash(adminDto.password, 10),
-      });
+    // Registration must create a new account. Reusing an existing user here
+    // would sign the caller in as that user without checking the password.
+    const existingUser = await this.userModel.findOne({ email });
+    if (existingUser) {
+      throw new ConflictException(
+        'An account with this email already exists. Log in and create the organization from your account.',
+      );
     }
 
+    const user = await this.userModel.create({
+      email,
+      name: adminDto.name,
+      password: await hash(adminDto.password, 10),
+    });
+
     // Create organization and membership
-    const organization = await this.organizationService.createOrganization(
+    await this.organizationService.createOrganization(
       {
         name: adminDto.organizationName,
         description: adminDto.organizationDescription,
@@ -87,15 +92,13 @@ export class UserService {
 
   async createUser(userDto: CreateUserDto): Promise<UserResponse> {
     const email = userDto.email.toLowerCase();
-    let user = await this.userModel.findOne({ email });
-
-    if (!user) {
-      user = new this.userModel({
-        email,
-        name: userDto.name,
-        password: await hash(userDto.password, 10),
-      });
-      user = await user.save();
+    // Registration must create a new account. Reusing an existing user here
+    // would sign the caller in as that user without checking the password.
+    const existingUser = await this.userModel.findOne({ email });
+    if (existingUser) {
+      throw new ConflictException(
+        'An account with this email already exists. Log in and join the organization with its code.',
+      );
     }
 
     const organization = await this.organizationService.findOne({
@@ -105,16 +108,11 @@ export class UserService {
       throw new NotFoundException('Organization not found.');
     }
 
-    const existingMembership = await this.membershipService.findOne({
-      user: user._id,
-      organization: organization._id,
+    const user = await this.userModel.create({
+      email,
+      name: userDto.name,
+      password: await hash(userDto.password, 10),
     });
-
-    if (existingMembership) {
-      throw new ConflictException(
-        'User is already a member of this organization.',
-      );
-    }
 
     await this.membershipService.createMembership(
       String(user._id),
